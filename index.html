@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>生态伙伴端 · 应用管理（登记新应用 · 字段扩充版）V1.0</title>
+<!--
+  版本 V1.0（2026-10-17）
+  原型：生态伙伴端 / 应用管理 —— 「登记新应用」弹窗在原有字段基础上，按 4 张截图扩充四个页签的字段
+  ├─ 基础信息（AI工具名称/英文名称/简称/英文简称/AI厂商/云地址/AI工具图标/支持随访/压测速度/压测环境/发起方式）
+  ├─ 业务信息（AI类型/示例地址/示例报告/宣传物料/平台报价/多件折扣/功能描述/数据要求/允许试用/补充病例/所属科室/适用模式/最大层厚/适用部位/结算模式）
+  ├─ 注册信息（注册证编号/管理类别/产品名称/适用范围·预期用途）
+  └─ 接口信息（AI工具标识/版本/厂商标识/回调地址/发起地址）
+  原有字段全部保留并归入相应页签；新增字段带「新增」角标（可开关）。
+  配色 PIL 取样：底 #F4F7F5 / 卡片 #FFFDFB / 主色 #A9473F / 标题 #173D43 / 正文 #2C2C2C / 次要 #526967 / 线 #DFE8E3
+-->
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#F4F7F5; --surface:#FFFDFB; --ink:#2C2C2C; --ink2:#526967; --head:#173D43;
+  --line:#DFE8E3; --line2:#EDF2EF; --muted:#7C8F8B; --muted2:#A3B3AF;
+  --primary:#A9473F; --primary-d:#8C382F; --primary-l:#FBEEEB;
+  --ok:#2E7D4F; --ok-l:#E9F5EC; --warn:#B7791F; --warn-l:#FDF6E3;
+  --info:#2B6C86; --info-l:#EAF3F7;
+  --r:8px; --sh:0 18px 48px rgba(23,61,67,.18);
+}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:13px/1.6 "Microsoft YaHei","微软雅黑","PingFang SC",-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+.hidden{display:none!important}
+
+/* ---------- 外壳 ---------- */
+.app{min-height:100vh;display:flex;flex-direction:column}
+.topbar{height:52px;flex:0 0 52px;background:var(--surface);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+.logo{display:flex;align-items:center;gap:9px}
+.logo .m{width:26px;height:26px;border-radius:7px;background:var(--head);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.logo b{font-size:14px;color:var(--head);letter-spacing:.2px}
+.logo .sp{color:var(--muted2);margin:0 6px}
+.logo .cur{color:var(--ink2);font-size:12.5px}
+.topr{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:12px}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--head);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:12px}
+.wrap{flex:1;display:flex;min-height:0}
+.side{width:186px;flex:0 0 186px;background:var(--surface);border-right:1px solid var(--line);padding:14px 10px}
+.side .g{font-size:11px;color:var(--muted2);padding:6px 10px 4px;letter-spacing:.4px}
+.side a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;
+  color:var(--ink2);text-decoration:none;font-size:12.5px;margin-bottom:2px}
+.side a:hover{background:var(--line2)}
+.side a.on{background:var(--primary-l);color:var(--primary);font-weight:600}
+.side a i{font-style:normal;width:17px;text-align:center;color:var(--muted2);font-size:11px}
+.side a.on i{color:var(--primary)}
+.main{flex:1;min-width:0;padding:20px 24px 30px;overflow:auto}
+
+/* ---------- 页头 ---------- */
+.crumb{color:var(--muted);font-size:12px;margin-bottom:10px}
+.crumb b{color:var(--ink2);font-weight:500}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+.head h1{margin:0;font-size:21px;color:var(--head);letter-spacing:.3px}
+.head .sub{color:var(--muted);font-size:12px;margin-top:5px}
+.head .acts{display:flex;gap:9px;flex:0 0 auto}
+.btn{background:var(--surface);border:1px solid var(--line);color:var(--ink2);
+  border-radius:6px;padding:7px 14px;font-size:12.5px}
+.btn:hover{border-color:var(--muted2);color:var(--ink)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
+.btn.primary:hover{background:var(--primary-d);border-color:var(--primary-d)}
+
+/* ---------- 统计卡 ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:13px 15px;display:flex;align-items:center;gap:11px}
+.stat .ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;font-weight:700}
+.stat .lb{color:var(--muted);font-size:11.5px}
+.stat .vl{font-size:19px;font-weight:700;color:var(--head);line-height:1.2}
+.stat.s1 .ic{background:var(--ok-l);color:var(--ok)}
+.stat.s2 .ic{background:var(--warn-l);color:var(--warn)}
+.stat.s3 .ic{background:var(--info-l);color:var(--info)}
+.stat.s4 .ic{background:#FAEAE8;color:var(--primary)}
+
+/* ---------- 应用卡 ---------- */
+.sec-t{font-size:13px;font-weight:700;color:var(--head);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.sec-t span{font-weight:400;color:var(--muted);font-size:11.5px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:15px 17px;
+  display:flex;gap:14px}
+.card .ico{width:42px;height:42px;border-radius:10px;background:var(--ok-l);color:var(--ok);
+  font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;flex:0 0 42px}
+.card .bd{flex:1;min-width:0}
+.card .r1{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.card .r1 b{font-size:14.5px;color:var(--head)}
+.appid{font-family:Consolas,Menlo,monospace;font-size:11px;color:var(--muted);
+  background:var(--line2);border-radius:4px;padding:1px 7px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.chip{font-size:10.5px;color:var(--ink2);background:var(--line2);border-radius:10px;padding:1px 8px}
+.chip.k{color:var(--info);background:var(--info-l)}
+.card .ds{color:var(--muted);font-size:12px;margin-top:6px}
+.card .sc{color:var(--ink2);font-size:12px;margin-top:8px}
+.card .sc em{font-style:normal;color:var(--muted2)}
+.card .lnks{display:flex;gap:14px;margin-top:10px}
+.card .lnks a{color:var(--primary);font-size:12px;text-decoration:none;cursor:pointer}
+.card .lnks a:hover{text-decoration:underline}
+.card .st{position:absolute}
+.badge-st{font-size:10.5px;border-radius:9px;padding:1px 8px;background:var(--warn-l);color:var(--warn)}
+.cardwrap{position:relative}
+.cardwrap .badge-st{position:absolute;right:17px;top:15px}
+
+/* ---------- 弹窗 ---------- */
+.mask{position:fixed;inset:0;background:rgba(23,61,67,.42);z-index:50;
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--surface);border-radius:10px;width:min(1040px,100%);max-height:94vh;
+  display:flex;flex-direction:column;box-shadow:var(--sh);overflow:hidden;border-top:3px solid var(--primary)}
+.mhead{padding:15px 20px 13px;border-bottom:1px solid var(--line);display:flex;
+  align-items:flex-start;justify-content:space-between;gap:14px}
+.mhead h2{margin:0;font-size:16.5px;color:var(--head)}
+.mhead .msub{color:var(--muted);font-size:11.5px;margin-top:3px}
+.mhead .right{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.tog{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2);
+  background:var(--line2);border-radius:15px;padding:4px 11px;cursor:pointer;user-select:none}
+.tog input{margin:0;accent-color:var(--primary)}
+.tog b{color:var(--primary)}
+.closeb{background:none;border:1px solid var(--line);border-radius:5px;color:var(--muted);
+  font-size:11.5px;padding:3px 9px}
+.closeb:hover{color:var(--ink);border-color:var(--muted2)}
+
+.tabs{display:flex;gap:2px;padding:0 20px;border-bottom:1px solid var(--line);background:var(--surface)}
+.tabs button{background:none;border:none;border-bottom:2.5px solid transparent;padding:11px 15px;
+  font-size:13px;color:var(--ink2);position:relative}
+.tabs button:hover{color:var(--head)}
+.tabs button.on{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.tabs button .n{font-size:10.5px;color:var(--muted);margin-left:5px;background:var(--line2);
+  border-radius:8px;padding:0 6px}
+.tabs button.on .n{background:var(--primary-l);color:var(--primary)}
+.tabs button .err{position:absolute;top:7px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--primary)}
+
+.mbody{flex:1;overflow:auto;padding:16px 20px 4px}
+.grp{margin-bottom:16px}
+.grp>h4{margin:0 0 9px;font-size:12px;color:var(--head);font-weight:700;display:flex;align-items:center;gap:7px}
+.grp>h4:before{content:"";width:3px;height:12px;border-radius:2px;background:var(--primary);display:inline-block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f.full{grid-column:1/-1}
+.f label{font-size:12px;color:var(--ink2);display:flex;align-items:center;gap:5px}
+.f label .rq{color:var(--primary);font-weight:700}
+.f label .opt{color:var(--muted2);font-size:10.5px}
+.f label .new{font-size:9.5px;background:var(--primary-l);color:var(--primary);
+  border:1px solid #F0CFC9;border-radius:3px;padding:0 5px;font-weight:600;letter-spacing:.2px}
+body.nomark .f label .new{display:none}
+.f input[type=text],.f input[type=number],.f select,.f textarea{
+  border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-size:12.5px;color:var(--ink);
+  background:#fff;width:100%;min-width:0;transition:border-color .15s,box-shadow .15s}
+.f textarea{resize:vertical;min-height:62px;line-height:1.6}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(169,71,63,.10)}
+.f input::placeholder,.f textarea::placeholder{color:var(--muted2)}
+.f .hint{font-size:11px;color:var(--muted);line-height:1.5}
+.f .urow{display:flex;align-items:center;gap:7px}
+.f .unit{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.f.err input,.f.err select,.f.err textarea{border-color:var(--primary);background:#FFFBFB}
+.f .emsg{font-size:10.5px;color:var(--primary)}
+.radios{display:flex;align-items:center;gap:16px;padding:6px 0}
+.radios label{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink);cursor:pointer}
+.radios input{accent-color:var(--primary);margin:0}
+.upload{border:1.5px dashed var(--line);border-radius:6px;padding:12px;text-align:center;
+  color:var(--muted);font-size:11.5px;background:#fff;cursor:pointer}
+.upload:hover{border-color:var(--primary);color:var(--primary)}
+.upload b{color:var(--ink2);font-weight:600;display:block;font-size:12px;margin-bottom:2px}
+.icoup{width:64px;height:64px;border:1.5px dashed var(--line);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted2);
+  cursor:pointer;background:#fff}
+.icoup:hover{border-color:var(--primary);color:var(--primary)}
+.tagbox{border:1px solid var(--line);border-radius:6px;padding:5px 7px;display:flex;flex-wrap:wrap;
+  gap:5px;background:#fff;min-height:34px;align-items:center}
+.tagbox .tg{background:var(--info-l);color:var(--info);font-size:11px;border-radius:4px;
+  padding:1px 6px;display:flex;align-items:center;gap:4px}
+.tagbox .tg b{cursor:pointer;font-weight:700;opacity:.6}
+.tagbox .tg b:hover{opacity:1}
+.tagbox input{border:none;outline:none;flex:1;min-width:70px;font-size:12px;padding:2px}
+.addrbox{display:flex;gap:8px;align-items:center}
+.addrbox input{flex:1}
+.switch{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2);white-space:nowrap}
+
+.mfoot{padding:12px 20px;border-top:1px solid var(--line);display:flex;align-items:center;
+  justify-content:space-between;gap:12px;background:var(--surface)}
+.mfoot .lf{color:var(--muted);font-size:11.5px}
+.mfoot .lf b{color:var(--head)}
+.mfoot .rg{display:flex;gap:9px}
+
+/* ---------- 结果弹窗 ---------- */
+.rhead{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:11px}
+.rhead .okc{width:32px;height:32px;border-radius:50%;background:var(--ok-l);color:var(--ok);
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
+.rhead b{font-size:15px;color:var(--head)}
+.rhead small{display:block;color:var(--muted);font-size:11.5px;font-weight:400;margin-top:2px}
+.rbody{flex:1;overflow:auto;padding:14px 20px}
+.jsonbox{background:#FBFDFC;border:1px solid var(--line);border-radius:7px;padding:12px 14px;
+  font-family:Consolas,Menlo,monospace;font-size:11.5px;line-height:1.7;color:#2F4B52;
+  white-space:pre-wrap;word-break:break-word;max-height:46vh;overflow:auto}
+.rstat{display:flex;gap:18px;margin-bottom:12px;font-size:12px;color:var(--ink2)}
+.rstat b{color:var(--primary)}
+
+/* toast */
+.toast{position:fixed;left:50%;top:22px;transform:translate(-50%,-14px);background:var(--head);
+  color:#fff;font-size:12.5px;padding:9px 17px;border-radius:6px;opacity:0;pointer-events:none;
+  transition:.22s;z-index:99;max-width:72vw}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:1080px){
+  .grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .side{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo">
+      <span class="m">影</span><b>影禾医脉</b>
+      <span class="sp">/</span><span class="cur">生态伙伴端</span>
+    </div>
+    <div class="topr">
+      <span>生态伙伴 · 上海影禾医脉智能科技有限公司</span>
+      <span class="avatar">VV</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <aside class="side">
+      <div class="g">工作台</div>
+      <a href="javascript:;"><i>01</i>概览</a>
+      <a href="javascript:;"><i>02</i>能力接入</a>
+      <a href="javascript:;"><i>03</i>授权与渠道</a>
+      <a href="javascript:;" class="on"><i>04</i>应用管理</a>
+      <div class="g">运营</div>
+      <a href="javascript:;"><i>05</i>商品管理</a>
+      <a href="javascript:;"><i>06</i>订单结算</a>
+    </aside>
+
+    <main class="main">
+      <div class="crumb">生态伙伴端 / <b>应用管理</b></div>
+      <div class="head">
+        <div>
+          <h1>应用管理</h1>
+          <div class="sub">登记应用，维护临床边界，并跟踪平台认证与发布状态。</div>
+        </div>
+        <div class="acts">
+          <button class="btn" id="btnRefresh">🔄 刷新</button>
+          <button class="btn primary" id="btnNew">＋ 登记新应用</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat s1"><div class="ic">应</div><div><div class="lb">登记应用</div><div class="vl" id="st1">1</div></div></div>
+        <div class="stat s2"><div class="ic">审</div><div><div class="lb">认证中</div><div class="vl" id="st2">1</div></div></div>
+        <div class="stat s3"><div class="ic">发</div><div><div class="lb">已发布</div><div class="vl" id="st3">0</div></div></div>
+        <div class="stat s4"><div class="ic">待</div><div><div class="lb">需处理</div><div class="vl" id="st4">0</div></div></div>
+      </div>
+
+      <div class="sec-t">应用资产 <span>共 1 个</span></div>
+      <div class="cardwrap">
+        <div class="card">
+          <div class="ico">肺</div>
+          <div class="bd">
+            <div class="r1"><b>肺结节诊断</b><span class="appid">APP-D1EE6CA1</span></div>
+            <div class="chips">
+              <span class="chip k">AGT-D1EE6CA1</span>
+              <span class="chip">v1.0.0</span>
+              <span class="chip">肺结节诊断</span>
+              <span class="chip">胸部</span>
+            </div>
+            <div class="ds">肺结节诊断</div>
+            <div class="sc">业务场景：医疗服务管理 <em>/</em> 医疗服务 <em>/</em> 医学影像智能辅助诊断</div>
+            <div class="lnks"><a>查看接入凭证</a><a>编辑应用</a></div>
+          </div>
+        </div>
+        <span class="badge-st">认证中</span>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ================= 登记新应用 弹窗 ================= -->
+<div class="mask hidden" id="dlgMask">
+  <div class="modal" id="dlg">
+    <div class="mhead">
+      <div>
+        <h2>登记新应用</h2>
+        <div class="msub">提交后进入平台统一认证，认证通过并发布后方可创建商品。</div>
+      </div>
+      <div class="right">
+        <label class="tog"><input type="checkbox" id="mkToggle" checked>
+          <span>标出新增字段 <b id="mkCount">0</b></span></label>
+        <button class="closeb" id="dlgClose">关闭</button>
+      </div>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+    <div class="mbody" id="mbody"></div>
+
+    <div class="mfoot">
+      <div class="lf">共 <b id="fTotal">0</b> 个字段（必填 <b id="fReq">0</b>）· 当前页签 <b id="fTab">基础信息</b></div>
+      <div class="rg">
+        <button class="btn" id="btnCancel">取消</button>
+        <button class="btn primary" id="btnSubmit">提交送审</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 提交结果 ================= -->
+<div class="mask hidden" id="resMask">
+  <div class="modal" style="width:min(820px,100%)">
+    <div class="rhead">
+      <div class="okc">✓</div>
+      <div><b>已提交，进入平台统一认证</b>
+        <small>认证通过并发布后方可创建商品；以下为本次提交的字段快照。</small></div>
+    </div>
+    <div class="rbody">
+      <div class="rstat">
+        <span>字段总数 <b id="rTotal">0</b></span>
+        <span>已填 <b id="rFilled">0</b></span>
+        <span>必填项 <b id="rReq">0</b></span>
+        <span>页签 <b>4</b></span>
+      </div>
+      <div class="jsonbox" id="rJson"></div>
+    </div>
+    <div class="mfoot">
+      <div class="lf">提交内容已按页签结构化，可直接对接登记接口。</div>
+      <div class="rg">
+        <button class="btn" id="btnCopy">复制 JSON</button>
+        <button class="btn primary" id="btnDone">完成</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================================
+   字段模型：一个数据源同时驱动「表单渲染」与「提交快照」，避免两处不一致
+   type: text | num | select | radio | textarea | upload | image | tags | addr
+   ============================================================================ */
+var SCHEMA = [
+ { id:'base', name:'基础信息', groups:[
+   { t:'应用标识（原有）', fields:[
+     { k:'appName',   label:'应用名称', type:'text', req:1, ph:'如:影像智能诊断助手' },
+     { k:'appSource', label:'应用来源', type:'select', req:1, def:'自主产品',
+       opts:['自主产品','代理伙伴应用'], hint:'如需销售已入驻伙伴的应用，请前往「授权与渠道—我要代理」，不要重复登记应用。' },
+     { k:'appVer',    label:'版本号', type:'text', req:1, def:'1.0.0' }
+   ]},
+   { t:'AI 工具信息（新增）', fields:[
+     { k:'toolNameCn',  label:'AI工具名称',     type:'text', req:1, ph:'请填写AI工具名称', new:1 },
+     { k:'toolNameEn',  label:'AI工具英文名称', type:'text', req:1, ph:'请填写AI工具英文名称', new:1 },
+     { k:'toolShortCn', label:'AI工具简称',     type:'text', req:1, ph:'请填写AI简称', new:1 },
+     { k:'toolShortEn', label:'AI工具英文简称', type:'text', req:1, ph:'请填写AI英文简称', new:1 },
+     { k:'vendor',      label:'AI厂商',         type:'select', req:1, ph:'请选择AI厂商', new:1,
+       opts:['影禾医脉（自研）','推想科技','联影智能','深睿医疗','科大讯飞','国新健康'] },
+     { k:'cloudAddr',   label:'云地址',         type:'select', req:1, ph:'请选择云地址', new:1,
+       opts:['华东一区（上海）','华东二区（杭州）','华北一区（北京）','华南一区（广州）'] },
+     { k:'toolIcon',    label:'AI工具图标',     type:'image', req:1, new:1, hint:'建议 1:1 正方形，PNG/SVG，≤200KB' }
+   ]},
+   { t:'运行参数（新增）', fields:[
+     { k:'supportFollowup', label:'支持随访', type:'radio', req:1, def:'否', opts:['是','否'], new:1 },
+     { k:'launchMode',      label:'发起方式', type:'radio', def:'自动发起', opts:['自动发起','手动发起'], new:1 },
+     { k:'pressSpeed',      label:'压测速度', type:'num',  ph:'请填写压测速度', unit:'s/case', new:1 },
+     { k:'pressEnv',        label:'压测环境', type:'text', ph:'请填写压测环境', new:1 }
+   ]}
+ ]},
+ { id:'biz', name:'业务信息', groups:[
+   { t:'业务场景（原有）', fields:[
+     { k:'scnSearch',  label:'搜索分类或场景', type:'text', ph:'搜索分类或场景名称, 如: 病历、质控、健康管理' },
+     { k:'scnL1',      label:'一级场景', type:'select', req:1, ph:'请选择一级场景',
+       opts:['医疗服务管理','医疗质量管理','患者服务管理'] },
+     { k:'scnL2',      label:'二级场景', type:'select', req:1, ph:'请选择二级场景',
+       opts:['医疗服务','医疗质控','健康管理'] },
+     { k:'scnL3',      label:'三级场景名称', type:'text', req:1, def:'医学影像智能辅助诊断',
+       hint:'一级、二级从标准目录选择；三级可选择 84 个标准场景，也可手动录入，三个层级均必填。' }
+   ]},
+   { t:'能力与适用范围（新增）', fields:[
+     { k:'aiType',      label:'AI类型', type:'select', req:1, def:'诊断', opts:['诊断','筛查','质控','结构化'], new:1 },
+     { k:'dept',        label:'所属科室', type:'select', req:1, def:'内科',
+       opts:['内科','外科','影像科','急诊科','肿瘤科'], new:1 },
+     { k:'modality',    label:'适用模式', type:'tags', req:1, def:'CT', new:1, hint:'可多选，回车添加' },
+     { k:'bodyPart',    label:'适用部位', type:'tags', req:1, def:'颅脑', new:1, hint:'可多选，回车添加' },
+     { k:'maxThickness',label:'最大层厚', type:'num', def:'10', unit:'mm', new:1 }
+   ]},
+   { t:'功能与数据要求（新增）', fields:[
+     { k:'funcDesc', label:'功能描述', type:'textarea', req:1, full:1, new:1,
+       ph:'用于辅助识别颅脑平扫CT影像各类具有影像学征象变化的疾病' },
+     { k:'dataReq',  label:'数据要求', type:'textarea', full:1, new:1,
+       ph:'颅脑CT平扫数据，软组织窗序列，层厚在2-10mm之间，且序列层数10-120层范围' }
+   ]},
+   { t:'试用与结算（新增）', fields:[
+     { k:'allowTrial',  label:'允许试用', type:'radio', req:1, def:'否', opts:['是','否'], new:1 },
+     { k:'extraCases',  label:'补充病例', type:'radio', def:'否', opts:['是','否'], new:1 },
+     { k:'settleMode',  label:'结算模式', type:'select', req:1, def:'周期结算',
+       opts:['周期结算','按次结算','订阅制'], new:1 },
+     { k:'price',       label:'平台报价', type:'num', def:'0', unit:'元/部位', new:1 },
+     { k:'discount',    label:'多件折扣', type:'num', ph:'请填写多件折扣', unit:'%', new:1 },
+     { k:'demoUrl',     label:'示例地址', type:'text', ph:'请填写示例地址', new:1 }
+   ]},
+   { t:'材料与标签（新增＋原有）', fields:[
+     { k:'demoReport',  label:'示例报告', type:'upload', new:1, ph:'上传示例报告，仅支持 pdf 单文档上传' },
+     { k:'promoFile',   label:'宣传物料', type:'upload', new:1, ph:'上传宣传物料，仅支持 pdf 单文档上传' },
+     { k:'appDesc',     label:'应用描述', type:'textarea', req:1, full:1,
+       ph:'请描述应用的功能、适用场景及使用方式...' },
+     { k:'appTags',     label:'应用标签', type:'tags', full:1,
+       hint:'输入标签后按回车添加，最多 4 个，用于商品检索和能力识别。' }
+   ]}
+ ]},
+ { id:'reg', name:'注册信息', groups:[
+   { t:'注册与预期用途（新增）', fields:[
+     { k:'regCertNo', label:'注册证编号', type:'text', ph:'请填写注册证编号', new:1 },
+     { k:'manageClass', label:'管理类别', type:'select', ph:'请选择管理类别',
+       opts:['第一类','第二类','第三类'], new:1 },
+     { k:'productName', label:'产品名称', type:'text', ph:'请填写产品名称', new:1 }
+   ]},
+   { t:'临床边界（原有·强制安全字段）', fields:[
+     { k:'clinicalBoundary', label:'临床边界', type:'textarea', req:1, full:1,
+       ph:'必须说明:适用范围、禁忌症、须经医生确认的场景。不能用宣传文案替代。',
+       hint:'强制安全字段：将随应用一并进入平台认证，认证不通过不予发布。' }
+   ]},
+   { t:'适用范围（新增）', fields:[
+     { k:'intendedUse', label:'适用范围 / 预期用途', type:'textarea', full:1, new:1,
+       ph:'请输入适用范围/预期用途' }
+   ]}
+ ]},
+ { id:'api', name:'接口信息', groups:[
+   { t:'接入方式（原有）', fields:[
+     { k:'deployMode', label:'部署模式', type:'select', req:1, ph:'请选择部署模式',
+       opts:['嵌入式','弹框式','双窗口','新TAB页','服务端对接'] },
+     { k:'feUrl', label:'应用前端地址', type:'text',
+       ph:'请输入应用前端部署地址,如:10.0.0.1:80/web/xxx/#/a.html' },
+     { k:'beUrl', label:'应用后端地址', type:'text',
+       ph:'请输入应用后端服务部署地址,如:10.0.0.1:8080/api/xxx' }
+   ]},
+   { t:'接口标识（新增）', fields:[
+     { k:'toolCode',   label:'AI工具标识', type:'text', req:1, def:'head-report-pipeline', new:1 },
+     { k:'apiVer',     label:'版本', type:'text', req:1, def:'0.1', new:1, hint:'接口版本，需与接口文档一致' },
+     { k:'vendorCode', label:'厂商标识', type:'text', req:1, def:'head-report-pipeline', new:1 },
+     { k:'callbackUrl',label:'回调地址', type:'text', req:1, def:'1', new:1 },
+     { k:'launchUrl',  label:'发起地址', type:'text', req:1, def:'1', new:1 }
+   ]},
+   { t:'对接人与材料（原有）', fields:[
+     { k:'techMail', label:'技术负责人邮箱', type:'text', def:'bin.wang@imagecore.com.cn', hint:'选填' },
+     { k:'adminUrl', label:'应用管理后台地址', type:'addr', hint:'默认不开放，勾选「启用」后填写地址' },
+     { k:'measureFile', label:'测评材料', type:'upload', ph:'选择 PDF 材料',
+       hint:'支持 PDF 文档，单份不超过 20 MB，最多上传 3 份；提交后供省平台审核，并可作为商品辅助材料展示。' }
+   ]}
+ ]}
+];
+
+var S = { tab:0, val:{}, tags:{}, err:{}, marks:true };
+
+/* 统计 */
+function allFields(){
+  var a=[];
+  SCHEMA.forEach(function(t){ t.groups.forEach(function(g){ g.fields.forEach(function(f){
+    a.push({tab:t.id, grp:g.t, f:f});
+  });});});
+  return a;
+}
+var ALL = allFields();
+var NEWC = ALL.filter(function(x){ return x.f.new; }).length;
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function toast(m){ var t=$('toast'); t.textContent=m; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('on'); },2000); }
+
+/* ---------- 取值 ---------- */
+ALL.forEach(function(x){ var f=x.f;
+  if(f.type==='tags'){ S.tags[f.k] = f.def ? f.def.split(',').map(function(s){return s.trim();}) : []; }
+  else if(f.def!=null) S.val[f.k]=f.def;
+  else S.val[f.k]='';
+});
+
+function getVal(k){ return S.val[k]||''; }
+
+/* ---------- 渲染页签 ---------- */
+function renderTabs(){
+  var h='';
+  SCHEMA.forEach(function(t,i){
+    var n=t.groups.reduce(function(a,g){return a+g.fields.length;},0);
+    h+='<button data-tab="'+i+'" class="'+(S.tab===i?'on':'')+'">'+esc(t.name)
+      +'<span class="n">'+n+'</span>'
+      +(S.err[t.id]?'<span class="err"></span>':'')+'</button>';
+  });
+  $('tabs').innerHTML=h;
+  $('tabs').querySelectorAll('button').forEach(function(b){
+    b.onclick=function(){ S.tab=+b.getAttribute('data-tab'); renderTabs(); renderBody(); };
+  });
+}
+
+/* ---------- 渲染字段 ---------- */
+function fieldHTML(f){
+  var v=getVal(f.k), e=S.err[f.k], cls='f'+(f.full?' full':'')+(e?' err':'');
+  var lab='<label>'+ (f.req?'<span class="rq">*</span>':'') + esc(f.label)
+        + (f.new?'<span class="new">新增</span>':'')
+        + (!f.req?'<span class="opt">选填</span>':'') + '</label>';
+  var c='';
+  if(f.type==='text'||f.type==='num'){
+    c='<div class="urow"><input type="'+(f.type==='num'?'number':'text')+'" data-k="'+f.k+'" '
+      + 'value="'+esc(v)+'" placeholder="'+esc(f.ph||'')+'">'
+      + (f.unit?'<span class="unit">'+esc(f.unit)+'</span>':'')+'</div>';
+  } else if(f.type==='select'){
+    c='<select data-k="'+f.k+'"><option value="">'+esc(f.ph||'请选择')+'</option>';
+    (f.opts||[]).forEach(function(o){ c+='<option'+(v===o?' selected':'')+'>'+esc(o)+'</option>'; });
+    c+='</select>';
+  } else if(f.type==='textarea'){
+    c='<textarea data-k="'+f.k+'" placeholder="'+esc(f.ph||'')+'">'+esc(v)+'</textarea>';
+  } else if(f.type==='radio'){
+    c='<div class="radios" data-kr="'+f.k+'">';
+    (f.opts||['是','否']).forEach(function(o){
+      c+='<label><input type="radio" name="'+f.k+'" value="'+esc(o)+'"'
+       + (v===o?' checked':'') + '>'+esc(o)+'</label>';
+    });
+    c+='</div>';
+  } else if(f.type==='upload'){
+    c='<div class="upload" data-up="'+f.k+'"><b>↑ '+esc(f.ph||'上传文件')+'</b>'
+      + '<span data-upn="'+f.k+'">0 份已选</span></div>';
+  } else if(f.type==='image'){
+    c='<div class="icoup" data-up="'+f.k+'" title="上传图标">＋</div>';
+  } else if(f.type==='tags'){
+    c='<div class="tagbox" data-tb="'+f.k+'">';
+    (S.tags[f.k]||[]).forEach(function(tg){
+      c+='<span class="tg">'+esc(tg)+'<b data-rm="'+f.k+'" data-t="'+esc(tg)+'">×</b></span>';
+    });
+    c+='<input data-ti="'+f.k+'" placeholder="输入后回车"></div>';
+  } else if(f.type==='addr'){
+    c='<div class="addrbox"><input type="text" data-k="'+f.k+'" value="'+esc(v)+'" '
+      + 'placeholder="默认不开放，点击「启用」后填写地址" data-addr="'+f.k+'">'
+      + '<label class="switch"><input type="checkbox" data-en="'+f.k+'">启用</label></div>';
+  }
+  return '<div class="'+cls+'" data-f="'+f.k+'">'+lab+c
+       + (f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'')
+       + (e?'<div class="emsg">'+esc(e)+'</div>':'') + '</div>';
+}
+
+function renderBody(){
+  var t=SCHEMA[S.tab], h='';
+  t.groups.forEach(function(g){
+    h+='<div class="grp"><h4>'+esc(g.t)+'</h4><div class="grid">';
+    g.fields.forEach(function(f){ h+=fieldHTML(f); });
+    h+='</div></div>';
+  });
+  $('mbody').innerHTML=h;
+  bindBody();
+  $('fTab').textContent=t.name;
+  $('mbody').scrollTop=0;
+}
+
+function bindBody(){
+  var b=$('mbody');
+  b.querySelectorAll('[data-k]').forEach(function(el){
+    var k=el.getAttribute('data-k');
+    var fn=function(){ S.val[k]=el.value; if(el.hasAttribute('data-addr')){
+        S.val['_en_'+k]=true; } };
+    el.oninput=fn; el.onchange=fn;
+  });
+  b.querySelectorAll('[data-kr]').forEach(function(box){
+    var k=box.getAttribute('data-kr');
+    box.querySelectorAll('input[type=radio]').forEach(function(r){
+      r.onchange=function(){ if(r.checked) S.val[k]=r.value; };
+    });
+  });
+  b.querySelectorAll('[data-up]').forEach(function(u){
+    u.onclick=function(){ var k=u.getAttribute('data-up');
+      S.val[k]= (S.val[k]||'') ? '' : 'demo.pdf';
+      var n=u.querySelector('[data-upn]');
+      if(n){ n.textContent = S.val[k] ? '1 份已选：demo.pdf' : '0 份已选'; }
+      u.style.borderColor = S.val[k] ? 'var(--primary)' : '';
+      toast(S.val[k] ? '已选择 demo.pdf（演示）' : '已移除');
+    };
+  });
+  b.querySelectorAll('[data-ti]').forEach(function(inp){
+    var k=inp.getAttribute('data-ti');
+    inp.onkeydown=function(e){
+      if(e.key==='Enter'){ e.preventDefault();
+        var v=inp.value.trim(); if(!v) return;
+        var arr=S.tags[k]||[];
+        if(arr.length>=4){ toast('最多 4 个标签'); return; }
+        if(arr.indexOf(v)>=0){ toast('标签已存在'); return; }
+        arr.push(v); S.tags[k]=arr; renderBody();
+        var ni=$('mbody').querySelector('[data-ti="'+k+'"]'); if(ni) ni.focus();
+      }
+    };
+  });
+  b.querySelectorAll('[data-rm]').forEach(function(x){
+    x.onclick=function(){ var k=x.getAttribute('data-rm'), t=x.getAttribute('data-t');
+      S.tags[k]=(S.tags[k]||[]).filter(function(v){return v!==t;}); renderBody(); };
+  });
+  b.querySelectorAll('[data-en]').forEach(function(cb){
+    var k=cb.getAttribute('data-en');
+    var inp=b.querySelector('[data-addr="'+k+'"]');
+    if(inp) inp.disabled = true;
+    cb.onchange=function(){
+      if(inp){ inp.disabled=!cb.checked; if(cb.checked) inp.focus(); }
+      S.val['_en_'+k]=cb.checked;
+    };
+  });
+}
+
+/* ---------- 校验 ---------- */
+function isFilled(x){
+  var f=x.f;
+  if(f.type==='tags') return (S.tags[f.k]||[]).length>0;
+  if(f.type==='image'||f.type==='upload') return !!S.val[f.k];
+  return String(S.val[f.k]||'').trim()!=='';
+}
+function validate(){
+  S.err={}; var first=null, list=[];
+  ALL.forEach(function(x){
+    if(!x.f.req) return;
+    if(!isFilled(x)){ S.err[x.f.k]='此项为必填';
+      if(!S.err[x.tab]) S.err[x.tab]=1;
+      if(first===null) first=x.tab;
+      list.push(SCHEMA.find(function(t){return t.id===x.tab;}).name+' · '+x.f.label);
+    }
+  });
+  return {first:first, list:list};
+}
+
+/* ---------- 提交 ---------- */
+$('btnSubmit').onclick=function(){
+  var r=validate();
+  renderTabs(); renderBody();
+  if(r.first!==null){
+    S.tab=SCHEMA.findIndex(function(t){return t.id===r.first;});
+    renderTabs(); renderBody();
+    toast('还有 '+r.list.length+' 项必填未完成，已跳到「'+SCHEMA[S.tab].name+'」');
+    return;
+  }
+  showResult();
+};
+
+function snapshot(){
+  var o={};
+  SCHEMA.forEach(function(t){
+    var g={};
+    t.groups.forEach(function(grp){
+      grp.fields.forEach(function(f){
+        g[f.label] = (f.type==='tags') ? (S.tags[f.k]||[]) : (S.val[f.k]||'');
+      });
+    });
+    o[t.name]=g;
+  });
+  o['_meta']={ fields_total:ALL.length, fields_new:NEWC, tabs:SCHEMA.length,
+               submitted_at:new Date().toISOString().slice(0,19).replace('T',' ') };
+  return o;
+}
+
+function showResult(){
+  var sn=snapshot();
+  var filled=ALL.filter(isFilled).length;
+  $('rTotal').textContent=ALL.length;
+  $('rFilled').textContent=filled;
+  $('rReq').textContent=ALL.filter(function(x){return x.f.req;}).length;
+  $('rJson').textContent=JSON.stringify(sn,null,2);
+  $('resMask').classList.remove('hidden');
+  $('st1').textContent='2'; $('st2').textContent='2';
+}
+$('btnDone').onclick=function(){ $('resMask').classList.add('hidden');
+  $('dlgMask').classList.add('hidden'); toast('登记已提交，可在应用资产中查看认证状态'); };
+$('btnCopy').onclick=function(){
+  try{ navigator.clipboard.writeText($('rJson').textContent); toast('已复制字段快照 JSON'); }
+  catch(e){ toast('浏览器不支持剪贴板，请手动选择复制'); }
+};
+
+/* ---------- 弹窗开关 ---------- */
+function openDlg(){
+  S.tab=0; S.err={}; renderTabs(); renderBody();
+  $('dlgMask').classList.remove('hidden');
+  document.body.classList.toggle('nomark', !S.marks);
+  console.log('登记新应用弹窗已打开：字段 '+ALL.length+' 个（新增 '+NEWC+'）');
+}
+function closeDlg(){ $('dlgMask').classList.add('hidden'); }
+
+$('btnNew').onclick=openDlg;
+$('dlgClose').onclick=closeDlg;
+$('btnCancel').onclick=closeDlg;
+$('dlgMask').onclick=function(e){ if(e.target===this) closeDlg(); };
+$('btnRefresh').onclick=function(){ toast('已刷新'); };
+
+$('mkToggle').onchange=function(){
+  S.marks=this.checked;
+  document.body.classList.toggle('nomark', !S.marks);
+};
+
+/* 计数 */
+$('fTotal').textContent=ALL.length;
+$('fReq').textContent=ALL.filter(function(x){return x.f.req;}).length;
+$('mkCount').textContent=NEWC;
+renderTabs(); renderBody();
+console.log('应用管理 · 登记新应用（字段扩充版）V1.0 已加载 | 字段 '+ALL.length+' 新增 '+NEWC);
+</script>
+</body>
+</html>
