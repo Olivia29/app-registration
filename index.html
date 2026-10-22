@@ -58,7 +58,7 @@ input,select,textarea{font-family:inherit}
   display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:0 0 30px}
 .suser b{display:block;font-size:12.5px;color:var(--ink);line-height:1.4}
 .suser small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
-.right{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh}
+.pane{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh}
 .topbar{height:52px;flex:0 0 52px;background:var(--surface);border-bottom:1px solid var(--line);
   display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:16px}
 .topbar .crumb{color:var(--muted);font-size:12.5px;margin:0}
@@ -130,7 +130,7 @@ input,select,textarea{font-family:inherit}
   align-items:flex-start;justify-content:space-between;gap:14px}
 .mhead h2{margin:0;font-size:16.5px;color:var(--head)}
 .mhead .msub{color:var(--muted);font-size:11.5px;margin-top:3px}
-.mhead .right{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.mhead .mh-right{display:flex;align-items:center;gap:10px;flex:0 0 auto}
 .tog{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2);
   background:var(--line2);border-radius:15px;padding:4px 11px;cursor:pointer;user-select:none}
 .tog input{margin:0;accent-color:var(--primary)}
@@ -257,7 +257,7 @@ body.nomark .f label .new{display:none}
     <div class="suser"><span class="av">王</span><div><b>王斌</b><small>企业管理员</small></div></div>
   </aside>
 
-  <div class="right">
+  <div class="pane">
     <div class="topbar">
       <div class="crumb">生态伙伴端 / <b>应用管理</b></div>
       <div class="topr">
@@ -316,7 +316,7 @@ body.nomark .f label .new{display:none}
         <h2>登记新应用</h2>
         <div class="msub">提交后进入平台统一认证，认证通过并发布后方可创建商品。</div>
       </div>
-      <div class="right">
+      <div class="mh-right">
         <label class="tog"><input type="checkbox" id="mkToggle" checked>
           <span>标出新增字段 <b id="mkCount">0</b></span></label>
         <button class="closeb" id="dlgClose">关闭</button>
