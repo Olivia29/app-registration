@@ -287,6 +287,87 @@ input,select,textarea{font-family:inherit}
 .dg-dot.rd{background:var(--ok)}
 .dg-empty td{text-align:center;color:var(--muted);padding:28px}
 .dg-hint{display:none;color:var(--warn);font-size:11px;margin-left:8px}
+/* ---------- 机构规则（影像应用中心） ---------- */
+.or-table{width:100%;border-collapse:collapse;font-size:12px}
+.or-table th{text-align:left;font-weight:600;color:var(--muted);padding:8px 8px;
+  border-bottom:1px solid var(--line);white-space:nowrap;background:#FCFDFC}
+.or-table td{padding:8px 8px;border-bottom:1px solid var(--line2);white-space:nowrap;color:var(--ink)}
+.or-table tbody tr:hover td{background:#FBFCFB}
+.or-table .idx{width:46px;color:var(--muted);font-family:Consolas,Menlo,monospace;font-size:11.5px}
+.or-table .ell{max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.or-table .mono{font-family:Consolas,Menlo,monospace;font-size:11px}
+.or-link{color:var(--primary);cursor:pointer;font-size:12px;margin-right:11px;display:inline-block}
+.or-link:last-child{margin-right:0}
+.or-link:hover{text-decoration:underline}
+.or-empty td{text-align:center;color:var(--muted);padding:30px}
+
+/* 规则 / 匹配 弹窗 */
+.or-modal{position:fixed;inset:0;z-index:95;background:rgba(23,61,67,.42);
+  display:flex;align-items:center;justify-content:center;padding:24px}
+.or-sheet{background:var(--surface);border-radius:10px;width:min(900px,100%);max-height:92vh;
+  display:flex;flex-direction:column;box-shadow:0 18px 48px rgba(23,61,67,.22);
+  border-top:3px solid var(--primary);overflow:hidden}
+.or-sheader{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;
+  align-items:flex-start;justify-content:space-between;gap:12px}
+.or-sheader b{font-size:15px;color:var(--head)}
+.or-sheader small{display:block;color:var(--muted);font-size:11.5px;margin-top:3px}
+.or-x{background:none;border:1px solid var(--line);border-radius:5px;color:var(--muted);
+  font-size:11.5px;padding:3px 9px}
+.or-x:hover{color:var(--ink);border-color:var(--muted2)}
+.or-body{display:flex;min-height:0;flex:1}
+.or-left{width:186px;flex:0 0 186px;border-right:1px solid var(--line);padding:10px;overflow:auto;background:#FCFDFC}
+.or-left .lt{font-size:10.5px;color:var(--muted2);padding:2px 4px 6px;letter-spacing:.3px}
+.or-rule{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 9px;
+  border-radius:6px;font-size:12.5px;color:var(--ink2);cursor:pointer;margin-bottom:2px}
+.or-rule:hover{background:var(--line2)}
+.or-rule.on{background:var(--primary-l);color:var(--primary);font-weight:600}
+.or-rule .n{font-size:10px;color:var(--muted2)}
+.or-rule.on .n{color:var(--primary)}
+.or-addrule{margin-top:8px;border:1px dashed var(--line);border-radius:6px;color:var(--primary);
+  background:none;width:100%;padding:6px;font-size:12px}
+.or-addrule:hover{border-color:var(--primary)}
+.or-right{flex:1;min-width:0;padding:12px 14px;overflow:auto}
+.or-h{font-size:12.5px;color:var(--head);font-weight:700;margin:0 0 9px;display:flex;
+  align-items:center;gap:8px}
+.or-h:before{content:"";width:3px;height:12px;border-radius:2px;background:var(--primary)}
+.or-uid{display:flex;gap:8px;margin-bottom:11px}
+.or-uid input{flex:1;border:1px solid var(--line);border-radius:5px;padding:6px 8px;font-size:12px;min-width:0}
+.or-uid input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(169,71,63,.10)}
+.or-cond{border:1px solid var(--line);border-radius:7px;padding:10px 11px;margin-bottom:9px;background:#FCFDFC}
+.or-cond .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.or-cond .hd b{font-size:12px;color:var(--head);border-left:3px solid var(--primary);padding-left:6px}
+.or-cond .del{color:#B3261E;background:none;border:none;font-size:11.5px;cursor:pointer;padding:0}
+.or-cond .del:hover{text-decoration:underline}
+.or-row{display:grid;grid-template-columns:132px minmax(0,1fr);gap:8px;align-items:center;margin-bottom:7px}
+.or-row label{font-size:11.5px;color:var(--muted)}
+.or-row select,.or-row input{border:1px solid var(--line);border-radius:5px;padding:5px 7px;
+  font-size:12px;width:100%;min-width:0;background:#fff;font-family:inherit;color:var(--ink)}
+.or-row select:focus,.or-row input:focus{outline:none;border-color:var(--primary)}
+.or-addcond{border:1px dashed var(--line);border-radius:6px;color:var(--primary);background:none;
+  padding:6px 12px;font-size:12px}
+.or-addcond:hover{border-color:var(--primary)}
+.or-foot{padding:11px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:9px}
+
+/* 适用检查项目匹配 */
+.mt-search{display:flex;gap:8px;margin-bottom:11px}
+.mt-search input{flex:1;border:1px solid var(--line);border-radius:5px;padding:6px 9px;font-size:12px;min-width:0}
+.mt-search input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(169,71,63,.10)}
+.mt-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:11px}
+.mt-filters .fitem{display:flex;flex-direction:column;gap:4px}
+.mt-filters label{font-size:10.5px;color:var(--muted)}
+.mt-filters select,.mt-filters input{border:1px solid var(--line);border-radius:5px;padding:5px 7px;
+  font-size:12px;background:#fff;min-width:130px}
+.mt-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:12.5px;
+  background:#FCFDFC;border:1px dashed var(--line);border-radius:8px}
+.mt-list{display:flex;flex-direction:column;gap:7px}
+.mt-item{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  border:1px solid var(--line);border-radius:7px;padding:9px 11px;background:#fff}
+.mt-item .l{min-width:0}
+.mt-item .t{font-size:12.5px;color:var(--ink);font-weight:600}
+.mt-item .s{font-size:11px;color:var(--muted);margin-top:2px;font-family:Consolas,Menlo,monospace}
+.mt-item .r{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.tagm{font-size:10.5px;border-radius:9px;padding:1px 8px;background:var(--line2);color:var(--ink2)}
+
 /* ---------- 弹窗 ---------- */
 .mask{position:fixed;inset:0;background:rgba(23,61,67,.42);z-index:50;
   display:flex;align-items:center;justify-content:center;padding:20px}
@@ -419,9 +500,10 @@ body.nomark .f label .new{display:none}
       <a href="javascript:;"><i>10</i>医院账单</a>
       <a href="javascript:;" data-view="stats"><i>11</i>计算统计</a>
       <div class="g">影像应用中心</div>
-      <a href="javascript:;" data-view="diag"><i>12</i>诊断列表</a>
+      <a href="javascript:;" data-view="org"><i>12</i>机构规则</a>
+      <a href="javascript:;" data-view="diag"><i>13</i>诊断列表</a>
       <div class="g">安全与治理</div>
-      <a href="javascript:;"><i>13</i>操作审计</a>
+      <a href="javascript:;"><i>14</i>操作审计</a>
     </nav>
     <div class="suser"><span class="av">王</span><div><b>王斌</b><small>企业管理员</small></div></div>
   </aside>
@@ -627,6 +709,43 @@ body.nomark .f label .new{display:none}
 
     <!-- 诊断结果 / 原始影像 弹窗（独立类名，避免与登记弹窗冲突） -->
     <div class="dg-modal hidden" id="dgModal"></div>
+
+    <div id="viewOrgRule" class="hidden">
+      <div class="head">
+        <div>
+          <h1>机构规则</h1>
+          <div class="sub">影像应用中心 · 配置各机构下 AI 工具的匹配规则与适用检查项目。</div>
+        </div>
+        <div class="acts">
+          <button class="btn" id="orRefresh">刷新</button>
+          <button class="btn" id="orReset">重置</button>
+        </div>
+      </div>
+
+      <div class="fbar">
+        <div class="fitem"><label>机构名称</label><select id="orOrg"><option>当前机构</option></select></div>
+        <div class="fitem"><label>AI工具</label><select id="orTool"><option>请选择</option></select></div>
+        <div class="fitem"><label>云地址</label><select id="orCloud"><option>请选择</option></select></div>
+        <div class="fitem"><label>模态类型</label><select id="orMod"><option>请选择</option><option>CT</option><option>MR</option><option>DR</option></select></div>
+        <div class="fitem"><label>部位</label><select id="orPart"><option>请选择</option><option>胸部</option><option>腹部</option><option>颅脑</option></select></div>
+        <div class="fitem"><label>更新时间</label>
+          <div class="dr"><input type="date" id="orFrom"><span>→</span><input type="date" id="orTo"></div>
+        </div>
+        <div class="fitem"><label>适用检查项目</label><input id="orStudy" placeholder="请输入" style="width:120px"></div>
+        <div class="fitem"><label>匹配规则</label><input id="orRuleQ" placeholder="请输入" style="width:120px"></div>
+        <button class="btn primary sm" id="orQuery">查询</button>
+      </div>
+
+      <div class="panel">
+        <div id="orTable"></div>
+        <div class="pg" id="orPager"></div>
+      </div>
+
+      <div class="note">演示数据：机构、AI 工具、云地址均为示例。「查看规则」打开匹配规则编辑（Tag / 对比条件 / 值 / 备注），「检查项目匹配」打开适用检查项目设置。</div>
+    </div>
+
+    <!-- 规则 / 匹配 弹窗 -->
+    <div class="or-modal hidden" id="orModal"></div>
 
     </main>
   </div>
@@ -1298,7 +1417,7 @@ function bindSchedFilters(){
 
 /* ---------- 视图切换 ---------- */
 function showView(v){
-  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag' };
+  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule' };
   Object.keys(views).forEach(function(k){
     var el = document.getElementById(views[k]);
     if (el) el.classList.toggle('hidden', k !== v);
@@ -1306,11 +1425,12 @@ function showView(v){
   [].forEach.call(document.querySelectorAll('.snav a'), function(a){
     a.classList.toggle('on', a.getAttribute('data-view') === v);
   });
-  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表' }[v] || '应用管理';
+  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则' }[v] || '应用管理';
   var cr = document.querySelector('.topbar .crumb');
   if (cr) cr.innerHTML = '生态伙伴端 / <b>' + name + '</b>';
   if (v === 'stats') { renderStats(); bindSchedFilters(); }
   if (v === 'diag') { bindDiagView(); renderDiagList(); }
+  if (v === 'org') { bindOrgRule(); renderOrgRules(); }
   var main = document.querySelector('.main');
   if (main) main.scrollTop = 0;
 }
@@ -1755,6 +1875,375 @@ function bindDiagView(){
     m.classList.add('hidden'); DG_S.menu = false;
   });
   renderColMenu();
+}
+
+/* ============================================================================
+   影像应用中心 · 机构规则（列表 + 查看规则 + 检查项目匹配）
+   ============================================================================ */
+var OR_TAGS = ['modality（序列的模态）','sliceThickness（层厚）','bodyPartExamined（检查部位）',
+               'studyDescription（检查描述）','seriesDescription（序列描述）',
+               'patientAge（年龄）','manufacturer（厂商）'];
+var OR_OPS = ['contain（包含）','not contain（不包含）','EQ（等于）','NE（不等于）',
+              'GE（大于等于）','LE（小于等于）','IN（属于）','NOT IN（不属于）'];
+
+var OR_ROWS = (function(){
+  var tools = ['肺占位CT手术路径规划及三维重建','心脏病CT手术路径规划及三维重建',
+               '肝胆肿瘤CT手术路径规划及三维重建','颅脑CT血管三维重建及狭窄分析',
+               '肺结节CT三维重建与随访对比','脑出血CT三维重建与体积测量',
+               '脊柱CT三维重建与椎弓根测量','冠脉CT血管三维重建',
+               '腹部MR多期增强三维重建','膝关节MR软骨三维重建'];
+  var clouds = ['天翼云（华东一区）','天翼云（华东二区）','天翼云（华北一区）',
+                '阿里云（华东一区）','华为云（华北一区）'];
+  var mods = ['CT','CT','CT','CT','CT','CT','CT','CT','MR','MR'];
+  var parts = ['胸部','胸部','腹部','颅脑','胸部','颅脑','脊柱','胸部','腹部','膝关节'];
+  var out = [];
+  for (var i = 0; i < 10; i++) {
+    var m = 24 - i * 13;
+    out.push({
+      idx: i + 1,
+      org: '影禾医脉',
+      tool: tools[i],
+      cloud: clouds[i % clouds.length],
+      mod: mods[i],
+      part: parts[i],
+      updated: '2026-07-14 15:00:' + (m < 10 ? '0' + m : m),
+      rules: {
+        '模态': [{ tag:'modality（序列的模态）', op:'contain（包含）', val: mods[i], note:'' }],
+        '层厚': [{ tag:'sliceThickness（层厚）', op:'LE（小于等于）', val:(mods[i]==='MR'?'6':'5'), note:'层厚在阈值以内' }],
+        '部位': [{ tag:'bodyPartExamined（检查部位）', op:'contain（包含）',
+                   val:(parts[i]==='胸部'?'CHEST':(parts[i]==='腹部'?'ABDOMEN':(parts[i]==='颅脑'?'HEAD':(parts[i]==='脊柱'?'SPINE':'KNEE')))), note:'' }]
+      }
+    });
+  }
+  return out;
+})();
+
+var OR_F = { tool:'', cloud:'', mod:'', part:'', study:'', rule:'', from:'', to:'' };
+var OR_S = { page:1, size:10 };
+
+function orFiltered(){
+  var f = OR_F;
+  return OR_ROWS.filter(function(r){
+    if (f.tool  && r.tool !== f.tool) return false;
+    if (f.cloud && r.cloud !== f.cloud) return false;
+    if (f.mod   && r.mod !== f.mod) return false;
+    if (f.part  && r.part !== f.part) return false;
+    if (f.from  && r.updated.slice(0,10) < f.from) return false;
+    if (f.to    && r.updated.slice(0,10) > f.to) return false;
+    if (f.study && JSON.stringify(r.rules['部位']).indexOf(f.study.toUpperCase()) < 0) return false;
+    if (f.rule  && JSON.stringify(r.rules).indexOf(f.rule) < 0) return false;
+    return true;
+  });
+}
+
+function orRuleCount(r){ return Object.keys(r.rules).length; }
+
+function renderOrgRules(){
+  var rows = orFiltered();
+  var maxP = Math.max(1, Math.ceil(rows.length / OR_S.size));
+  if (OR_S.page > maxP) OR_S.page = maxP;
+  var view = rows.slice((OR_S.page - 1) * OR_S.size, OR_S.page * OR_S.size);
+  var h = '<table class="or-table"><thead><tr>'
+        + '<th class="idx">序号</th><th>机构名称</th><th>AI工具</th><th>云地址</th>'
+        + '<th>模态类型</th><th>部位</th><th>更新时间</th>'
+        + '<th>适用检查项目</th><th>匹配规则</th><th>操作</th>'
+        + '</tr></thead><tbody>';
+  if (!view.length) {
+    h += '<tr class="or-empty"><td colspan="10">没有符合条件的规则</td></tr>';
+  } else {
+    view.forEach(function(r){
+      h += '<tr>'
+         + '<td class="idx">' + r.idx + '</td>'
+         + '<td>' + esc(r.org) + '</td>'
+         + '<td><span class="ell" title="' + esc(r.tool) + '">' + esc(r.tool) + '</span></td>'
+         + '<td><span class="ell" title="' + esc(r.cloud) + '">' + esc(r.cloud) + '</span></td>'
+         + '<td>' + esc(r.mod) + '</td>'
+         + '<td>' + esc(r.part) + '</td>'
+         + '<td class="mono">' + esc(r.updated) + '</td>'
+         + '<td><a class="or-link" data-match="' + r.idx + '">检查项目匹配</a></td>'
+         + '<td><a class="or-link" data-rule="' + r.idx + '">查看规则</a></td>'
+         + '<td><a class="or-link" data-hist="' + r.idx + '">历史记录</a>'
+         +     '<a class="or-link" data-viewmatch="' + r.idx + '">查看匹配</a></td>'
+         + '</tr>';
+    });
+  }
+  h += '</tbody></table>';
+  document.getElementById('orTable').innerHTML = h;
+
+  var btns = '<button data-p="' + (OR_S.page - 1) + '"' + (OR_S.page <= 1 ? ' disabled' : '') + '>‹</button>';
+  for (var p = 1; p <= maxP; p++) btns += '<button data-p="' + p + '" class="' + (p === OR_S.page ? 'on' : '') + '">' + p + '</button>';
+  btns += '<button data-p="' + (OR_S.page + 1) + '"' + (OR_S.page >= maxP ? ' disabled' : '') + '>›</button>';
+  document.getElementById('orPager').innerHTML =
+      '<span>共 ' + rows.length + ' 条 · 演示数据</span>'
+    + '<span class="btns"><select id="orSize">'
+    +   [10,20,50].map(function(n){ return '<option value="' + n + '"' + (n === OR_S.size ? ' selected' : '') + '>' + n + ' 条/页</option>'; }).join('')
+    + '</select>' + btns + '</span>';
+
+  [].forEach.call(document.querySelectorAll('#orPager [data-p]'), function(b){
+    b.onclick = function(){ OR_S.page = +b.getAttribute('data-p'); renderOrgRules(); };
+  });
+  var sz = document.getElementById('orSize');
+  if (sz) sz.onchange = function(){ OR_S.size = +sz.value; OR_S.page = 1; renderOrgRules(); };
+  [].forEach.call(document.querySelectorAll('#orTable [data-rule]'), function(a){
+    a.onclick = function(){ orOpenRule(a.getAttribute('data-rule')); };
+  });
+  [].forEach.call(document.querySelectorAll('#orTable [data-match]'), function(a){
+    a.onclick = function(){ orOpenMatch(a.getAttribute('data-match')); };
+  });
+  [].forEach.call(document.querySelectorAll('#orTable [data-hist]'), function(a){
+    a.onclick = function(){ toast('历史记录：该规则共 3 次变更（示例）'); };
+  });
+  [].forEach.call(document.querySelectorAll('#orTable [data-viewmatch]'), function(a){
+    a.onclick = function(){ toast('查看匹配：最近 24 小时命中 18 条检查（示例）'); };
+  });
+}
+
+/* ---------- 弹窗外壳 ---------- */
+function orOpen(html){
+  var m = document.getElementById('orModal');
+  m.innerHTML = html;
+  m.classList.remove('hidden');
+  m.onclick = function(e){ if (e.target === m) orClose(); };
+}
+function orClose(){
+  var m = document.getElementById('orModal');
+  if (m) m.classList.add('hidden');
+  if (document.getElementById('orModal')) document.getElementById('orModal').innerHTML = '';
+}
+
+/* ---------- 查看规则：设置匹配规则 ---------- */
+var OR_EDIT = null;
+
+function orOpenRule(idx){
+  var r = OR_ROWS.filter(function(x){ return String(x.idx) === String(idx); })[0];
+  if (!r) return;
+  OR_EDIT = { row: r, names: Object.keys(r.rules),
+              rules: JSON.parse(JSON.stringify(r.rules)), cur: 0 };
+  orRenderRule();
+}
+
+function orRenderRule(){
+  var e = OR_EDIT;
+  if (!e) return;
+  var name = e.names[e.cur];
+  var conds = e.rules[name] || [];
+
+  var left = '<div class="or-left"><div class="lt">规则列表</div>';
+  e.names.forEach(function(n, i){
+    left += '<div class="or-rule' + (i === e.cur ? ' on' : '') + '" data-ri="' + i + '">'
+          + '<span>' + esc(n) + '</span><span class="n">' + (e.rules[n] || []).length + ' 条</span></div>';
+  });
+  left += '<button class="or-addrule" id="orAddRule">＋ 新增规则</button></div>';
+
+  var right = '<div class="or-right">'
+    + '<div class="or-h">规则条件<span style="font-weight:400;color:var(--muted);font-size:11px">'
+    +   esc(e.row.tool) + ' · ' + esc(name) + '</span></div>'
+    + '<div class="or-uid">'
+    +   '<input id="orUid" placeholder="输入UID">'
+    +   '<button class="btn sm" id="orVerify">校验</button>'
+    +   '<button class="btn sm" id="orDicom">查看DICOM</button>'
+    + '</div>';
+
+  if (!conds.length) {
+    right += '<div class="or-cond"><div class="hd"><b>条件 1</b></div>'
+           + '<div style="font-size:12px;color:var(--muted)">该规则下暂无条件</div></div>';
+  }
+  conds.forEach(function(c, ci){
+    right += '<div class="or-cond">'
+      + '<div class="hd"><b>条件 ' + (ci + 1) + '</b>'
+      +   (conds.length > 1 ? '<button class="del" data-delcond="' + ci + '">删除</button>' : '')
+      + '</div>'
+      + '<div class="or-row"><label>Tag</label><select data-cond="' + ci + '" data-f="tag">'
+      +   OR_TAGS.map(function(t){ return '<option' + (t === c.tag ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('')
+      + '</select></div>'
+      + '<div class="or-row"><label>对比条件</label><select data-cond="' + ci + '" data-f="op">'
+      +   OR_OPS.map(function(t){ return '<option' + (t === c.op ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('')
+      + '</select></div>'
+      + '<div class="or-row"><label>值（多个英文逗号分割）</label>'
+      +   '<input data-cond="' + ci + '" data-f="val" value="' + esc(c.val) + '"></div>'
+      + '<div class="or-row"><label>备注</label>'
+      +   '<input data-cond="' + ci + '" data-f="note" value="' + esc(c.note) + '" placeholder="选填"></div>'
+      + '</div>';
+  });
+  right += '<button class="or-addcond" id="orAddCond">＋ 新增</button></div>';
+
+  orOpen('<div class="or-sheet">'
+    + '<div class="or-sheader"><div><b>设置匹配规则</b>'
+    +   '<small>' + esc(e.row.org) + '　|　' + esc(e.row.tool) + '　|　' + esc(e.row.mod) + ' ' + esc(e.row.part) + '</small></div>'
+    +   '<button class="or-x" id="orX">关闭</button></div>'
+    + '<div class="or-body">' + left + right + '</div>'
+    + '<div class="or-foot"><button class="btn" id="orCancel">取消</button>'
+    +   '<button class="btn primary" id="orOk">确定</button></div>'
+    + '</div>');
+
+  document.getElementById('orX').onclick = orClose;
+  document.getElementById('orCancel').onclick = orClose;
+
+  [].forEach.call(document.querySelectorAll('#orModal [data-ri]'), function(el){
+    el.onclick = function(){ OR_EDIT.cur = +el.getAttribute('data-ri'); orRenderRule(); };
+  });
+  document.getElementById('orAddRule').onclick = function(){
+    var n = '规则' + (OR_EDIT.names.length + 1);
+    OR_EDIT.names.push(n);
+    OR_EDIT.rules[n] = [{ tag: OR_TAGS[0], op: OR_OPS[0], val:'', note:'' }];
+    OR_EDIT.cur = OR_EDIT.names.length - 1;
+    orRenderRule(); toast('已新增「' + n + '」，请填写条件');
+  };
+  [].forEach.call(document.querySelectorAll('#orModal [data-cond]'), function(el){
+    var ci = +el.getAttribute('data-cond'), f = el.getAttribute('data-f');
+    var apply = function(){
+      var name2 = OR_EDIT.names[OR_EDIT.cur];
+      OR_EDIT.rules[name2][ci][f] = el.value;
+    };
+    el.onchange = apply; el.oninput = apply;
+  });
+  [].forEach.call(document.querySelectorAll('#orModal [data-delcond]'), function(b){
+    b.onclick = function(){
+      var ci = +b.getAttribute('data-delcond');
+      var name3 = OR_EDIT.names[OR_EDIT.cur];
+      OR_EDIT.rules[name3].splice(ci, 1);
+      orRenderRule(); toast('已删除条件 ' + (ci + 1));
+    };
+  });
+  document.getElementById('orAddCond').onclick = function(){
+    var name4 = OR_EDIT.names[OR_EDIT.cur];
+    OR_EDIT.rules[name4].push({ tag: OR_TAGS[0], op: OR_OPS[0], val:'', note:'' });
+    orRenderRule();
+  };
+  document.getElementById('orVerify').onclick = function(){
+    var u = document.getElementById('orUid').value.trim();
+    if (!u) { toast('请先输入 UID'); return; }
+    toast('校验通过：UID ' + u + ' 可解析（示例）');
+  };
+  document.getElementById('orDicom').onclick = function(){
+    var u = document.getElementById('orUid').value.trim();
+    toast(u ? '按 UID 调阅 DICOM：' + u : '请先输入 UID');
+  };
+  document.getElementById('orOk').onclick = function(){
+    var name5 = OR_EDIT.names[OR_EDIT.cur];
+    var bad = (OR_EDIT.rules[name5] || []).filter(function(c){ return !String(c.val).trim(); }).length;
+    if (bad) { toast('还有 ' + bad + ' 条条件未填写「值」'); return; }
+    OR_EDIT.row.rules = OR_EDIT.rules;
+    var d = new Date();
+    var p = function(n){ return (n < 10 ? '0' : '') + n; };
+    OR_EDIT.row.updated = '2026-07-14 ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    orClose(); renderOrgRules(); toast('匹配规则已保存');
+  };
+}
+
+/* ---------- 检查项目匹配：设置适用检查项目 ---------- */
+function orOpenMatch(idx){
+  var r = OR_ROWS.filter(function(x){ return String(x.idx) === String(idx); })[0];
+  if (!r) return;
+  orOpen('<div class="or-sheet" style="width:min(760px,100%)">'
+    + '<div class="or-sheader"><div><b>设置适用检查项目</b>'
+    +   '<small>' + esc(r.org) + '　|　' + esc(r.tool) + '</small></div>'
+    +   '<button class="or-x" id="orX">关闭</button></div>'
+    + '<div class="or-body" style="display:block;padding:12px 14px">'
+    +   '<div class="mt-search"><input id="mtUid" placeholder="请输入studyInstanceUID">'
+    +     '<button class="btn primary sm" id="mtQuery">查询</button></div>'
+    +   '<div class="mt-filters">'
+    +     '<div class="fitem"><label>状态</label><select id="mtState">'
+    +       '<option>请选择</option><option>已匹配</option><option>未匹配</option><option>已忽略</option></select></div>'
+    +     '<div class="fitem"><label>AI工具</label><input id="mtTool" placeholder="请输入"></div>'
+    +     '<div class="fitem"><label>厂商</label><select id="mtVendor">'
+    +       '<option>请选择</option><option>联影智能</option><option>推想科技</option><option>深睿医疗</option><option>影禾医脉</option></select></div>'
+    +   '</div>'
+    +   '<div id="mtBody"><div class="mt-empty">暂无数据</div></div>'
+    + '</div>'
+    + '<div class="or-foot"><button class="btn" id="orClose2">关闭</button></div>'
+    + '</div>');
+  document.getElementById('orX').onclick = orClose;
+  document.getElementById('orClose2').onclick = orClose;
+  document.getElementById('mtQuery').onclick = function(){
+    var u = document.getElementById('mtUid').value.trim();
+    if (!u) { toast('请输入 studyInstanceUID'); return; }
+    orRenderMatch(r, u);
+  };
+  document.getElementById('mtUid').onkeydown = function(e){
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('mtQuery').click(); }
+  };
+}
+
+var MT_ITEMS = {};   /* 按规则行缓存匹配状态，重渲染不丢 */
+function orRenderMatch(r, uid){
+  if (!MT_ITEMS[r.idx]) {
+    MT_ITEMS[r.idx] = [
+      { sid:'0002250315', name:'胸部CT平扫', mod:'CT', part:'CHEST', ok:true },
+      { sid:'0002250316', name:'胸部CT增强', mod:'CT', part:'CHEST', ok:false },
+      { sid:'0002250317', name:'上腹部CT平扫', mod:'CT', part:'ABDOMEN', ok:false }
+    ];
+  }
+  var items = MT_ITEMS[r.idx];
+  var h = '<div style="font-size:11.5px;color:var(--muted);margin-bottom:8px">'
+        + 'UID：<span style="font-family:Consolas,monospace">' + esc(uid) + '</span>　共 ' + items.length + ' 个检查项目</div>'
+        + '<div class="mt-list">';
+  items.forEach(function(it){
+    h += '<div class="mt-item"><div class="l">'
+       +   '<div class="t">' + esc(it.name) + '</div>'
+       +   '<div class="s">' + esc(it.sid) + '　' + esc(it.mod) + ' / ' + esc(it.part) + '</div>'
+       + '</div><div class="r">'
+       +   '<span class="tagm">' + (it.ok ? '已匹配' : '未匹配') + '</span>'
+       +   '<button class="btn sm" data-tog="' + esc(it.sid) + '">' + (it.ok ? '取消匹配' : '匹配') + '</button>'
+       + '</div></div>';
+  });
+  h += '</div>';
+  document.getElementById('mtBody').innerHTML = h;
+  [].forEach.call(document.querySelectorAll('#mtBody [data-tog]'), function(b){
+    b.onclick = function(){
+      var sid = b.getAttribute('data-tog');
+      var it = items.filter(function(x){ return x.sid === sid; })[0];
+      it.ok = !it.ok;
+      orRenderMatch(r, uid);
+      toast(it.ok ? '已设为匹配：' + sid : '已取消匹配：' + sid);
+    };
+  });
+}
+
+/* ---------- 绑定（只绑一次） ---------- */
+function bindOrgRule(){
+  if (bindOrgRule._done) return;
+  bindOrgRule._done = true;
+  var g = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+  var apply = function(){
+    OR_F.tool = g('orTool') === '请选择' ? '' : g('orTool');
+    OR_F.cloud = g('orCloud') === '请选择' ? '' : g('orCloud');
+    OR_F.mod = g('orMod') === '请选择' ? '' : g('orMod');
+    OR_F.part = g('orPart') === '请选择' ? '' : g('orPart');
+    OR_F.study = g('orStudy'); OR_F.rule = g('orRuleQ');
+    OR_F.from = g('orFrom'); OR_F.to = g('orTo');
+    OR_S.page = 1; renderOrgRules();
+  };
+  ['orTool','orCloud','orMod','orPart','orFrom','orTo'].forEach(function(id){
+    var e = document.getElementById(id); if (e) e.onchange = apply;
+  });
+  ['orStudy','orRuleQ'].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.onkeydown = function(ev){ if (ev.key === 'Enter') { ev.preventDefault(); apply(); } };
+  });
+  var q = document.getElementById('orQuery'); if (q) q.onclick = function(){ apply(); toast('已按当前条件查询'); };
+  var rf = document.getElementById('orRefresh'); if (rf) rf.onclick = function(){ renderOrgRules(); toast('机构规则已刷新'); };
+  var rs = document.getElementById('orReset'); if (rs) rs.onclick = function(){
+    ['orStudy','orRuleQ','orFrom','orTo'].forEach(function(id){ var e = document.getElementById(id); if (e) e.value = ''; });
+    ['orTool','orCloud','orMod','orPart'].forEach(function(id){ var e = document.getElementById(id); if (e) e.value = '请选择'; });
+    OR_F = { tool:'', cloud:'', mod:'', part:'', study:'', rule:'', from:'', to:'' };
+    OR_S.page = 1; renderOrgRules(); toast('已重置查询条件');
+  };
+  var tsel = document.getElementById('orTool');
+  if (tsel && tsel.options.length === 1) {
+    OR_ROWS.forEach(function(r){
+      if (!tsel.querySelector('option[value="' + r.tool.replace(/"/g,'') + '"]')) {
+        tsel.innerHTML += '<option>' + r.tool + '</option>';
+      }
+    });
+  }
+  var csel = document.getElementById('orCloud');
+  if (csel && csel.options.length === 1) {
+    var seen = {};
+    OR_ROWS.forEach(function(r){
+      if (!seen[r.cloud]) { seen[r.cloud] = 1; csel.innerHTML += '<option>' + r.cloud + '</option>'; }
+    });
+  }
 }
 
 </script>
