@@ -717,6 +717,7 @@ body.nomark .f label .new{display:none}
           <div class="sub">影像应用中心 · 配置各机构下 AI 工具的匹配规则与适用检查项目。</div>
         </div>
         <div class="acts">
+          <button class="btn primary" id="orMatchBtn">检查项目匹配</button>
           <button class="btn" id="orRefresh">刷新</button>
           <button class="btn" id="orReset">重置</button>
         </div>
@@ -1899,6 +1900,15 @@ var OR_ROWS = (function(){
   var out = [];
   for (var i = 0; i < 10; i++) {
     var m = 24 - i * 13;
+    var STU = {
+      '胸部CT': ['胸部CT平扫','胸部CT增强'],
+      '腹部CT': ['上腹部CT平扫','上腹部CT增强'],
+      '颅脑CT': ['颅脑CT平扫'],
+      '脊柱CT': ['脊柱CT平扫（三维重建）'],
+      '腹部MR': ['上腹部MR平扫','上腹部MR增强'],
+      '膝关节MR': ['膝关节MR平扫']
+    };
+    var skey = parts[i] + mods[i];
     out.push({
       idx: i + 1,
       org: '影禾医脉',
@@ -1906,6 +1916,7 @@ var OR_ROWS = (function(){
       cloud: clouds[i % clouds.length],
       mod: mods[i],
       part: parts[i],
+      studies: (STU[skey] || [parts[i] + mods[i] + '平扫']).join('、'),
       updated: '2026-07-14 15:00:' + (m < 10 ? '0' + m : m),
       rules: {
         '模态': [{ tag:'modality（序列的模态）', op:'contain（包含）', val: mods[i], note:'' }],
@@ -1960,7 +1971,7 @@ function renderOrgRules(){
          + '<td>' + esc(r.mod) + '</td>'
          + '<td>' + esc(r.part) + '</td>'
          + '<td class="mono">' + esc(r.updated) + '</td>'
-         + '<td><a class="or-link" data-match="' + r.idx + '">检查项目匹配</a></td>'
+         + '<td><span class="ell" style="max-width:230px" title="' + esc(r.studies) + '">' + esc(r.studies) + '</span></td>'
          + '<td><a class="or-link" data-rule="' + r.idx + '">查看规则</a></td>'
          + '<td><a class="or-link" data-hist="' + r.idx + '">历史记录</a>'
          +     '<a class="or-link" data-viewmatch="' + r.idx + '">查看匹配</a></td>'
@@ -1986,9 +1997,6 @@ function renderOrgRules(){
   if (sz) sz.onchange = function(){ OR_S.size = +sz.value; OR_S.page = 1; renderOrgRules(); };
   [].forEach.call(document.querySelectorAll('#orTable [data-rule]'), function(a){
     a.onclick = function(){ orOpenRule(a.getAttribute('data-rule')); };
-  });
-  [].forEach.call(document.querySelectorAll('#orTable [data-match]'), function(a){
-    a.onclick = function(){ orOpenMatch(a.getAttribute('data-match')); };
   });
   [].forEach.call(document.querySelectorAll('#orTable [data-hist]'), function(a){
     a.onclick = function(){ toast('历史记录：该规则共 3 次变更（示例）'); };
@@ -2133,11 +2141,12 @@ function orRenderRule(){
 
 /* ---------- 检查项目匹配：设置适用检查项目 ---------- */
 function orOpenMatch(idx){
-  var r = OR_ROWS.filter(function(x){ return String(x.idx) === String(idx); })[0];
-  if (!r) return;
+  var r = idx ? OR_ROWS.filter(function(x){ return String(x.idx) === String(idx); })[0] : null;
+  var key = r ? r.idx : 'global';
+  var subTxt = r ? (r.org + '　|　' + r.tool) : ('当前机构 · 影禾医脉　|　全部规则 ' + OR_ROWS.length + ' 条');
   orOpen('<div class="or-sheet" style="width:min(760px,100%)">'
     + '<div class="or-sheader"><div><b>设置适用检查项目</b>'
-    +   '<small>' + esc(r.org) + '　|　' + esc(r.tool) + '</small></div>'
+    +   '<small>' + esc(subTxt) + '</small></div>'
     +   '<button class="or-x" id="orX">关闭</button></div>'
     + '<div class="or-body" style="display:block;padding:12px 14px">'
     +   '<div class="mt-search"><input id="mtUid" placeholder="请输入studyInstanceUID">'
@@ -2158,7 +2167,7 @@ function orOpenMatch(idx){
   document.getElementById('mtQuery').onclick = function(){
     var u = document.getElementById('mtUid').value.trim();
     if (!u) { toast('请输入 studyInstanceUID'); return; }
-    orRenderMatch(r, u);
+    orRenderMatch(key, u);
   };
   document.getElementById('mtUid').onkeydown = function(e){
     if (e.key === 'Enter') { e.preventDefault(); document.getElementById('mtQuery').click(); }
@@ -2166,15 +2175,15 @@ function orOpenMatch(idx){
 }
 
 var MT_ITEMS = {};   /* 按规则行缓存匹配状态，重渲染不丢 */
-function orRenderMatch(r, uid){
-  if (!MT_ITEMS[r.idx]) {
-    MT_ITEMS[r.idx] = [
+function orRenderMatch(key, uid){
+  if (!MT_ITEMS[key]) {
+    MT_ITEMS[key] = [
       { sid:'0002250315', name:'胸部CT平扫', mod:'CT', part:'CHEST', ok:true },
       { sid:'0002250316', name:'胸部CT增强', mod:'CT', part:'CHEST', ok:false },
       { sid:'0002250317', name:'上腹部CT平扫', mod:'CT', part:'ABDOMEN', ok:false }
     ];
   }
-  var items = MT_ITEMS[r.idx];
+  var items = MT_ITEMS[key];
   var h = '<div style="font-size:11.5px;color:var(--muted);margin-bottom:8px">'
         + 'UID：<span style="font-family:Consolas,monospace">' + esc(uid) + '</span>　共 ' + items.length + ' 个检查项目</div>'
         + '<div class="mt-list">';
@@ -2194,7 +2203,7 @@ function orRenderMatch(r, uid){
       var sid = b.getAttribute('data-tog');
       var it = items.filter(function(x){ return x.sid === sid; })[0];
       it.ok = !it.ok;
-      orRenderMatch(r, uid);
+      orRenderMatch(key, uid);
       toast(it.ok ? '已设为匹配：' + sid : '已取消匹配：' + sid);
     };
   });
@@ -2222,6 +2231,7 @@ function bindOrgRule(){
     if (e) e.onkeydown = function(ev){ if (ev.key === 'Enter') { ev.preventDefault(); apply(); } };
   });
   var q = document.getElementById('orQuery'); if (q) q.onclick = function(){ apply(); toast('已按当前条件查询'); };
+  var mb = document.getElementById('orMatchBtn'); if (mb) mb.onclick = function(){ orOpenMatch(); };
   var rf = document.getElementById('orRefresh'); if (rf) rf.onclick = function(){ renderOrgRules(); toast('机构规则已刷新'); };
   var rs = document.getElementById('orReset'); if (rs) rs.onclick = function(){
     ['orStudy','orRuleQ','orFrom','orTo'].forEach(function(id){ var e = document.getElementById(id); if (e) e.value = ''; });
