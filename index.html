@@ -220,6 +220,7 @@ input,select,textarea{font-family:inherit}
 .dg-link:hover{text-decoration:underline}
 .dg-link.dis{color:var(--muted2);cursor:not-allowed;text-decoration:none}
 .dg-empty td{text-align:center;color:var(--muted);padding:28px}
+.dg-hint{display:none;color:var(--warn);font-size:11px;margin-left:8px}
 .dg-modal{position:fixed;inset:0;z-index:90;background:rgba(23,61,67,.42);
   display:flex;align-items:center;justify-content:center;padding:24px}
 .dg-sheet{background:var(--surface);border-radius:10px;width:min(680px,100%);max-height:92vh;
@@ -242,6 +243,50 @@ input,select,textarea{font-family:inherit}
 .dg-blk p:last-child{margin-bottom:0}
 .dg-sfoot{padding:11px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:9px}
 
+/* ---------- 诊断列表 V2：15 项筛选 / 17 列 / 表头设置 ---------- */
+.dg-tw{display:flex;flex-direction:column;min-width:0}
+.dg-tbar{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:8px 12px;border-bottom:1px solid var(--line2);color:var(--muted);font-size:11.5px}
+.dg-tbar b{color:var(--ink);font-weight:600}
+.dg-cols{position:relative}
+.dg-colbtn{background:var(--surface);border:1px solid var(--line);border-radius:5px;
+  padding:4px 10px;font-size:11.5px;color:var(--ink2)}
+.dg-colbtn:hover{border-color:var(--muted2);color:var(--ink)}
+.dg-colmenu{position:absolute;right:0;top:30px;z-index:20;background:#fff;border:1px solid var(--line);
+  border-radius:7px;box-shadow:0 10px 26px rgba(23,61,67,.16);padding:8px;width:210px;
+  display:grid;grid-template-columns:1fr 1fr;gap:2px 6px}
+.dg-colmenu label{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ink2);
+  padding:3px 4px;border-radius:4px;cursor:pointer;white-space:nowrap}
+.dg-colmenu label:hover{background:var(--line2)}
+.dg-colmenu input{accent-color:var(--primary);margin:0}
+.dg-colmenu .all{grid-column:1/-1;border-top:1px solid var(--line2);margin-top:4px;padding-top:6px}
+.dg-scroll{overflow-x:auto;min-width:0}
+.dg-table{width:100%;border-collapse:separate;border-spacing:0;font-size:11.2px;min-width:1436px}
+.dg-table th{text-align:left;font-weight:600;color:var(--muted);padding:8px 5px;
+  border-bottom:1px solid var(--line);white-space:nowrap;background:#FCFDFC;position:sticky;top:0;z-index:2}
+.dg-table td{padding:7px 5px;border-bottom:1px solid var(--line2);white-space:nowrap;
+  color:var(--ink);vertical-align:middle}
+.dg-table th.srt{cursor:pointer;user-select:none}
+.dg-table th.srt:hover{color:var(--primary)}
+.dg-table th.on{color:var(--primary)}
+.dg-table th .ar{font-size:9px;color:var(--muted2);margin-left:3px}
+.dg-table th.on .ar{color:var(--primary)}
+.dg-table .ck{width:30px;text-align:center;padding-left:8px}
+.dg-table .mono{font-family:Consolas,Menlo,monospace;font-size:10.8px;letter-spacing:-.2px}
+.dg-table .ell{max-width:106px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dg-table th.ops, .dg-table td.ops{position:sticky;right:0;background:#fff;
+  box-shadow:-7px 0 8px -7px rgba(23,61,67,.18);z-index:1}
+.dg-table th.ops{z-index:3}
+.dg-table tbody tr:hover td{background:#FBFCFB}
+.dg-table tbody tr:hover td.ops{background:#FBFCFB}
+.dg-table tr.sel td{background:#FDF3F1}
+.dg-table tr.sel td.ops{background:#FDF3F1}
+.dg-table .sub{display:block;font-size:10px;color:var(--muted);margin-top:1px}
+.dg-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.dg-dot.un{background:#2B6C86}
+.dg-dot.rd{background:var(--ok)}
+.dg-empty td{text-align:center;color:var(--muted);padding:28px}
+.dg-hint{display:none;color:var(--warn);font-size:11px;margin-left:8px}
 /* ---------- 弹窗 ---------- */
 .mask{position:fixed;inset:0;background:rgba(23,61,67,.42);z-index:50;
   display:flex;align-items:center;justify-content:center;padding:20px}
@@ -542,30 +587,42 @@ body.nomark .f label .new{display:none}
 
       <div class="fbar">
         <div class="fitem"><label>机构名称</label><select id="dgOrg"><option>当前机构</option></select></div>
-        <div class="fitem"><label>姓名</label><input id="dgName" placeholder="请输入" style="width:110px"></div>
-        <div class="fitem"><label>患者号</label><input id="dgPid" placeholder="请输入" style="width:120px"></div>
-        <div class="fitem"><label>检查号</label><input id="dgSid" placeholder="请输入" style="width:130px"></div>
+        <div class="fitem"><label>姓名</label><input id="dgName" placeholder="请输入" style="width:104px"></div>
+        <div class="fitem"><label>患者号</label><input id="dgPid" placeholder="请输入" style="width:110px"></div>
+        <div class="fitem"><label>检查号</label><input id="dgSid" placeholder="请输入" style="width:120px"></div>
         <div class="fitem"><label>检查时间</label>
-          <div class="dr">
-            <input type="date" id="dgStudyFrom"><span>→</span><input type="date" id="dgStudyTo">
-          </div>
+          <div class="dr"><input type="date" id="dgStudyFrom"><span>→</span><input type="date" id="dgStudyTo"></div>
         </div>
         <div class="fitem"><label>计算时间</label>
-          <div class="dr">
-            <input type="date" id="dgCalcFrom" value="2026-10-07"><span>→</span>
-            <input type="date" id="dgCalcTo" value="2026-10-22">
-          </div>
+          <div class="dr"><input type="date" id="dgCalcFrom" value="2026-10-07"><span>→</span><input type="date" id="dgCalcTo" value="2026-10-22"></div>
         </div>
         <div class="fitem"><label>影像类型</label><select id="dgMod"><option>请选择</option><option>CT</option><option>MR</option><option>DR</option></select></div>
+        <div class="fitem"><label>AI工具</label><select id="dgTool"><option>全部</option></select></div>
+        <div class="fitem"><label>计算状态</label><select id="dgState"><option>全部</option><option>排队中</option><option>计算中</option><option>已完成</option><option>计算失败</option></select></div>
+        <div class="fitem"><label>年龄</label><input id="dgAge" placeholder="请输入" style="width:82px"></div>
+        <div class="fitem"><label>AI结果</label><select id="dgAiRes"><option>请选择</option><option>危急值</option><option>阳性</option><option>阴性</option><option>未知</option></select></div>
+        <div class="fitem"><label>检查部位</label><input id="dgPart" placeholder="请输入" style="width:92px"></div>
+        <div class="fitem"><label>性别</label><select id="dgSex"><option>全部</option><option>男</option><option>女</option></select></div>
+        <div class="fitem"><label>阅片状态</label><select id="dgRead"><option>全部</option><option>未阅</option><option>已阅</option></select></div>
+        <div class="fitem"><label>诊断医师</label><input id="dgDoctor" placeholder="请输入" style="width:100px"></div>
         <button class="btn primary sm" id="dgQuery">查询</button>
       </div>
 
       <div class="panel">
-        <div id="dgTable"></div>
-        <div class="pg" id="dgPager"></div>
+        <div class="dg-tw">
+          <div class="dg-tbar">
+            <span><span id="dgCount">—</span><span class="dg-hint" id="dgHint">← 左右滑动查看更多列</span></span>
+            <div class="dg-cols">
+              <button class="dg-colbtn" id="dgColBtn">表头设置 ▾</button>
+              <div class="dg-colmenu hidden" id="dgColMenu"></div>
+            </div>
+          </div>
+          <div class="dg-scroll"><div id="dgTable"></div></div>
+          <div class="pg" id="dgPager"></div>
+        </div>
       </div>
 
-      <div class="note">演示数据：机构、姓名、患者号、检查号均为示例；「查看」打开结构化结论，「原始影像」仅说明调阅路径，原型不内置影像。</div>
+      <div class="note">演示数据：机构、姓名、患者号、检查号、医师均为示例；「查看」打开结构化结论，「原始影像」仅说明调阅路径，原型不内置影像。列多时表格可左右滑动，或用「表头设置」隐藏列。</div>
     </div>
 
     <!-- 诊断结果 / 原始影像 弹窗（独立类名，避免与登记弹窗冲突） -->
@@ -1287,7 +1344,7 @@ if (scR) scR.onclick = function(){ renderSched(); toast('调度列表已刷新')
 console.log('计算统计视图已就绪：KPI ' + ST_KPI.length + ' / 机构 ' + ST_ORGS.length + ' / 调度 ' + SCHED.length + ' 条');
 
 /* ============================================================================
-   影像应用中心 · 诊断列表
+   影像应用中心 · 诊断列表（17 列 / 15 项筛选 / 表头设置）
    ============================================================================ */
 function dgP2(n){ return (n < 10 ? '0' : '') + n; }
 function dgDT(d){
@@ -1295,11 +1352,24 @@ function dgDT(d){
        + dgP2(d.getHours()) + ':' + dgP2(d.getMinutes()) + ':' + dgP2(d.getSeconds());
 }
 
+/* 工具 ↔ 模态 ↔ 部位 成对定义，保证演示数据前后一致 */
+var DG_TOOLSET = [
+  { t:'CT颅脑脑出血辅助诊断（联影）', mod:'CT', part:'HEAD'   },
+  { t:'CT胸部肺结节辅助诊断（联影）', mod:'CT', part:'CHEST'  },
+  { t:'CT胸部肺炎辅助诊断（推想）',   mod:'CT', part:'CHEST'  },
+  { t:'CT腹部肝脏病灶辅助诊断（联影）', mod:'CT', part:'ABDOMEN'},
+  { t:'MR颅脑转移瘤辅助诊断（联影）', mod:'MR', part:'HEAD'   },
+  { t:'MRA头颈部血管辅助诊断（联影）', mod:'MR', part:'HEAD'  },
+  { t:'DR胸部多病种辅助诊断（深睿）', mod:'DR', part:'CHEST'  }
+];
+var DG_STATES = ['计算失败','已完成','已完成','已完成','计算中','排队中'];
+
 var DG = (function(){
   var orgs = ['影禾医脉','影禾医脉','影禾医脉','金华广福医院','江西省人民医院','遂川县人民医院'];
   var names = ['何火喜','李秀兰','张桂芳','陈国强','刘建华','徐国强','胡雅琴','邓志远',
                '罗小燕','马长林','黄丽华','曾宪明'];
-  var mods = ['CT','CT','CT','CT','MR','DR'];
+  var ages = [64,58,71,45,80,53,66,49,38,72,61,55];
+  var docs = ['段问薇','周敏','陈立','吴晓东','何静','谭伟'];
   var out = [];
   for (var i = 0; i < 24; i++) {
     var d = new Date(2026, 5, 13, 9, 58, 57);
@@ -1309,6 +1379,10 @@ var DG = (function(){
     var c1 = new Date(2026, 9, 21, 23, 19, 35);
     c1.setMinutes(c1.getMinutes() + i * 3);
     var c2 = new Date(c1.getTime() + 96000 + (i % 4) * 30000);
+    var ts = DG_TOOLSET[i % DG_TOOLSET.length];
+    var st = DG_STATES[i % DG_STATES.length];
+    var done = (st === '已完成');
+    var aiRes = done ? (i % 9 === 0 ? '危急值' : (i % 4 === 0 ? '阴性' : '阳性')) : '未知';
     out.push({
       org: orgs[i % orgs.length],
       name: names[i % names.length],
@@ -1316,23 +1390,58 @@ var DG = (function(){
       sid: ('0000000000' + (2250315 + i * 23)).slice(-10),
       study: dgDT(d),
       cs: dgDT(c1), ce: dgDT(c2),
-      mod: mods[i % mods.length],
-      has: (i % 5 !== 3)
+      mod: ts.mod, part: ts.part, tool: ts.t,
+      state: st, done: done,
+      age: ('00' + ages[i % ages.length]).slice(-3) + 'Y',
+      aiRes: aiRes,
+      sex: (i % 3 === 0) ? '女' : '男',
+      read: (i % 4 === 0) ? '已阅' : '未阅',
+      doctor: docs[i % docs.length]
     });
   }
   return out;
 })();
 
-var DG_F = { name:'', pid:'', sid:'', mod:'', studyFrom:'', studyTo:'', calcFrom:'', calcTo:'' };
-var DG_S = { page:1, size:10, sortK:'study', sortD:'desc', sel:{} };
+/* 列定义（ops 固定显示，其余可被「表头设置」隐藏） */
+var DG_COLS = [
+  { k:'org',    t:'机构名称' },
+  { k:'name',   t:'姓名' },
+  { k:'pid',    t:'患者号',   cls:'mono' },
+  { k:'sid',    t:'检查号',   cls:'mono' },
+  { k:'study',  t:'检查时间', sort:'study' },
+  { k:'calc',   t:'计算时间', sort:'calc' },
+  { k:'mod',    t:'影像类型' },
+  { k:'tool',   t:'AI工具',   cls:'ell' },
+  { k:'state',  t:'计算状态' },
+  { k:'age',    t:'年龄',     cls:'mono' },
+  { k:'aiRes',  t:'AI结果' },
+  { k:'part',   t:'检查部位', cls:'mono' },
+  { k:'sex',    t:'性别' },
+  { k:'read',   t:'阅片状态' },
+  { k:'doctor', t:'诊断医师' }
+];
+
+var DG_F = { name:'', pid:'', sid:'', mod:'', tool:'', state:'', age:'', aiRes:'',
+             part:'', sex:'', read:'', doctor:'', studyFrom:'', studyTo:'', calcFrom:'', calcTo:'' };
+var DG_S = { page:1, size:10, sortK:'study', sortD:'desc', sel:{}, hide:{}, menu:false };
+
+function dgVisibleCols(){ return DG_COLS.filter(function(c){ return !DG_S.hide[c.k]; }); }
 
 function dgFiltered(){
   var f = DG_F;
   var rows = DG.filter(function(r){
-    if (f.name && r.name.indexOf(f.name) < 0) return false;
-    if (f.pid && r.pid.indexOf(f.pid) < 0) return false;
-    if (f.sid && r.sid.indexOf(f.sid) < 0) return false;
-    if (f.mod && r.mod !== f.mod) return false;
+    if (f.name   && r.name.indexOf(f.name) < 0) return false;
+    if (f.pid    && r.pid.indexOf(f.pid) < 0) return false;
+    if (f.sid    && r.sid.indexOf(f.sid) < 0) return false;
+    if (f.mod    && r.mod !== f.mod) return false;
+    if (f.tool   && r.tool !== f.tool) return false;
+    if (f.state  && r.state !== f.state) return false;
+    if (f.age    && r.age.indexOf(f.age) < 0) return false;
+    if (f.aiRes  && r.aiRes !== f.aiRes) return false;
+    if (f.part   && r.part.toUpperCase().indexOf(f.part.toUpperCase()) < 0) return false;
+    if (f.sex    && r.sex !== f.sex) return false;
+    if (f.read   && r.read !== f.read) return false;
+    if (f.doctor && r.doctor.indexOf(f.doctor) < 0) return false;
     if (f.studyFrom && r.study.slice(0,10) < f.studyFrom) return false;
     if (f.studyTo   && r.study.slice(0,10) > f.studyTo)   return false;
     if (f.calcFrom  && r.cs.slice(0,10) < f.calcFrom)     return false;
@@ -1340,7 +1449,7 @@ function dgFiltered(){
     return true;
   });
   var k = DG_S.sortK, dir = DG_S.sortD === 'asc' ? 1 : -1;
-  rows.sort(function(a, b){
+  rows.sort(function(a,b){
     var x = (k === 'calc' ? a.cs : a.study), y = (k === 'calc' ? b.cs : b.study);
     if (x === y) return 0;
     return (x > y ? 1 : -1) * dir;
@@ -1350,37 +1459,61 @@ function dgFiltered(){
 
 function dgSelCount(){ return Object.keys(DG_S.sel).filter(function(k){ return DG_S.sel[k]; }).length; }
 
+var DG_ST_CLS = { '已完成':'ok', '计算中':'run', '排队中':'wait', '计算失败':'bad' };
+var DG_AI_CLS = { '危急值':'bad', '阳性':'run', '阴性':'ok', '未知':'wait' };
+
+function dgCell(r, k){
+  switch (k) {
+    case 'org':    return esc(r.org);
+    case 'name':   return esc(r.name);
+    case 'pid':    return esc(r.pid);
+    case 'sid':    return esc(r.sid);
+    case 'study':  return esc(r.study);
+    case 'calc':   return esc(r.cs.slice(0,10)) + '<span class="sub">' + esc(r.cs.slice(11)) + ' / ' + esc(r.ce.slice(11)) + '</span>';
+    case 'mod':    return esc(r.mod);
+    case 'tool':   return '<span class="ell" title="' + esc(r.tool) + '">' + esc(r.tool) + '</span>';
+    case 'state':  return '<span class="spill ' + (DG_ST_CLS[r.state] || 'wait') + '">' + esc(r.state) + '</span>';
+    case 'age':    return esc(r.age);
+    case 'aiRes':  return '<span class="spill ' + (DG_AI_CLS[r.aiRes] || 'wait') + '">' + esc(r.aiRes) + '</span>';
+    case 'part':   return esc(r.part);
+    case 'sex':    return esc(r.sex);
+    case 'read':   return '<span class="dg-dot ' + (r.read === '已阅' ? 'rd' : 'un') + '"></span>' + esc(r.read);
+    case 'doctor': return esc(r.doctor);
+    default: return '';
+  }
+}
+
 function renderDiagList(){
   var rows = dgFiltered();
+  var cols = dgVisibleCols();
   var maxP = Math.max(1, Math.ceil(rows.length / DG_S.size));
   if (DG_S.page > maxP) DG_S.page = maxP;
   var view = rows.slice((DG_S.page - 1) * DG_S.size, DG_S.page * DG_S.size);
-  var ar = function(k){
-    return DG_S.sortK === k ? (DG_S.sortD === 'asc' ? '▲' : '▼') : '⇅';
-  };
-  var h = '<table class="dg-table"><thead><tr>'
-        + '<th class="ck"><input type="checkbox" id="dgAll"></th>'
-        + '<th>机构名称</th><th>姓名</th><th>患者号</th><th>检查号</th>'
-        + '<th class="srt' + (DG_S.sortK === 'study' ? ' on' : '') + '" data-k="study">检查时间<span class="ar">' + ar('study') + '</span></th>'
-        + '<th class="srt' + (DG_S.sortK === 'calc' ? ' on' : '') + '" data-k="calc">计算时间<span class="ar">' + ar('calc') + '</span></th>'
-        + '<th>影像类型</th><th>操作</th>'
-        + '</tr></thead><tbody>';
+  var ar = function(k){ return DG_S.sortK === k ? (DG_S.sortD === 'asc' ? '▲' : '▼') : '⇅'; };
+
+  var h = '<table class="dg-table"><thead><tr><th class="ck"><input type="checkbox" id="dgAll"></th>';
+  cols.forEach(function(c){
+    if (c.sort) {
+      h += '<th class="srt' + (DG_S.sortK === c.sort ? ' on' : '') + '" data-k="' + c.sort + '">'
+         + c.t + '<span class="ar">' + ar(c.sort) + '</span></th>';
+    } else {
+      h += '<th>' + c.t + '</th>';
+    }
+  });
+  h += '<th class="ops">操作</th></tr></thead><tbody>';
+
   if (!view.length) {
-    h += '<tr class="dg-empty"><td colspan="9">没有符合条件的检查</td></tr>';
+    h += '<tr class="dg-empty"><td colspan="' + (cols.length + 2) + '">没有符合条件的检查</td></tr>';
   } else {
     view.forEach(function(r){
       var on = !!DG_S.sel[r.sid];
-      h += '<tr' + (on ? ' class="sel"' : '') + '>'
-         + '<td class="ck"><input type="checkbox" data-sid="' + esc(r.sid) + '"' + (on ? ' checked' : '') + '></td>'
-         + '<td>' + esc(r.org) + '</td>'
-         + '<td>' + esc(r.name) + '</td>'
-         + '<td class="mono">' + esc(r.pid) + '</td>'
-         + '<td class="mono">' + esc(r.sid) + '</td>'
-         + '<td>' + esc(r.study) + '</td>'
-         + '<td>' + esc(r.cs.slice(0,10)) + '<span class="sub">' + esc(r.cs.slice(11)) + ' / ' + esc(r.ce.slice(11)) + '</span></td>'
-         + '<td>' + esc(r.mod) + '</td>'
-         + '<td>'
-         +   (r.has
+      h += '<tr' + (on ? ' class="sel"' : '') + '><td class="ck">'
+         + '<input type="checkbox" data-sid="' + esc(r.sid) + '"' + (on ? ' checked' : '') + '></td>';
+      cols.forEach(function(c){
+        h += '<td' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + dgCell(r, c.k) + '</td>';
+      });
+      h += '<td class="ops">'
+         +   (r.done
                 ? '<a class="dg-link" data-view-res="' + esc(r.sid) + '">查看</a>'
                 : '<span class="dg-link dis" title="该检查暂无结构化结果">查看</span>')
          +   '<a class="dg-link" data-raw="' + esc(r.sid) + '">原始影像</a>'
@@ -1389,6 +1522,8 @@ function renderDiagList(){
   }
   h += '</tbody></table>';
   document.getElementById('dgTable').innerHTML = h;
+  document.getElementById('dgCount').innerHTML =
+      '共 <b>' + rows.length + '</b> 条 · 显示 ' + (cols.length + 1) + ' 列（共 16 列数据，可表头设置）';
 
   var btns = '<button data-p="' + (DG_S.page - 1) + '"' + (DG_S.page <= 1 ? ' disabled' : '') + '>‹</button>';
   for (var p = 1; p <= maxP; p++) btns += '<button data-p="' + p + '" class="' + (p === DG_S.page ? 'on' : '') + '">' + p + '</button>';
@@ -1416,9 +1551,7 @@ function renderDiagList(){
   });
   var all = document.getElementById('dgAll');
   if (all) all.onchange = function(){
-    view.forEach(function(r){
-      if (all.checked) DG_S.sel[r.sid] = true; else delete DG_S.sel[r.sid];
-    });
+    view.forEach(function(r){ if (all.checked) DG_S.sel[r.sid] = true; else delete DG_S.sel[r.sid]; });
     renderDiagList();
   };
   [].forEach.call(document.querySelectorAll('#dgPager [data-p]'), function(b){
@@ -1426,6 +1559,8 @@ function renderDiagList(){
   });
   var sz = document.getElementById('dgSize');
   if (sz) sz.onchange = function(){ DG_S.size = +sz.value; DG_S.page = 1; renderDiagList(); };
+  var sc = document.querySelector('.dg-scroll'), hint = document.getElementById('dgHint');
+  if (sc && hint) hint.style.display = (sc.scrollWidth - sc.clientWidth > 4) ? 'inline' : 'none';
   [].forEach.call(document.querySelectorAll('#dgTable [data-view-res]'), function(a){
     a.onclick = function(){ dgShowResult(a.getAttribute('data-view-res')); };
   });
@@ -1434,9 +1569,31 @@ function renderDiagList(){
   });
 }
 
-function dgFind(sid){
-  return DG.filter(function(r){ return r.sid === sid; })[0];
+/* ---------- 表头设置 ---------- */
+function renderColMenu(){
+  var h = '';
+  DG_COLS.forEach(function(c){
+    h += '<label><input type="checkbox" data-col="' + c.k + '"' + (DG_S.hide[c.k] ? '' : ' checked') + '>' + c.t + '</label>';
+  });
+  h += '<label class="all"><input type="checkbox" id="dgColAll"' + (dgVisibleCols().length === DG_COLS.length ? ' checked' : '') + '>全选 / 全不选</label>';
+  document.getElementById('dgColMenu').innerHTML = h;
+  [].forEach.call(document.querySelectorAll('#dgColMenu [data-col]'), function(cb){
+    cb.onchange = function(){
+      var k = cb.getAttribute('data-col');
+      if (cb.checked) delete DG_S.hide[k]; else DG_S.hide[k] = true;
+      if (!dgVisibleCols().length) { DG_S.hide = {}; }
+      renderColMenu(); renderDiagList();
+    };
+  });
+  var cl = document.getElementById('dgColAll');
+  if (cl) cl.onchange = function(){
+    DG_S.hide = {};
+    if (!cl.checked) DG_COLS.forEach(function(c){ if (c.k !== 'org') DG_S.hide[c.k] = true; });
+    renderColMenu(); renderDiagList();
+  };
 }
+
+function dgFind(sid){ return DG.filter(function(r){ return r.sid === sid; })[0]; }
 
 function dgOpen(html){
   var m = document.getElementById('dgModal');
@@ -1450,17 +1607,19 @@ function dgClose(){ document.getElementById('dgModal').classList.add('hidden'); 
 
 function dgShowResult(sid){
   var r = dgFind(sid); if (!r) return;
-  var partTxt = r.mod === 'MR' ? '颅脑' : (r.mod === 'DR' ? '胸部' : '胸部');
+  var partTxt = r.part === 'HEAD' ? '颅脑' : (r.part === 'CHEST' ? '胸部' : '腹部');
   dgOpen('<div class="dg-sheet">'
     + '<div class="dg-shead"><div><b>诊断结果 · ' + esc(r.mod) + ' ' + partTxt + '</b>'
-    +   '<small>' + esc(r.org) + '　|　' + esc(r.name) + '　|　患者号 ' + esc(r.pid) + '　|　检查号 ' + esc(r.sid) + '</small></div>'
+    +   '<small>' + esc(r.org) + '　|　' + esc(r.name) + ' ' + esc(r.sex) + ' ' + esc(r.age) + '　|　患者号 ' + esc(r.pid) + '　|　检查号 ' + esc(r.sid) + '</small></div>'
     +   '<button class="dg-x" id="dgX">关闭</button></div>'
     + '<div class="dg-sbody">'
     +   '<div class="dg-kv">'
     +     '<div><small>检查时间</small><span>' + esc(r.study) + '</span></div>'
     +     '<div><small>计算时间</small><span>' + esc(r.cs) + ' → ' + esc(r.ce) + '</span></div>'
-    +     '<div><small>影像类型</small><span>' + esc(r.mod) + '</span></div>'
-    +     '<div><small>检查部位</small><span>' + partTxt + '</span></div>'
+    +     '<div><small>AI工具</small><span>' + esc(r.tool) + '</span></div>'
+    +     '<div><small>计算状态 / AI结果</small><span>' + esc(r.state) + ' / ' + esc(r.aiRes) + '</span></div>'
+    +     '<div><small>检查部位</small><span>' + esc(r.part) + '（' + partTxt + '）</span></div>'
+    +     '<div><small>诊断医师 / 阅片</small><span>' + esc(r.doctor) + ' / ' + esc(r.read) + '</span></div>'
     +   '</div>'
     +   '<div class="dg-blk"><div class="t">AI 检出结果（结构化文本）</div>'
     +     '<p>· 左肺上叶尖后段实性结节，最大径 7.8 mm，边缘光整，Lung-RADS 2</p>'
@@ -1498,7 +1657,7 @@ function dgShowRaw(sid){
     + '<div class="dg-sbody">'
     +   '<div class="dg-kv">'
     +     '<div><small>检查时间</small><span>' + esc(r.study) + '</span></div>'
-    +     '<div><small>影像类型</small><span>' + esc(r.mod) + '</span></div>'
+    +     '<div><small>影像类型 / 部位</small><span>' + esc(r.mod) + ' / ' + esc(r.part) + '</span></div>'
     +   '</div>'
     +   '<div class="dg-blk"><div class="t">调阅方式</div>'
     +     '<p>本原型不内置影像，实际部署按院内既有方式调阅：</p>'
@@ -1514,40 +1673,54 @@ function dgShowRaw(sid){
   if (go) go.onclick = function(){ dgClose(); toast('已向 PACS 发起调阅：' + r.sid); };
 }
 
-/* ---------- 工具栏 / 筛选绑定（只绑一次） ---------- */
+/* ---------- 绑定（只绑一次） ---------- */
 function bindDiagView(){
   if (bindDiagView._done) return;
   bindDiagView._done = true;
-  var q = function(){ toast('已按当前条件查询'); };
   var g = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
   var apply = function(resetPage){
     DG_F.name = g('dgName'); DG_F.pid = g('dgPid'); DG_F.sid = g('dgSid');
     DG_F.mod = g('dgMod') === '请选择' ? '' : g('dgMod');
+    DG_F.tool = g('dgTool') === '全部' ? '' : g('dgTool');
+    DG_F.state = g('dgState') === '全部' ? '' : g('dgState');
+    DG_F.age = g('dgAge');
+    DG_F.aiRes = g('dgAiRes') === '请选择' ? '' : g('dgAiRes');
+    DG_F.part = g('dgPart');
+    DG_F.sex = g('dgSex') === '全部' ? '' : g('dgSex');
+    DG_F.read = g('dgRead') === '全部' ? '' : g('dgRead');
+    DG_F.doctor = g('dgDoctor');
     DG_F.studyFrom = g('dgStudyFrom'); DG_F.studyTo = g('dgStudyTo');
     DG_F.calcFrom = g('dgCalcFrom'); DG_F.calcTo = g('dgCalcTo');
     if (resetPage !== false) DG_S.page = 1;
     renderDiagList();
   };
-  ['dgStudyFrom','dgStudyTo','dgCalcFrom','dgCalcTo','dgMod'].forEach(function(id){
-    var e = document.getElementById(id); if (e) e.onchange = function(){ apply(); };
-  });
-  ['dgName','dgPid','dgSid'].forEach(function(id){
+
+  ['dgStudyFrom','dgStudyTo','dgCalcFrom','dgCalcTo','dgMod','dgTool','dgState','dgAiRes','dgSex','dgRead']
+    .forEach(function(id){ var e = document.getElementById(id); if (e) e.onchange = function(){ apply(); }; });
+  ['dgName','dgPid','dgSid','dgAge','dgPart','dgDoctor'].forEach(function(id){
     var e = document.getElementById(id);
     if (e) e.onkeydown = function(ev){ if (ev.key === 'Enter') { ev.preventDefault(); apply(); } };
   });
-  var bq = document.getElementById('dgQuery'); if (bq) bq.onclick = function(){ apply(); q(); };
+
+  var bq = document.getElementById('dgQuery'); if (bq) bq.onclick = function(){ apply(); toast('已按当前条件查询'); };
   var br = document.getElementById('dgRefresh'); if (br) br.onclick = function(){ renderDiagList(); toast('诊断列表已刷新'); };
   var bs = document.getElementById('dgReset'); if (bs) bs.onclick = function(){
-    ['dgName','dgPid','dgSid','dgStudyFrom','dgStudyTo'].forEach(function(id){
+    ['dgName','dgPid','dgSid','dgAge','dgPart','dgDoctor','dgStudyFrom','dgStudyTo'].forEach(function(id){
       var e = document.getElementById(id); if (e) e.value = '';
     });
     var m = document.getElementById('dgMod'); if (m) m.value = '请选择';
-    DG_F = { name:'', pid:'', sid:'', mod:'', studyFrom:'', studyTo:'',
+    var t = document.getElementById('dgTool'); if (t) t.value = '全部';
+    var st = document.getElementById('dgState'); if (st) st.value = '全部';
+    var ar = document.getElementById('dgAiRes'); if (ar) ar.value = '请选择';
+    var sx = document.getElementById('dgSex'); if (sx) sx.value = '全部';
+    var rd = document.getElementById('dgRead'); if (rd) rd.value = '全部';
+    DG_F = { name:'', pid:'', sid:'', mod:'', tool:'', state:'', age:'', aiRes:'',
+             part:'', sex:'', read:'', doctor:'', studyFrom:'', studyTo:'',
              calcFrom:'2026-10-07', calcTo:'2026-10-22' };
     DG_S.page = 1; renderDiagList(); toast('已重置查询条件');
   };
   var be = document.getElementById('dgRestore'); if (be) be.onclick = function(){
-    DG_S.sel = {}; renderDiagList(); toast('已恢复为未选状态');
+    DG_S.sel = {}; DG_S.hide = {}; renderColMenu(); renderDiagList(); toast('已恢复默认视图');
   };
   var bd = document.getElementById('dgDel'); if (bd) bd.onclick = function(){
     var n = dgSelCount();
@@ -1562,6 +1735,26 @@ function bindDiagView(){
   var bfv = document.getElementById('dgFav'); if (bfv) bfv.onclick = function(){
     var n = dgSelCount(); toast(n ? '已收藏 ' + n + ' 条检查' : '请先勾选要收藏的检查');
   };
+
+  /* AI工具下拉：按真实工具集填充 */
+  var tsel = document.getElementById('dgTool');
+  if (tsel && tsel.options.length === 1) {
+    DG_TOOLSET.forEach(function(t){ tsel.innerHTML += '<option>' + t.t + '</option>'; });
+  }
+
+  var cb = document.getElementById('dgColBtn');
+  if (cb) cb.onclick = function(e){
+    e.stopPropagation();
+    DG_S.menu = !DG_S.menu;
+    document.getElementById('dgColMenu').classList.toggle('hidden', !DG_S.menu);
+  };
+  document.addEventListener('click', function(e){
+    var m = document.getElementById('dgColMenu');
+    if (!m || m.classList.contains('hidden')) return;
+    if (e.target.closest && e.target.closest('.dg-cols')) return;
+    m.classList.add('hidden'); DG_S.menu = false;
+  });
+  renderColMenu();
 }
 
 </script>
