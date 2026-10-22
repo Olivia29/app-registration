@@ -33,27 +33,40 @@ input,select,textarea{font-family:inherit}
 .hidden{display:none!important}
 
 /* ---------- 外壳 ---------- */
-.app{min-height:100vh;display:flex;flex-direction:column}
+/* ---------- 外壳：左栏（品牌 + 菜单 + 用户） / 右栏（顶栏 + 内容） ---------- */
+.app{min-height:100vh;display:flex;align-items:stretch}
+.side{width:236px;flex:0 0 236px;background:var(--surface);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.sbrand{display:flex;align-items:center;gap:10px;padding:16px 14px 14px;border-bottom:1px solid var(--line2)}
+.sbrand .m{width:30px;height:30px;border-radius:6px;background:var(--primary);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex:0 0 30px}
+.sbrand .tx{min-width:0}
+.sbrand .tx b{display:block;font-size:11.5px;color:var(--ink);font-weight:700;line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbrand .tx small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+.snav{flex:1;overflow:auto;padding:4px 0 10px}
+.snav .g{font-size:11px;color:var(--muted2);padding:12px 16px 5px;letter-spacing:.4px}
+.snav a{display:flex;align-items:center;gap:10px;padding:8px 16px;color:var(--ink);
+  text-decoration:none;font-size:12.5px;position:relative;line-height:1.45}
+.snav a i{font-style:normal;color:#999;font-size:11.5px;width:18px;flex:0 0 18px;letter-spacing:.2px}
+.snav a:hover{background:#F7F8FA}
+.snav a.on{background:#FCECEC;color:#333;font-weight:600}
+.snav a.on i{color:#333}
+.snav a.on:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--primary)}
+.suser{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--line2)}
+.suser .av{width:30px;height:30px;border-radius:5px;background:#E8EDF1;color:#5B6B77;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:0 0 30px}
+.suser b{display:block;font-size:12.5px;color:var(--ink);line-height:1.4}
+.suser small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+.right{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh}
 .topbar{height:52px;flex:0 0 52px;background:var(--surface);border-bottom:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;padding:0 22px}
-.logo{display:flex;align-items:center;gap:9px}
-.logo .m{width:26px;height:26px;border-radius:7px;background:var(--head);color:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
-.logo b{font-size:14px;color:var(--head);letter-spacing:.2px}
-.logo .sp{color:var(--muted2);margin:0 6px}
-.logo .cur{color:var(--ink2);font-size:12.5px}
-.topr{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:12px}
-.avatar{width:28px;height:28px;border-radius:50%;background:var(--head);color:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:12px}
-.wrap{flex:1;display:flex;min-height:0}
-.side{width:186px;flex:0 0 186px;background:var(--surface);border-right:1px solid var(--line);padding:14px 10px}
-.side .g{font-size:11px;color:var(--muted2);padding:6px 10px 4px;letter-spacing:.4px}
-.side a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;
-  color:var(--ink2);text-decoration:none;font-size:12.5px;margin-bottom:2px}
-.side a:hover{background:var(--line2)}
-.side a.on{background:var(--primary-l);color:var(--primary);font-weight:600}
-.side a i{font-style:normal;width:17px;text-align:center;color:var(--muted2);font-size:11px}
-.side a.on i{color:var(--primary)}
+  display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:16px}
+.topbar .crumb{color:var(--muted);font-size:12.5px;margin:0}
+.topbar .crumb b{color:var(--ink2);font-weight:500}
+.topr{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;white-space:nowrap}
+.btn-link{background:var(--surface);border:1px solid var(--line);border-radius:6px;
+  padding:5px 11px;font-size:12px;color:var(--ink2)}
+.btn-link:hover{border-color:var(--muted2);color:var(--ink)}
 .main{flex:1;min-width:0;padding:20px 24px 30px;overflow:auto}
 
 /* ---------- 页头 ---------- */
@@ -217,31 +230,43 @@ body.nomark .f label .new{display:none}
 </head>
 <body>
 <div class="app">
-  <div class="topbar">
-    <div class="logo">
-      <span class="m">影</span><b>影禾医脉</b>
-      <span class="sp">/</span><span class="cur">生态伙伴端</span>
+  <aside class="side">
+    <div class="sbrand">
+      <span class="m">南</span>
+      <div class="tx">
+        <b>南昌影禾医脉智能科技有限公司</b>
+        <small>生态伙伴端 · S024</small>
+      </div>
     </div>
-    <div class="topr">
-      <span>生态伙伴 · 上海影禾医脉智能科技有限公司</span>
-      <span class="avatar">VV</span>
-    </div>
-  </div>
-
-  <div class="wrap">
-    <aside class="side">
-      <div class="g">工作台</div>
-      <a href="javascript:;"><i>01</i>概览</a>
-      <a href="javascript:;"><i>02</i>能力接入</a>
-      <a href="javascript:;"><i>03</i>授权与渠道</a>
+    <nav class="snav">
+      <div class="g">经营工作台</div>
+      <a href="javascript:;"><i>01</i>经营概览</a>
+      <a href="javascript:;"><i>02</i>企业与资质</a>
+      <a href="javascript:;"><i>03</i>我的店铺</a>
+      <div class="g">交易与财务</div>
       <a href="javascript:;" class="on"><i>04</i>应用管理</a>
-      <div class="g">运营</div>
-      <a href="javascript:;"><i>05</i>商品管理</a>
-      <a href="javascript:;"><i>06</i>订单结算</a>
-    </aside>
+      <a href="javascript:;"><i>05</i>应用认证进度</a>
+      <a href="javascript:;"><i>06</i>商品管理</a>
+      <a href="javascript:;"><i>07</i>渠道商品</a>
+      <div class="g">安全与治理</div>
+      <a href="javascript:;"><i>08</i>订单与履约</a>
+      <a href="javascript:;"><i>09</i>计量账本</a>
+      <a href="javascript:;"><i>10</i>医院账单</a>
+      <a href="javascript:;"><i>11</i>操作审计</a>
+    </nav>
+    <div class="suser"><span class="av">王</span><div><b>王斌</b><small>企业管理员</small></div></div>
+  </aside>
+
+  <div class="right">
+    <div class="topbar">
+      <div class="crumb">生态伙伴端 / <b>应用管理</b></div>
+      <div class="topr">
+        <span>当前主体：南昌影禾医脉智能科技有限公司</span>
+        <button class="btn-link">返回门户</button>
+      </div>
+    </div>
 
     <main class="main">
-      <div class="crumb">生态伙伴端 / <b>应用管理</b></div>
       <div class="head">
         <div>
           <h1>应用管理</h1>
