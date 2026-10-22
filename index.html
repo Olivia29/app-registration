@@ -1523,7 +1523,7 @@ function renderDiagList(){
   h += '</tbody></table>';
   document.getElementById('dgTable').innerHTML = h;
   document.getElementById('dgCount').innerHTML =
-      '共 <b>' + rows.length + '</b> 条 · 显示 ' + (cols.length + 1) + ' 列（共 16 列数据，可表头设置）';
+      '共 <b>' + rows.length + '</b> 条 · 显示 <b>' + (cols.length + 1) + '</b> 列（' + cols.length + ' 列数据 + 操作，可表头设置）';
 
   var btns = '<button data-p="' + (DG_S.page - 1) + '"' + (DG_S.page <= 1 ? ' disabled' : '') + '>‹</button>';
   for (var p = 1; p <= maxP; p++) btns += '<button data-p="' + p + '" class="' + (p === DG_S.page ? 'on' : '') + '">' + p + '</button>';
