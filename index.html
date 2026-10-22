@@ -121,6 +121,80 @@ input,select,textarea{font-family:inherit}
 .cardwrap{position:relative}
 .cardwrap .badge-st{position:absolute;right:17px;top:15px}
 
+/* ---------- 计算统计视图 ---------- */
+.ts{color:var(--muted);font-size:11.5px;white-space:nowrap}
+.fbar{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);padding:10px 14px;margin-bottom:12px}
+.fbar .fitem{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fbar .fitem label{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.fbar select,.fbar input{border:1px solid var(--line);border-radius:5px;padding:5px 7px;font-size:12px;
+  font-family:inherit;color:var(--ink);background:#fff}
+.fbar select:focus,.fbar input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(169,71,63,.10)}
+.fbar .dr{display:flex;align-items:center;gap:4px}
+.fbar .dr input{font-size:11.5px;padding:4px 6px;width:118px}
+.fbar .dr span{color:var(--muted2);font-size:10px}
+.btn.sm{padding:5px 11px;font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin-bottom:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px}
+.kpi .lb{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.kpi .vl{font-size:18px;font-weight:700;color:var(--head);line-height:1.25;margin-top:2px;
+  font-variant-numeric:tabular-nums}
+.kpi .dt{font-size:10px;color:var(--muted2);margin-top:1px;white-space:nowrap}
+.kpi.hot .vl{color:var(--primary)}
+.kpi.ok .vl{color:var(--ok)}
+.kpi.bad .vl{color:#B3261E}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+.panel-h{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 14px;border-bottom:1px solid var(--line2)}
+.panel-h b{font-size:13px;color:var(--head);display:flex;align-items:center;gap:7px}
+.panel-h b:before{content:"";width:3px;height:12px;border-radius:2px;background:var(--primary)}
+.panel-h .m{font-size:11px;color:var(--muted);font-weight:400}
+.panel-b{padding:12px 14px}
+.p-acts{display:flex;gap:7px;align-items:center}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:12px;align-items:start}
+.dtable{width:100%;border-collapse:collapse;font-size:12px}
+.dtable th{text-align:left;font-weight:600;color:var(--muted);padding:8px 10px;
+  border-bottom:1px solid var(--line);white-space:nowrap;background:#FCFDFC}
+.dtable th.srt{cursor:pointer;user-select:none}
+.dtable th.srt:hover{color:var(--primary)}
+.dtable th .ar{font-size:9px;color:var(--muted2);margin-left:3px}
+.dtable th.on{color:var(--primary)}
+.dtable th.on .ar{color:var(--primary)}
+.dtable td{padding:7px 10px;border-bottom:1px solid var(--line2);white-space:nowrap;color:var(--ink)}
+.dtable td.num{font-family:Consolas,Menlo,monospace;text-align:right;font-size:11.5px}
+.dtable th.num{text-align:right}
+.dtable tbody tr:hover td{background:#FBFCFB}
+.dtable .emptyrow td{text-align:center;color:var(--muted);padding:26px}
+.dtable .ck{width:30px;text-align:center}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--ink2);align-items:center}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.bars{display:flex;flex-direction:column;gap:7px}
+.bar{display:grid;grid-template-columns:82px minmax(0,1fr) 34px;align-items:center;gap:8px;font-size:11.5px}
+.bar .nm{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .tr{height:9px;background:var(--line2);border-radius:5px;overflow:hidden}
+.bar .fi{height:100%;border-radius:5px}
+.bar .vl{text-align:right;color:var(--ink);font-family:Consolas,Menlo,monospace;font-size:11px}
+.chartbox{padding:4px 8px 0}
+.chartbox svg{display:block;width:100%;height:auto}
+.pg{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;
+  border-top:1px solid var(--line);color:var(--muted);font-size:11.5px}
+.pg .btns{display:flex;gap:4px;align-items:center}
+.pg .btns button{background:#fff;border:1px solid var(--line);border-radius:4px;
+  padding:3px 8px;font-size:11.5px;color:var(--ink2)}
+.pg .btns button.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.pg .btns button:disabled{color:var(--muted2);cursor:default}
+.pg select{border:1px solid var(--line);border-radius:4px;padding:3px 6px;font-size:11.5px;background:#fff}
+.emptybox{padding:34px;text-align:center;color:var(--muted);font-size:12.5px}
+.snav a{cursor:pointer}
+.snav a.dim{color:var(--muted)}
+.spill{display:inline-block;font-size:10.5px;border-radius:9px;padding:1px 7px;white-space:nowrap}
+.spill.ok{background:#E9F5EC;color:#1E6B3A}
+.spill.run{background:#FFF4DC;color:#9C6500}
+.spill.bad{background:#FCE8E6;color:#B3261E}
+.spill.wait{background:#EDF3F8;color:#5C7285}
+.note{color:var(--muted);font-size:11px;line-height:1.6;margin:0 0 10px}
+
+
 /* ---------- 弹窗 ---------- */
 .mask{position:fixed;inset:0;background:rgba(23,61,67,.42);z-index:50;
   display:flex;align-items:center;justify-content:center;padding:20px}
@@ -243,7 +317,7 @@ body.nomark .f label .new{display:none}
       <a href="javascript:;"><i>01</i>经营概览</a>
       <a href="javascript:;"><i>02</i>企业与资质</a>
       <a href="javascript:;"><i>03</i>我的店铺</a>
-      <a href="javascript:;" class="on"><i>04</i>应用管理</a>
+      <a href="javascript:;" data-view="apps" class="on"><i>04</i>应用管理</a>
       <a href="javascript:;"><i>05</i>应用认证进度</a>
       <a href="javascript:;"><i>06</i>商品管理</a>
       <a href="javascript:;"><i>07</i>渠道商品</a>
@@ -251,8 +325,9 @@ body.nomark .f label .new{display:none}
       <a href="javascript:;"><i>08</i>订单与履约</a>
       <a href="javascript:;"><i>09</i>计量账本</a>
       <a href="javascript:;"><i>10</i>医院账单</a>
+      <a href="javascript:;" data-view="stats"><i>11</i>计算统计</a>
       <div class="g">安全与治理</div>
-      <a href="javascript:;"><i>11</i>操作审计</a>
+      <a href="javascript:;"><i>12</i>操作审计</a>
     </nav>
     <div class="suser"><span class="av">王</span><div><b>王斌</b><small>企业管理员</small></div></div>
   </aside>
@@ -267,6 +342,7 @@ body.nomark .f label .new{display:none}
     </div>
 
     <main class="main">
+      <div id="viewApps">
       <div class="head">
         <div>
           <h1>应用管理</h1>
@@ -304,6 +380,94 @@ body.nomark .f label .new{display:none}
         </div>
         <span class="badge-st">认证中</span>
       </div>
+      </div>
+
+    <div id="viewStats" class="hidden">
+      <div class="head">
+        <div>
+          <h1>计算统计</h1>
+          <div class="sub">按机构统计计算链路：接收 → 匹配 → 过滤 → 排队 → 计算 → 成功 / 失败。</div>
+        </div>
+        <div class="acts">
+          <span class="ts" id="stTs">2026年10月22日 星期四 10:02:35</span>
+          <button class="btn" id="stRefresh">🔄 刷新</button>
+        </div>
+      </div>
+
+      <div class="fbar">
+        <div class="fitem"><label>机构名称</label><select id="stOrg"></select></div>
+        <div class="fitem"><label>计算时间</label>
+          <div class="dr">
+            <input type="date" id="stCalcFrom" value="2026-10-22"><span>至</span>
+            <input type="date" id="stCalcTo" value="2026-10-22">
+          </div>
+        </div>
+        <div class="fitem"><label>检查时间</label>
+          <div class="dr">
+            <input type="date" id="stStudyFrom" value="2026-10-22"><span>至</span>
+            <input type="date" id="stStudyTo" value="2026-10-22">
+          </div>
+        </div>
+        <button class="btn primary sm" id="stQuery">查询</button>
+      </div>
+
+      <div class="kpis" id="stKpis"></div>
+
+      <div class="two">
+        <div class="panel">
+          <div class="panel-h"><b>机构数量</b><span class="legend" id="stLegend"></span></div>
+          <div class="panel-b"><div class="bars" id="stBars"></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><b>机构明细</b><span class="m">按机构维度统计 · 点表头排序</span></div>
+          <div id="stOrgTable"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h">
+          <b>计算调度</b>
+          <div class="p-acts">
+            <button class="btn sm" id="schEnd">结束任务</button>
+            <button class="btn sm" id="schTop">↑ 置顶</button>
+            <button class="btn sm" id="schRefresh">刷新</button>
+          </div>
+        </div>
+        <div class="fbar" style="margin:0;border:none;border-bottom:1px solid var(--line2);border-radius:0">
+          <div class="fitem"><label>计算调度名称</label><select id="schName"><option>全部</option><option>胸部 CT 全流程</option><option>颅脑 CT 全流程</option></select></div>
+          <div class="fitem"><label>设备</label><select id="schDev"><option>全部</option><option>CT</option><option>MR</option><option>DR</option></select></div>
+          <div class="fitem"><label>患者号</label><input id="schPid" placeholder="请输入"></div>
+          <div class="fitem"><label>检查号</label><input id="schSid" placeholder="请输入"></div>
+          <div class="fitem"><label>计算时间</label>
+            <div class="dr">
+              <input type="date" id="schFrom" value="2026-10-22"><span>至</span>
+              <input type="date" id="schTo" value="2026-10-22">
+            </div>
+          </div>
+          <div class="fitem"><label>部位</label><select id="schPart"><option>全部</option><option>胸部</option><option>颅脑</option><option>腹部</option></select></div>
+          <div class="fitem"><label>AI工具</label><select id="schTool"><option>全部</option></select></div>
+          <div class="fitem"><label>计算状态</label><select id="schState"><option>全部</option><option>排队中</option><option>计算中</option><option>已完成</option><option>失败</option></select></div>
+          <div class="fitem"><label>时效</label><select id="schSla"><option>全部</option><option>正常</option><option>超时</option></select></div>
+          <div class="fitem"><label>耗时</label><input id="schCost" placeholder="秒" style="width:92px"></div>
+        </div>
+        <div id="schTable"></div>
+        <div class="pg" id="schPager"></div>
+      </div>
+
+      <div class="two">
+        <div class="panel">
+          <div class="panel-h"><b>节点监控</b><span class="legend" id="nodeLegend"></span></div>
+          <div class="chartbox" id="stChart"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><b>超时分析</b><span class="m">计算时间 2026-10-15 至 2026-10-22 · AI工具 全部</span></div>
+          <div class="emptybox">暂无数据</div>
+        </div>
+      </div>
+
+      <div class="note">演示数据：KPI、机构、调度条目均为原型示例，不代表生产口径。原页面的中国地图未内置——机构数量以「按省分布榜单」呈现，需要地图可接真实 GeoJSON 再替换。</div>
+    </div>
+
     </main>
   </div>
 </div>
@@ -723,6 +887,300 @@ $('fReq').textContent=ALL.filter(function(x){return x.f.req;}).length;
 $('mkCount').textContent=NEWC;
 renderTabs(); renderBody();
 console.log('应用管理 · 登记新应用（字段扩充版）V1.0 已加载 | 字段 '+ALL.length+' 新增 '+NEWC);
+/* ============================================================================
+   计算统计（第二视图）：数据总览 / 机构明细 / 计算调度 / 节点监控 / 超时分析
+   演示数据，不连生产；数值口径与参考页面一致
+   ============================================================================ */
+var ST_KPI = [
+  { k:'接收数据', v:4337,  d:'今日收到检查', c:'' },
+  { k:'匹配数据', v:16763, d:'命中算法次数', c:'' },
+  { k:'过滤数据', v:31713, d:'被规则过滤',   c:'' },
+  { k:'排队中',   v:0,     d:'等待调度',     c:'' },
+  { k:'计算中',   v:514,   d:'正在计算',     c:'hot' },
+  { k:'计算成功', v:7434,  d:'计算完成',     c:'ok' },
+  { k:'计算失败', v:8795,  d:'计算失败',     c:'bad' }
+];
+
+/* 机构明细：接收 / 匹配 / 过滤 / 排队 / 计算中 / 成功 / 失败 */
+var ST_ORGS = [
+  { n:'金华广福医院',         recv:246, match:935,  filt:783,  wait:0, run:24, ok:494, fail:38 },
+  { n:'一脉阳光互联网医院',   recv:244, match:917,  filt:1279, wait:0, run:62, ok:171, fail:19 },
+  { n:'射洪市中医院',         recv:229, match:1092, filt:4381, wait:0, run:23, ok:732, fail:61 },
+  { n:'遂川县人民医院',       recv:218, match:1043, filt:2905, wait:0, run:18, ok:663, fail:47 },
+  { n:'南昌市第三医院',       recv:196, match:876,  filt:2114, wait:0, run:31, ok:528, fail:35 },
+  { n:'九江市第一人民医院',   recv:174, match:802,  filt:1958, wait:0, run:27, ok:471, fail:33 },
+  { n:'赣州市人民医院',       recv:162, match:758,  filt:1832, wait:0, run:22, ok:449, fail:29 },
+  { n:'上饶市人民医院',       recv:148, match:690,  filt:1647, wait:0, run:19, ok:402, fail:26 }
+];
+
+/* 机构数量分布（按省） */
+var ST_PROV = [
+  { p:'浙江', c:6 }, { p:'江西', c:5 }, { p:'广东', c:4 }, { p:'江苏', c:3 },
+  { p:'山东', c:3 }, { p:'四川', c:2 }, { p:'北京', c:2 }, { p:'上海', c:1 },
+  { p:'湖北', c:1 }, { p:'湖南', c:1 }, { p:'河北', c:1 }, { p:'陕西', c:1 }
+];
+
+/* 计算调度：24 条演示任务 */
+var SCHED = (function(){
+  var orgs = ['遂川县人民医院','金华广福医院','一脉阳光互联网医院','射洪市中医院','九江市第一人民医院'];
+  var parts = ['胸部','颅脑','腹部'];
+  var tools = ['CT骨密度辅助诊断（联影）','CT胸部气胸辅助诊断（联影）','CT胸部肺结节辅助诊断（联影）',
+               'CT颅脑脑出血辅助诊断（联影）','CT胸部肺炎辅助诊断（推想）','MR颅脑转移瘤辅助诊断（联影）'];
+  var states = ['已完成','已完成','已完成','计算中','排队中','失败'];
+  var out = [];
+  for (var i = 0; i < 24; i++) {
+    var m = 59 + i * 7, h = 3 + Math.floor(m / 60); m = m % 60;
+    var t = '2026-10-22 ' + (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (i % 60 < 10 ? '0' : '') + (i % 60);
+    var pid = 'CT2610' + (220008 + i);
+    out.push({
+      org: orgs[i % orgs.length], dev: i % 7 === 5 ? 'MR' : (i % 11 === 9 ? 'DR' : 'CT'),
+      pid: pid, sid: pid, time: t, part: parts[i % parts.length],
+      tool: tools[i % tools.length], st: states[i % states.length],
+      cost: (18 + (i * 7) % 140), sla: (i % 9 === 0 ? '超时' : '正常')
+    });
+  }
+  return out;
+})();
+
+var ST = { init:false, sortK:'recv', sortD:'desc', page:1, size:10,
+           sch:{ pid:'', sid:'', part:'', dev:'', tool:'', st:'' } };
+
+function fmtNum(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+function renderKpis(){
+  var h = '';
+  ST_KPI.forEach(function(x){
+    h += '<div class="kpi ' + x.c + '"><div class="lb">' + x.k + '</div>'
+       + '<div class="vl">' + fmtNum(x.v) + '</div><div class="dt">' + x.d + '</div></div>';
+  });
+  document.getElementById('stKpis').innerHTML = h;
+}
+
+function renderBars(){
+  var max = 6, h = '';
+  ST_PROV.forEach(function(x){
+    var col = x.c >= 5 ? 'var(--primary)' : (x.c >= 3 ? 'var(--warn)' : 'var(--info)');
+    h += '<div class="bar"><span class="nm">' + x.p + '</span>'
+       + '<span class="tr"><span class="fi" style="width:' + (x.c / max * 100) + '%;background:' + col + '"></span></span>'
+       + '<span class="vl">' + x.c + '</span></div>';
+  });
+  document.getElementById('stBars').innerHTML = h;
+  document.getElementById('stLegend').innerHTML =
+      '<span><i style="background:var(--primary)"></i>≥5</span>'
+    + '<span><i style="background:var(--warn)"></i>3-4</span>'
+    + '<span><i style="background:var(--info)"></i>1-2</span>';
+}
+
+function renderOrgTable(){
+  var rows = ST_ORGS.slice();
+  var k = ST.sortK, dir = ST.sortD === 'asc' ? 1 : -1;
+  rows.sort(function(a, b){ return a[k] === b[k] ? 0 : (a[k] > b[k] ? dir : -dir); });
+  var cols = [['n','机构名称',0],['recv','接收数据',1],['match','匹配数据',1],['filt','过滤数据',1],
+              ['wait','排队中',1],['run','计算中',1],['ok','计算成功',1],['fail','计算失败',1]];
+  var h = '<table class="dtable"><thead><tr>';
+  cols.forEach(function(c){
+    var on = (ST.sortK === c[0]);
+    h += '<th class="' + (c[2] ? 'num srt' : 'srt') + (on ? ' on' : '') + '" data-k="' + c[0] + '">'
+       + c[1] + '<span class="ar">' + (on ? (ST.sortD === 'asc' ? '▲' : '▼') : '⇅') + '</span></th>';
+  });
+  h += '</tr></thead><tbody>';
+  rows.forEach(function(r){
+    h += '<tr><td>' + esc(r.n) + '</td>';
+    ['recv','match','filt','wait','run','ok','fail'].forEach(function(f){
+      h += '<td class="num">' + fmtNum(r[f]) + '</td>';
+    });
+    h += '</tr>';
+  });
+  h += '</tbody></table>';
+  document.getElementById('stOrgTable').innerHTML = h;
+  [].forEach.call(document.querySelectorAll('#stOrgTable th.srt'), function(th){
+    th.onclick = function(){
+      var kk = th.getAttribute('data-k');
+      if (ST.sortK === kk) ST.sortD = (ST.sortD === 'asc' ? 'desc' : 'asc');
+      else { ST.sortK = kk; ST.sortD = 'desc'; }
+      renderOrgTable();
+    };
+  });
+}
+
+function schedFiltered(){
+  var f = ST.sch;
+  return SCHED.filter(function(r){
+    if (f.pid && r.pid.toUpperCase().indexOf(f.pid.toUpperCase()) < 0) return false;
+    if (f.sid && r.sid.toUpperCase().indexOf(f.sid.toUpperCase()) < 0) return false;
+    if (f.part && r.part !== f.part) return false;
+    if (f.dev && r.dev !== f.dev) return false;
+    if (f.tool && r.tool !== f.tool) return false;
+    if (f.st && r.st !== f.st) return false;
+    return true;
+  });
+}
+
+function renderSched(){
+  var rows = schedFiltered();
+  var maxP = Math.max(1, Math.ceil(rows.length / ST.size));
+  if (ST.page > maxP) ST.page = maxP;
+  var view = rows.slice((ST.page - 1) * ST.size, ST.page * ST.size);
+  var h = '<table class="dtable"><thead><tr>'
+        + '<th class="ck"><input type="checkbox" id="schAll"></th>'
+        + '<th>机构名称</th><th>设备</th><th>患者号</th><th>检查号</th>'
+        + '<th>计算时间</th><th>部位</th><th>AI工具</th><th>状态</th><th class="num">耗时(秒)</th>'
+        + '</tr></thead><tbody>';
+  if (!view.length) {
+    h += '<tr class="emptyrow"><td colspan="10">没有符合条件的调度任务</td></tr>';
+  } else {
+    view.forEach(function(r){
+      var pill = r.st === '已完成' ? 'ok' : (r.st === '计算中' ? 'run' : (r.st === '失败' ? 'bad' : 'wait'));
+      h += '<tr><td class="ck"><input type="checkbox" data-pid="' + esc(r.pid) + '"></td>'
+         + '<td>' + esc(r.org) + '</td><td>' + esc(r.dev) + '</td>'
+         + '<td class="num" style="text-align:left">' + esc(r.pid) + '</td>'
+         + '<td class="num" style="text-align:left">' + esc(r.sid) + '</td>'
+         + '<td>' + esc(r.time) + '</td><td>' + esc(r.part) + '</td>'
+         + '<td>' + esc(r.tool) + '</td>'
+         + '<td><span class="spill ' + pill + '">' + esc(r.st) + '</span></td>'
+         + '<td class="num">' + r.cost + '</td></tr>';
+    });
+  }
+  h += '</tbody></table>';
+  document.getElementById('schTable').innerHTML = h;
+
+  var btns = '';
+  btns += '<button data-p="' + (ST.page - 1) + '"' + (ST.page <= 1 ? ' disabled' : '') + '>上一页</button>';
+  for (var p = 1; p <= maxP; p++) btns += '<button data-p="' + p + '" class="' + (p === ST.page ? 'on' : '') + '">' + p + '</button>';
+  btns += '<button data-p="' + (ST.page + 1) + '"' + (ST.page >= maxP ? ' disabled' : '') + '>下一页</button>';
+  document.getElementById('schPager').innerHTML =
+      '<span>共 ' + rows.length + ' 条 · 演示数据 · 第 ' + ST.page + '/' + maxP + ' 页</span>'
+    + '<span class="btns">'
+    +   '<select id="schSize">' + [10, 20, 50].map(function(n){
+          return '<option value="' + n + '"' + (n === ST.size ? ' selected' : '') + '>' + n + ' 条/页</option>';
+        }).join('') + '</select>' + btns + '</span>';
+  [].forEach.call(document.querySelectorAll('#schPager [data-p]'), function(b){
+    b.onclick = function(){ ST.page = +b.getAttribute('data-p'); renderSched(); };
+  });
+  var sz = document.getElementById('schSize');
+  if (sz) sz.onchange = function(){ ST.size = +sz.value; ST.page = 1; renderSched(); };
+  var all = document.getElementById('schAll');
+  if (all) all.onchange = function(){
+    [].forEach.call(document.querySelectorAll('#schTable input[data-pid]'), function(c){ c.checked = all.checked; });
+  };
+}
+
+function renderChart(){
+  var W = 760, H = 210, L = 34, R = 10, T = 12, B = 26;
+  var xs = ['00','02','04','06','08','10','12','14','16','18','20','22'];
+  var q = [0.2,0.4,0.5,0.4,0.6,0.3,0.5,0,0,0,0,0];
+  var g = [0.3,0.5,0.6,0.7,0.8,0.4,0.9,0,0,0,0,0];
+  var c = [0.6,1.7,2.1,1.9,2.0,1.3,2.2,0,0,0,0,0];
+  var tot = [];
+  for (var i = 0; i < xs.length; i++) tot.push(Math.round((q[i] + g[i] + c[i]) * 10) / 10);
+  var maxY = 4, iw = W - L - R, ih = H - T - B;
+  var px = function(i){ return L + iw / (xs.length - 1) * i; };
+  var py = function(v){ return T + ih - v / maxY * ih; };
+  var path = function(arr){
+    var d = '';
+    for (var i = 0; i < arr.length; i++) d += (i ? 'L' : 'M') + px(i).toFixed(1) + ' ' + py(arr[i]).toFixed(1) + ' ';
+    return d;
+  };
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="节点监控折线图">';
+  for (var y = 0; y <= maxY; y++) {
+    var yy = py(y).toFixed(1);
+    s += '<line x1="' + L + '" y1="' + yy + '" x2="' + (W - R) + '" y2="' + yy + '" stroke="#EDF2EF" stroke-width="1"/>'
+      +  '<text x="' + (L - 6) + '" y="' + (+yy + 3.5) + '" text-anchor="end" font-size="9" fill="#A3B3AF">' + y + '</text>';
+  }
+  s += '<text x="2" y="' + (T + 4) + '" font-size="9" fill="#A3B3AF">min</text>';
+  for (var i2 = 0; i2 < xs.length; i2++) {
+    s += '<text x="' + px(i2).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="9" fill="#A3B3AF">' + xs[i2] + '</text>';
+  }
+  s += '<path d="' + path(tot) + ' L' + px(xs.length - 1).toFixed(1) + ' ' + py(0) + ' L' + px(0) + ' ' + py(0) + ' Z" fill="rgba(169,71,63,.10)"/>';
+  s += '<path d="' + path(tot) + '" fill="none" stroke="#A9473F" stroke-width="1.8"/>';
+  s += '<path d="' + path(q) + '" fill="none" stroke="#C87A1E" stroke-width="1.3" stroke-dasharray="4 3"/>';
+  s += '<path d="' + path(g) + '" fill="none" stroke="#173D43" stroke-width="1.3" stroke-dasharray="2 3"/>';
+  s += '<path d="' + path(c) + '" fill="none" stroke="#2E7D4F" stroke-width="1.3"/>';
+  s += '</svg>';
+  document.getElementById('stChart').innerHTML = s;
+  document.getElementById('nodeLegend').innerHTML =
+      '<span><i style="background:#A9473F"></i>总耗时</span>'
+    + '<span><i style="background:#173D43"></i>堆积时间</span>'
+    + '<span><i style="background:#C87A1E"></i>排队时间</span>'
+    + '<span><i style="background:#2E7D4F"></i>计算时间</span>';
+}
+
+function renderStats(){
+  if (!ST.init) {
+    var sel = document.getElementById('stOrg');
+    if (sel && !sel.options.length) {
+      sel.innerHTML = '<option>全部机构</option>' + ST_ORGS.map(function(o){
+        return '<option>' + o.n + '</option>'; }).join('');
+    }
+    var tsel = document.getElementById('schTool');
+    if (tsel && tsel.options.length === 1) {
+      var seen = {};
+      SCHED.forEach(function(r){ if (!seen[r.tool]) { seen[r.tool] = 1;
+        tsel.innerHTML += '<option>' + r.tool + '</option>'; } });
+    }
+    renderKpis(); renderBars(); renderChart();
+    ST.init = true;
+  }
+  renderOrgTable(); renderSched();
+}
+
+/* 计算调度筛选绑定（只绑一次） */
+function bindSchedFilters(){
+  var map = { schPid:'pid', schSid:'sid', schPart:'part', schDev:'dev', schTool:'tool', schState:'st' };
+  Object.keys(map).forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    var run = function(){ ST.sch[map[id]] = el.value === '全部' ? '' : el.value.trim(); ST.page = 1; renderSched(); };
+    el.onchange = run;
+    if (el.tagName === 'INPUT') el.onkeydown = function(e){ if (e.key === 'Enter') { e.preventDefault(); run(); } };
+  });
+}
+
+/* ---------- 视图切换 ---------- */
+function showView(v){
+  var apps = document.getElementById('viewApps'), stats = document.getElementById('viewStats');
+  if (!apps || !stats) return;
+  stats.classList.toggle('hidden', v !== 'stats');
+  apps.classList.toggle('hidden', v === 'stats');
+  [].forEach.call(document.querySelectorAll('.snav a'), function(a){
+    a.classList.toggle('on', a.getAttribute('data-view') === v);
+  });
+  var name = (v === 'stats') ? '计算统计' : '应用管理';
+  var cr = document.querySelector('.topbar .crumb');
+  if (cr) cr.innerHTML = '生态伙伴端 / <b>' + name + '</b>';
+  if (v === 'stats') { renderStats(); bindSchedFilters(); }
+  var main = document.querySelector('.main');
+  if (main) main.scrollTop = 0;
+}
+
+[].forEach.call(document.querySelectorAll('.snav a'), function(a){
+  a.addEventListener('click', function(){
+    var v = a.getAttribute('data-view');
+    if (v) { showView(v); return; }
+    var t = a.textContent.replace(/^\d+/, '').trim();
+    toast('「' + t + '」为占位菜单，本原型演示「应用管理」与「计算统计」');
+  });
+});
+
+var stR = document.getElementById('stRefresh');
+if (stR) stR.onclick = function(){ renderStats(); toast('计算统计已刷新'); };
+var stQ = document.getElementById('stQuery');
+if (stQ) stQ.onclick = function(){ renderStats(); toast('已按当前条件查询'); };
+var scE = document.getElementById('schEnd');
+if (scE) scE.onclick = function(){
+  var n = document.querySelectorAll('#schTable input[data-pid]:checked').length;
+  toast(n ? '已结束 ' + n + ' 个任务' : '请先勾选要结束的任务');
+};
+var scT = document.getElementById('schTop');
+if (scT) scT.onclick = function(){
+  var n = document.querySelectorAll('#schTable input[data-pid]:checked').length;
+  toast(n ? '已置顶 ' + n + ' 个任务' : '请先勾选要置顶的任务');
+};
+var scR = document.getElementById('schRefresh');
+if (scR) scR.onclick = function(){ renderSched(); toast('调度列表已刷新'); };
+
+console.log('计算统计视图已就绪：KPI ' + ST_KPI.length + ' / 机构 ' + ST_ORGS.length + ' / 调度 ' + SCHED.length + ' 条');
+
 </script>
 </body>
 </html>
