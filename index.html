@@ -506,8 +506,9 @@ body.nomark .f label .new{display:none}
       <a href="javascript:;" data-view="org"><i>12</i>机构规则</a>
       <a href="javascript:;" data-view="diag"><i>13</i>诊断列表</a>
       <a href="javascript:;" data-view="fav"><i>14</i>收藏管理</a>
+      <a href="javascript:;" data-view="cq"><i>15</i>采集队列</a>
       <div class="g">安全与治理</div>
-      <a href="javascript:;"><i>15</i>操作审计</a>
+      <a href="javascript:;"><i>16</i>操作审计</a>
     </nav>
     <div class="suser"><span class="av">王</span><div><b>王斌</b><small>企业管理员</small></div></div>
   </aside>
@@ -805,6 +806,59 @@ body.nomark .f label .new{display:none}
       </div>
 
       <div class="note">演示数据：分组、姓名、患者号、检查号、收藏者均为示例。「查看」打开结构化结论，「原始影像」仅说明调阅路径，原型不内置影像。</div>
+    </div>
+
+    <div id="viewCq" class="hidden">
+      <div class="head">
+        <div>
+          <h1>采集队列</h1>
+          <div class="sub">影像应用中心 · 查看已上传待处理的检查队列，按设备与时间追踪上传进度。</div>
+        </div>
+        <div class="acts">
+          <button class="btn" id="cqRefresh">刷新</button>
+          <button class="btn" id="cqReset">重置</button>
+        </div>
+      </div>
+
+      <div class="dg-bar">
+        <div class="l">
+          <button class="btn primary" id="cqCalc">AI 计算 ▾</button>
+        </div>
+        <div class="r"></div>
+      </div>
+
+      <div class="fbar">
+        <div class="fitem"><label>机构名称</label><select id="cqOrg"><option>当前机构</option></select></div>
+        <div class="fitem"><label>设备</label><select id="cqDev"><option>筛选设备</option></select></div>
+        <div class="fitem"><label>姓名</label><input id="cqName" placeholder="请输入" style="width:104px"></div>
+        <div class="fitem"><label>患者号</label><input id="cqPid" placeholder="请输入" style="width:120px"></div>
+        <div class="fitem"><label>检查号</label><input id="cqSid" placeholder="请输入" style="width:120px"></div>
+        <div class="fitem"><label>UID</label><input id="cqUid" placeholder="请输入" style="width:170px"></div>
+        <div class="fitem"><label>检查项目</label><input id="cqStudy" placeholder="请输入" style="width:120px"></div>
+        <div class="fitem"><label>检查时间</label>
+          <div class="dr"><input type="date" id="cqStudyFrom" value="2026-10-19"><span>→</span><input type="date" id="cqStudyTo" value="2026-10-26"></div>
+        </div>
+        <div class="fitem"><label>上传时间</label>
+          <div class="dr"><input type="date" id="cqUpFrom" value="2026-10-19"><span>→</span><input type="date" id="cqUpTo" value="2026-10-26"></div>
+        </div>
+        <button class="btn primary sm" id="cqQuery">查询</button>
+      </div>
+
+      <div class="panel">
+        <div class="dg-tw">
+          <div class="dg-tbar">
+            <span id="cqCount">—</span>
+            <div class="dg-cols">
+              <button class="dg-colbtn" id="cqColBtn">表头设置 ▾</button>
+              <div class="dg-colmenu hidden" id="cqColMenu"></div>
+            </div>
+          </div>
+          <div class="dg-scroll"><div id="cqTable"></div></div>
+          <div class="pg" id="cqPager"></div>
+        </div>
+      </div>
+
+      <div class="note">演示数据：机构、姓名、患者号、检查号、UID 均为示例。「查看」打开检查详情，「详情」打开采集详情（来源、批次、文件数、校验结果）。</div>
     </div>
 
     </main>
@@ -1477,7 +1531,7 @@ function bindSchedFilters(){
 
 /* ---------- 视图切换 ---------- */
 function showView(v){
-  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav' };
+  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav', cq:'viewCq' };
   Object.keys(views).forEach(function(k){
     var el = document.getElementById(views[k]);
     if (el) el.classList.toggle('hidden', k !== v);
@@ -1485,13 +1539,14 @@ function showView(v){
   [].forEach.call(document.querySelectorAll('.snav a'), function(a){
     a.classList.toggle('on', a.getAttribute('data-view') === v);
   });
-  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理' }[v] || '应用管理';
+  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理', cq:'采集队列' }[v] || '应用管理';
   var cr = document.querySelector('.topbar .crumb');
   if (cr) cr.innerHTML = '生态伙伴端 / <b>' + name + '</b>';
   if (v === 'stats') { renderStats(); bindSchedFilters(); }
   if (v === 'diag') { bindDiagView(); renderDiagList(); }
   if (v === 'org') { bindOrgRule(); renderOrgRules(); }
   if (v === 'fav') { bindFav(); renderFav(); }
+  if (v === 'cq') { bindCq(); renderCq(); }
   var main = document.querySelector('.main');
   if (main) main.scrollTop = 0;
 }
@@ -2608,6 +2663,279 @@ function bindFav(){
     m.classList.add('hidden');
   });
   renderFvColMenu();
+}
+
+/* ============================================================================
+   影像应用中心 · 采集队列
+   ============================================================================ */
+var CQ = (function(){
+  var seed = [
+    ['影禾','CT','LIU FENG','2605210021','2605210021','1.2.840.113619.2.55.3.6657.20260521.1','---','2026-05-21 09:05:10','2026-10-26 15:47:07'],
+    ['影禾','CT','胡金连','CT596126102','4435776','1.2.876877.204.20261025.4435776','---','2026-10-25 08:15:26','2026-10-25 15:28:15'],
+    ['影禾','CT','Zhang Zhen Hua','CT202610160','0000078981','1.2.840.113619.2.55.3.6657.20261016.8','---','2026-10-16 15:15:53','2026-10-23 19:28:12'],
+    ['影禾','MR','李秀兰','CT596126118','4435801','1.2.840.113619.2.55.3.6657.20261024.5','颅脑MR平扫','2026-10-24 10:22:41','2026-10-24 18:03:55'],
+    ['影禾','CT','张桂芳','CT596126130','4435822','1.2.840.113619.2.55.3.6657.20261022.9','胸部CT平扫','2026-10-22 14:08:36','2026-10-22 20:11:09'],
+    ['金华广福医院','CT','罗小燕','CT596126155','4435901','1.2.840.113619.2.55.3.6657.20261021.3','胸部CT平扫','2026-10-21 09:31:12','2026-10-21 16:45:20'],
+    ['金华广福医院','CT','马长林','CT202610220','0000082055','1.2.840.113619.2.55.3.6657.20261020.7','---','2026-10-20 16:05:44','2026-10-20 21:12:38'],
+    ['金华广福医院','DR','曾宪明','MR202610240','0000081023','1.2.840.113619.2.55.3.6657.20261019.2','胸部DR正侧位','2026-10-19 11:47:03','2026-10-19 17:22:51']
+  ];
+  return seed.map(function(a, i){
+    return { idx:i+1, org:a[0], dev:a[1], name:a[2], pid:a[3], sid:a[4], uid:a[5],
+             study:a[6], studyTime:a[7], upTime:a[8] };
+  });
+})();
+
+var CQ_COLS = [
+  { k:'org',  t:'机构名称' },
+  { k:'dev',  t:'设备' },
+  { k:'name', t:'姓名' },
+  { k:'pid',  t:'患者号', cls:'mono' },
+  { k:'sid',  t:'检查号', cls:'mono' },
+  { k:'uid',  t:'UID', cls:'ell' },
+  { k:'study',t:'检查项目' },
+  { k:'studyTime', t:'检查时间', cls:'mono' },
+  { k:'upTime',    t:'上传时间', cls:'mono' }
+];
+
+var CQ_F = { org:'', dev:'', name:'', pid:'', sid:'', uid:'', study:'',
+             studyFrom:'', studyTo:'', upFrom:'', upTo:'' };
+var CQ_S = { page:1, size:10, sel:{}, hide:{} };
+
+function cqVisibleCols(){ return CQ_COLS.filter(function(c){ return !CQ_S.hide[c.k]; }); }
+
+function cqFiltered(){
+  var f = CQ_F;
+  return CQ.filter(function(r){
+    if (f.org   && r.org !== f.org) return false;
+    if (f.dev   && r.dev !== f.dev) return false;
+    if (f.name  && r.name.toUpperCase().indexOf(f.name.toUpperCase()) < 0) return false;
+    if (f.pid   && r.pid.toUpperCase().indexOf(f.pid.toUpperCase()) < 0) return false;
+    if (f.sid   && r.sid.indexOf(f.sid) < 0) return false;
+    if (f.uid   && r.uid.indexOf(f.uid) < 0) return false;
+    if (f.study && r.study.indexOf(f.study) < 0) return false;
+    if (f.studyFrom && r.studyTime.slice(0,10) < f.studyFrom) return false;
+    if (f.studyTo   && r.studyTime.slice(0,10) > f.studyTo)   return false;
+    if (f.upFrom && r.upTime.slice(0,10) < f.upFrom) return false;
+    if (f.upTo   && r.upTime.slice(0,10) > f.upTo)   return false;
+    return true;
+  });
+}
+
+function cqSelCount(){ return Object.keys(CQ_S.sel).filter(function(k){ return CQ_S.sel[k]; }).length; }
+
+function renderCq(){
+  var rows = cqFiltered();
+  var cols = cqVisibleCols();
+  var maxP = Math.max(1, Math.ceil(rows.length / CQ_S.size));
+  if (CQ_S.page > maxP) CQ_S.page = maxP;
+  var view = rows.slice((CQ_S.page - 1) * CQ_S.size, CQ_S.page * CQ_S.size);
+
+  var h = '<table class="or-table"><thead><tr><th class="ck"><input type="checkbox" id="cqAll"></th>';
+  cols.forEach(function(c){ h += '<th>' + c.t + '</th>'; });
+  h += '<th>操作</th></tr></thead><tbody>';
+  if (!view.length) {
+    h += '<tr class="or-empty"><td colspan="' + (cols.length + 2) + '">没有符合条件的采集任务</td></tr>';
+  } else {
+    view.forEach(function(r){
+      var on = !!CQ_S.sel[r.idx];
+      h += '<tr' + (on ? ' class="sel"' : '') + '><td class="ck">'
+         + '<input type="checkbox" data-cqk="' + r.idx + '"' + (on ? ' checked' : '') + '></td>';
+      cols.forEach(function(c){
+        var v = r[c.k];
+        if (c.k === 'uid') {
+          h += '<td class="ell"><span class="ell" title="' + esc(v) + '">' + esc(v) + '</span></td>';
+        } else {
+          h += '<td' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + esc(v) + '</td>';
+        }
+      });
+      h += '<td><a class="dg-link" data-cqv="' + r.idx + '">查看</a>'
+         +     '<a class="dg-link" data-cqd="' + r.idx + '">详情</a></td></tr>';
+    });
+  }
+  h += '</tbody></table>';
+  document.getElementById('cqTable').innerHTML = h;
+  document.getElementById('cqCount').innerHTML =
+      '共 <b>' + rows.length + '</b> 条 · 显示 <b>' + (cols.length + 1) + '</b> 列（' + cols.length + ' 列数据 + 操作，可表头设置）';
+
+  var btns = '<button data-p="' + (CQ_S.page - 1) + '"' + (CQ_S.page <= 1 ? ' disabled' : '') + '>‹</button>';
+  for (var p = 1; p <= maxP; p++) btns += '<button data-p="' + p + '" class="' + (p === CQ_S.page ? 'on' : '') + '">' + p + '</button>';
+  btns += '<button data-p="' + (CQ_S.page + 1) + '"' + (CQ_S.page >= maxP ? ' disabled' : '') + '>›</button>';
+  document.getElementById('cqPager').innerHTML =
+      '<span>共 ' + rows.length + ' 条 · 演示数据</span>'
+    + '<span class="btns"><select id="cqSize">'
+    +   [10,20,50].map(function(n){ return '<option value="' + n + '"' + (n === CQ_S.size ? ' selected' : '') + '>' + n + ' 条/页</option>'; }).join('')
+    + '</select>' + btns
+    + '<span style="color:var(--muted);font-size:11.5px;margin-left:6px">前往</span>'
+    + '<input id="cqJump" value="' + CQ_S.page + '" style="width:38px;border:1px solid var(--line);border-radius:4px;padding:2px 5px;font-size:11.5px;text-align:center">'
+    + '<span style="color:var(--muted);font-size:11.5px">页</span></span>';
+
+  [].forEach.call(document.querySelectorAll('#cqTable input[data-cqk]'), function(c){
+    c.onchange = function(){
+      var k = c.getAttribute('data-cqk');
+      if (c.checked) CQ_S.sel[k] = true; else delete CQ_S.sel[k];
+      renderCq();
+    };
+  });
+  var all = document.getElementById('cqAll');
+  if (all) all.onchange = function(){
+    view.forEach(function(r){ if (all.checked) CQ_S.sel[r.idx] = true; else delete CQ_S.sel[r.idx]; });
+    renderCq();
+  };
+  [].forEach.call(document.querySelectorAll('#cqPager [data-p]'), function(b){
+    b.onclick = function(){ CQ_S.page = +b.getAttribute('data-p'); renderCq(); };
+  });
+  var sz = document.getElementById('cqSize');
+  if (sz) sz.onchange = function(){ CQ_S.size = +sz.value; CQ_S.page = 1; renderCq(); };
+  var jp = document.getElementById('cqJump');
+  if (jp) jp.onkeydown = function(e){
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    var n = parseInt(jp.value, 10);
+    if (!n || n < 1 || n > maxP) { toast('页码需在 1–' + maxP + ' 之间'); return; }
+    CQ_S.page = n; renderCq();
+  };
+  [].forEach.call(document.querySelectorAll('#cqTable [data-cqv]'), function(a){
+    a.onclick = function(){ cqShowView(a.getAttribute('data-cqv')); };
+  });
+  [].forEach.call(document.querySelectorAll('#cqTable [data-cqd]'), function(a){
+    a.onclick = function(){ cqShowDetail(a.getAttribute('data-cqd')); };
+  });
+}
+
+function renderCqColMenu(){
+  var h = '';
+  CQ_COLS.forEach(function(c){
+    h += '<label><input type="checkbox" data-ccol="' + c.k + '"' + (CQ_S.hide[c.k] ? '' : ' checked') + '>' + c.t + '</label>';
+  });
+  h += '<label class="all"><input type="checkbox" id="cqColAll"' + (cqVisibleCols().length === CQ_COLS.length ? ' checked' : '') + '>全选 / 全不选</label>';
+  document.getElementById('cqColMenu').innerHTML = h;
+  [].forEach.call(document.querySelectorAll('#cqColMenu [data-ccol]'), function(cb){
+    cb.onchange = function(){
+      var k = cb.getAttribute('data-ccol');
+      if (cb.checked) delete CQ_S.hide[k]; else CQ_S.hide[k] = true;
+      if (!cqVisibleCols().length) CQ_S.hide = {};
+      renderCqColMenu(); renderCq();
+    };
+  });
+  var cl = document.getElementById('cqColAll');
+  if (cl) cl.onchange = function(){
+    CQ_S.hide = {};
+    if (!cl.checked) CQ_COLS.forEach(function(c){ if (c.k !== 'org') CQ_S.hide[c.k] = true; });
+    renderCqColMenu(); renderCq();
+  };
+}
+
+function cqFind(idx){ return CQ.filter(function(r){ return String(r.idx) === String(idx); })[0]; }
+
+function cqShowView(idx){
+  var r = cqFind(idx); if (!r) return;
+  dgOpen('<div class="dg-sheet">'
+    + '<div class="dg-shead"><div><b>检查详情 · ' + esc(r.dev) + '</b>'
+    +   '<small>' + esc(r.org) + '　|　' + esc(r.name) + '　|　检查号 ' + esc(r.sid) + '</small></div>'
+    +   '<button class="dg-x" id="dgX">关闭</button></div>'
+    + '<div class="dg-sbody">'
+    +   '<div class="dg-kv">'
+    +     '<div><small>患者号</small><span>' + esc(r.pid) + '</span></div>'
+    +     '<div><small>设备</small><span>' + esc(r.dev) + '</span></div>'
+    +     '<div><small>检查项目</small><span>' + esc(r.study) + '</span></div>'
+    +     '<div><small>检查时间</small><span>' + esc(r.studyTime) + '</span></div>'
+    +     '<div><small>上传时间</small><span>' + esc(r.upTime) + '</span></div>'
+    +     '<div><small>采集状态</small><span>已上传 · 待计算</span></div>'
+    +   '</div>'
+    +   '<div class="dg-blk"><div class="t">StudyInstanceUID</div>'
+    +     '<p style="font-family:Consolas,Menlo,monospace;font-size:11.5px;word-break:break-all">' + esc(r.uid) + '</p></div>'
+    +   '<div class="dg-blk"><div class="t">提示</div>'
+    +     '<p>检查项目为 <b>---</b> 表示该检查尚未解析出标准检查项目名称，可在「机构规则 → 检查项目匹配」中补配。</p></div>'
+    + '</div>'
+    + '<div class="dg-sfoot"><button class="btn" id="dgClose">关闭</button>'
+    +   '<button class="btn primary" id="cqGoCalc">提交 AI 计算</button></div>'
+    + '</div>');
+  var g = document.getElementById('cqGoCalc');
+  if (g) g.onclick = function(){ dgClose(); toast('已提交 AI 计算：' + r.sid); };
+}
+
+function cqShowDetail(idx){
+  var r = cqFind(idx); if (!r) return;
+  dgOpen('<div class="dg-sheet">'
+    + '<div class="dg-shead"><div><b>采集详情</b>'
+    +   '<small>' + esc(r.org) + '　|　检查号 ' + esc(r.sid) + '</small></div>'
+    +   '<button class="dg-x" id="dgX">关闭</button></div>'
+    + '<div class="dg-sbody">'
+    +   '<div class="dg-kv">'
+    +     '<div><small>来源系统</small><span>院内 PACS（DICOM C-STORE）</span></div>'
+    +     '<div><small>上传批次</small><span>B' + (20261026000 + r.idx) + '</span></div>'
+    +     '<div><small>文件数</small><span>' + (180 + r.idx * 37) + ' 个</span></div>'
+    +     '<div><small>上传耗时</small><span>' + (42 + r.idx * 6) + ' 秒</span></div>'
+    +     '<div><small>校验结果</small><span>MD5 一致</span></div>'
+    +     '<div><small>重传次数</small><span>0 次</span></div>'
+    +   '</div>'
+    +   '<div class="dg-blk"><div class="t">StudyInstanceUID</div>'
+    +     '<p style="font-family:Consolas,Menlo,monospace;font-size:11.5px;word-break:break-all">' + esc(r.uid) + '</p></div>'
+    +   '<div class="dg-note">ⓘ 采集详情为示例数据，实际以院内传输日志为准。</div>'
+    + '</div>'
+    + '<div class="dg-sfoot"><button class="btn" id="dgClose">关闭</button></div>'
+    + '</div>');
+}
+
+function bindCq(){
+  if (bindCq._done) return;
+  bindCq._done = true;
+  var g = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+  var apply = function(){
+    CQ_F.org = g('cqOrg') === '当前机构' ? '' : g('cqOrg');
+    CQ_F.dev = g('cqDev') === '筛选设备' ? '' : g('cqDev');
+    CQ_F.name = g('cqName'); CQ_F.pid = g('cqPid'); CQ_F.sid = g('cqSid');
+    CQ_F.uid = g('cqUid');  CQ_F.study = g('cqStudy');
+    CQ_F.studyFrom = g('cqStudyFrom'); CQ_F.studyTo = g('cqStudyTo');
+    CQ_F.upFrom = g('cqUpFrom'); CQ_F.upTo = g('cqUpTo');
+    CQ_S.page = 1; renderCq();
+  };
+  ['cqOrg','cqDev','cqStudyFrom','cqStudyTo','cqUpFrom','cqUpTo'].forEach(function(id){
+    var e = document.getElementById(id); if (e) e.onchange = apply;
+  });
+  ['cqName','cqPid','cqSid','cqUid','cqStudy'].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.onkeydown = function(ev){ if (ev.key === 'Enter') { ev.preventDefault(); apply(); } };
+  });
+
+  var q = document.getElementById('cqQuery'); if (q) q.onclick = function(){ apply(); toast('已按当前条件查询'); };
+  var rf = document.getElementById('cqRefresh'); if (rf) rf.onclick = function(){ renderCq(); toast('采集队列已刷新'); };
+  var rs = document.getElementById('cqReset'); if (rs) rs.onclick = function(){
+    ['cqName','cqPid','cqSid','cqUid','cqStudy'].forEach(function(id){ var e = document.getElementById(id); if (e) e.value = ''; });
+    var o = document.getElementById('cqOrg'); if (o) o.value = '当前机构';
+    var d = document.getElementById('cqDev'); if (d) d.value = '筛选设备';
+    ['cqStudyFrom','cqStudyTo','cqUpFrom','cqUpTo'].forEach(function(id){ var e = document.getElementById(id); if (e) e.value = ''; });
+    CQ_F = { org:'', dev:'', name:'', pid:'', sid:'', uid:'', study:'',
+             studyFrom:'', studyTo:'', upFrom:'', upTo:'' };
+    CQ_S.page = 1; renderCq(); toast('已重置查询条件');
+  };
+  var ca = document.getElementById('cqCalc'); if (ca) ca.onclick = function(){
+    var n = cqSelCount();
+    toast(n ? '已提交 ' + n + ' 条检查进行 AI 计算' : '未勾选时默认提交当前页 ' + CQ_S.size + ' 条（示例）');
+  };
+
+  var os = document.getElementById('cqOrg');
+  if (os && os.options.length === 1) {
+    var seen = {};
+    CQ.forEach(function(r){ if (!seen[r.org]) { seen[r.org] = 1; os.innerHTML += '<option>' + r.org + '</option>'; } });
+  }
+  var ds = document.getElementById('cqDev');
+  if (ds && ds.options.length === 1) {
+    var seen2 = {};
+    CQ.forEach(function(r){ if (!seen2[r.dev]) { seen2[r.dev] = 1; ds.innerHTML += '<option>' + r.dev + '</option>'; } });
+  }
+  var cb = document.getElementById('cqColBtn');
+  if (cb) cb.onclick = function(e){
+    e.stopPropagation();
+    document.getElementById('cqColMenu').classList.toggle('hidden');
+  };
+  document.addEventListener('click', function(e){
+    var m = document.getElementById('cqColMenu');
+    if (!m || m.classList.contains('hidden')) return;
+    if (e.target.closest && e.target.closest('.dg-cols')) return;
+    m.classList.add('hidden');
+  });
+  renderCqColMenu();
 }
 
 </script>
