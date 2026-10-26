@@ -368,6 +368,9 @@ input,select,textarea{font-family:inherit}
 .mt-item .r{display:flex;align-items:center;gap:8px;flex:0 0 auto}
 .tagm{font-size:10.5px;border-radius:9px;padding:1px 8px;background:var(--line2);color:var(--ink2)}
 
+.or-table .ck{width:34px;text-align:center}
+.or-table tbody tr.sel td{background:#FDF3F1}
+.or-table td.ell{max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* ---------- 弹窗 ---------- */
 .mask{position:fixed;inset:0;background:rgba(23,61,67,.42);z-index:50;
   display:flex;align-items:center;justify-content:center;padding:20px}
@@ -502,8 +505,9 @@ body.nomark .f label .new{display:none}
       <div class="g">影像应用中心</div>
       <a href="javascript:;" data-view="org"><i>12</i>机构规则</a>
       <a href="javascript:;" data-view="diag"><i>13</i>诊断列表</a>
+      <a href="javascript:;" data-view="fav"><i>14</i>收藏管理</a>
       <div class="g">安全与治理</div>
-      <a href="javascript:;"><i>14</i>操作审计</a>
+      <a href="javascript:;"><i>15</i>操作审计</a>
     </nav>
     <div class="suser"><span class="av">王</span><div><b>王斌</b><small>企业管理员</small></div></div>
   </aside>
@@ -747,6 +751,61 @@ body.nomark .f label .new{display:none}
 
     <!-- 规则 / 匹配 弹窗 -->
     <div class="or-modal hidden" id="orModal"></div>
+
+    <div id="viewFav" class="hidden">
+      <div class="head">
+        <div>
+          <h1>收藏管理</h1>
+          <div class="sub">影像应用中心 · 管理已收藏的检查，按分组整理并快速调阅。</div>
+        </div>
+        <div class="acts">
+          <button class="btn" id="fvRefresh">刷新</button>
+          <button class="btn" id="fvReset">重置</button>
+        </div>
+      </div>
+
+      <div class="dg-bar">
+        <div class="l">
+          <button class="btn primary" id="fvMove">＋ 移动至</button>
+          <button class="btn" id="fvUnfav">取消收藏</button>
+          <button class="btn" id="fvCalc">AI 计算</button>
+        </div>
+        <div class="r"></div>
+      </div>
+
+      <div class="fbar">
+        <div class="fitem"><label>分组</label><select id="fvGroup"><option>请选择</option></select></div>
+        <div class="fitem"><label>备注</label><input id="fvNote" placeholder="请输入" style="width:104px"></div>
+        <div class="fitem"><label>姓名</label><input id="fvName" placeholder="请输入" style="width:104px"></div>
+        <div class="fitem"><label>年龄</label><input id="fvAge" placeholder="请输入" style="width:82px"></div>
+        <div class="fitem"><label>性别</label><select id="fvSex"><option>请选择</option><option>男</option><option>女</option></select></div>
+        <div class="fitem"><label>患者号</label><input id="fvPid" placeholder="请输入" style="width:120px"></div>
+        <div class="fitem"><label>检查号</label><input id="fvSid" placeholder="请输入" style="width:120px"></div>
+        <div class="fitem"><label>设备</label><select id="fvDev"><option>请选择</option><option>CT</option><option>MR</option><option>DR</option></select></div>
+        <div class="fitem"><label>AI工具</label><select id="fvTool"><option>请选择</option></select></div>
+        <div class="fitem"><label>收藏者</label><input id="fvOwner" placeholder="请输入" style="width:100px"></div>
+        <div class="fitem"><label>收藏时间</label>
+          <div class="dr"><input type="date" id="fvFrom"><span>→</span><input type="date" id="fvTo"></div>
+        </div>
+        <button class="btn primary sm" id="fvQuery">查询</button>
+      </div>
+
+      <div class="panel">
+        <div class="dg-tw">
+          <div class="dg-tbar">
+            <span id="fvCount">—</span>
+            <div class="dg-cols">
+              <button class="dg-colbtn" id="fvColBtn">表头设置 ▾</button>
+              <div class="dg-colmenu hidden" id="fvColMenu"></div>
+            </div>
+          </div>
+          <div class="dg-scroll"><div id="fvTable"></div></div>
+          <div class="pg" id="fvPager"></div>
+        </div>
+      </div>
+
+      <div class="note">演示数据：分组、姓名、患者号、检查号、收藏者均为示例。「查看」打开结构化结论，「原始影像」仅说明调阅路径，原型不内置影像。</div>
+    </div>
 
     </main>
   </div>
@@ -1418,7 +1477,7 @@ function bindSchedFilters(){
 
 /* ---------- 视图切换 ---------- */
 function showView(v){
-  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule' };
+  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav' };
   Object.keys(views).forEach(function(k){
     var el = document.getElementById(views[k]);
     if (el) el.classList.toggle('hidden', k !== v);
@@ -1426,12 +1485,13 @@ function showView(v){
   [].forEach.call(document.querySelectorAll('.snav a'), function(a){
     a.classList.toggle('on', a.getAttribute('data-view') === v);
   });
-  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则' }[v] || '应用管理';
+  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理' }[v] || '应用管理';
   var cr = document.querySelector('.topbar .crumb');
   if (cr) cr.innerHTML = '生态伙伴端 / <b>' + name + '</b>';
   if (v === 'stats') { renderStats(); bindSchedFilters(); }
   if (v === 'diag') { bindDiagView(); renderDiagList(); }
   if (v === 'org') { bindOrgRule(); renderOrgRules(); }
+  if (v === 'fav') { bindFav(); renderFav(); }
   var main = document.querySelector('.main');
   if (main) main.scrollTop = 0;
 }
@@ -2254,6 +2314,300 @@ function bindOrgRule(){
       if (!seen[r.cloud]) { seen[r.cloud] = 1; csel.innerHTML += '<option>' + r.cloud + '</option>'; }
     });
   }
+}
+
+/* ============================================================================
+   影像应用中心 · 收藏管理
+   ============================================================================ */
+var FAV = (function(){
+  var rows = [
+    ['病例1','—','胡金连','053Y','女','CT596126102','4435776','CT','CT胸部骨折辅助诊断（联影）','钱医生','2026-10-26 16:52:25',true],
+    ['病例1','—','胡金连','053Y','女','CT596126102','4435776','CT','CT胸部肺炎辅助诊断（推想）','钱医生','2026-10-26 16:52:25',true],
+    ['病例1','—','Zhang Zhen Hua','074Y','男','CT202610160','0000078981','CT','CT颅脑AIR','钱医生','2026-10-26 16:52:25',false],
+    ['病例1','待讨论','李秀兰','058Y','女','CT596126118','4435801','CT','CT胸部肺结节辅助诊断（联影）','周敏','2026-10-26 15:20:11',true],
+    ['病例2','随访','张桂芳','071Y','女','CT596126130','4435822','CT','CT颅脑脑出血辅助诊断（联影）','陈立','2026-10-25 09:41:02',true],
+    ['病例2','—','曾宪明','066Y','男','MR202610240','0000081023','MR','MR颅脑转移瘤辅助诊断（联影）','谭伟','2026-10-24 14:08:36',true],
+    ['教学病例','示教','罗小燕','034Y','女','CT596126155','4435901','CT','CT胸部骨折辅助诊断（推想）','何静','2026-10-23 11:32:19',true],
+    ['教学病例','—','马长林','072Y','男','CT202610220','0000082055','CT','CT冠脉钙化积分（联影）','吴晓东','2026-10-22 16:05:44',false]
+  ];
+  return rows.map(function(a, i){
+    return { idx:i+1, group:a[0], note:a[1], name:a[2], age:a[3], sex:a[4], pid:a[5],
+             sid:a[6], dev:a[7], tool:a[8], owner:a[9], time:a[10], has:a[11] };
+  });
+})();
+
+var FV_COLS = [
+  { k:'group', t:'分组' },
+  { k:'note',  t:'备注' },
+  { k:'name',  t:'姓名' },
+  { k:'age',   t:'年龄',  cls:'mono' },
+  { k:'sex',   t:'性别' },
+  { k:'pid',   t:'患者号', cls:'mono' },
+  { k:'sid',   t:'检查号', cls:'mono' },
+  { k:'dev',   t:'设备' },
+  { k:'tool',  t:'AI工具', cls:'ell' },
+  { k:'owner', t:'收藏者' },
+  { k:'time',  t:'收藏时间', cls:'mono' }
+];
+
+var FV_F = { group:'', note:'', name:'', age:'', sex:'', pid:'', sid:'', dev:'', tool:'', owner:'', from:'', to:'' };
+var FV_S = { page:1, size:10, sel:{}, hide:{} };
+
+function fvVisibleCols(){ return FV_COLS.filter(function(c){ return !FV_S.hide[c.k]; }); }
+
+function fvFiltered(){
+  var f = FV_F;
+  return FAV.filter(function(r){
+    if (f.group && r.group !== f.group) return false;
+    if (f.note  && r.note.indexOf(f.note) < 0) return false;
+    if (f.name  && r.name.indexOf(f.name) < 0) return false;
+    if (f.age   && r.age.indexOf(f.age) < 0) return false;
+    if (f.sex   && r.sex !== f.sex) return false;
+    if (f.pid   && r.pid.toUpperCase().indexOf(f.pid.toUpperCase()) < 0) return false;
+    if (f.sid   && r.sid.indexOf(f.sid) < 0) return false;
+    if (f.dev   && r.dev !== f.dev) return false;
+    if (f.tool  && r.tool !== f.tool) return false;
+    if (f.owner && r.owner.indexOf(f.owner) < 0) return false;
+    if (f.from  && r.time.slice(0,10) < f.from) return false;
+    if (f.to    && r.time.slice(0,10) > f.to) return false;
+    return true;
+  });
+}
+
+function fvSelCount(){ return Object.keys(FV_S.sel).filter(function(k){ return FV_S.sel[k]; }).length; }
+
+function renderFav(){
+  var rows = fvFiltered();
+  var cols = fvVisibleCols();
+  var maxP = Math.max(1, Math.ceil(rows.length / FV_S.size));
+  if (FV_S.page > maxP) FV_S.page = maxP;
+  var view = rows.slice((FV_S.page - 1) * FV_S.size, FV_S.page * FV_S.size);
+
+  var h = '<table class="or-table"><thead><tr><th class="ck"><input type="checkbox" id="fvAll"></th>';
+  cols.forEach(function(c){ h += '<th>' + c.t + '</th>'; });
+  h += '<th>操作</th></tr></thead><tbody>';
+  if (!view.length) {
+    h += '<tr class="or-empty"><td colspan="' + (cols.length + 2) + '">没有符合条件的收藏</td></tr>';
+  } else {
+    view.forEach(function(r){
+      var on = !!FV_S.sel[r.idx];
+      h += '<tr' + (on ? ' class="sel"' : '') + '><td class="ck">'
+         + '<input type="checkbox" data-fsk="' + r.idx + '"' + (on ? ' checked' : '') + '></td>';
+      cols.forEach(function(c){
+        var v = r[c.k];
+        if (c.k === 'tool') {
+          h += '<td class="ell"><span class="ell" title="' + esc(v) + '">' + esc(v) + '</span></td>';
+        } else {
+          h += '<td' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + esc(v) + '</td>';
+        }
+      });
+      h += '<td>'
+         +   (r.has ? '<a class="dg-link" data-fres="' + esc(r.sid) + '">查看</a>'
+                     : '<span class="dg-link dis" title="该收藏暂无结构化结果">查看</span>')
+         +   '<a class="dg-link" data-fraw="' + esc(r.sid) + '">原始影像</a>'
+         + '</td></tr>';
+    });
+  }
+  h += '</tbody></table>';
+  document.getElementById('fvTable').innerHTML = h;
+  document.getElementById('fvCount').innerHTML =
+      '共 <b>' + rows.length + '</b> 条 · 显示 <b>' + (cols.length + 1) + '</b> 列（' + cols.length + ' 列数据 + 操作，可表头设置）';
+
+  var btns = '<button data-p="' + (FV_S.page - 1) + '"' + (FV_S.page <= 1 ? ' disabled' : '') + '>‹</button>';
+  for (var p = 1; p <= maxP; p++) btns += '<button data-p="' + p + '" class="' + (p === FV_S.page ? 'on' : '') + '">' + p + '</button>';
+  btns += '<button data-p="' + (FV_S.page + 1) + '"' + (FV_S.page >= maxP ? ' disabled' : '') + '>›</button>';
+  document.getElementById('fvPager').innerHTML =
+      '<span>已选 ' + fvSelCount() + ' 个 · 共 ' + rows.length + ' 条 · 演示数据</span>'
+    + '<span class="btns"><select id="fvSize">'
+    +   [10,20,50].map(function(n){ return '<option value="' + n + '"' + (n === FV_S.size ? ' selected' : '') + '>' + n + ' 条/页</option>'; }).join('')
+    + '</select>' + btns + '</span>';
+
+  [].forEach.call(document.querySelectorAll('#fvTable input[data-fsk]'), function(c){
+    c.onchange = function(){
+      var k = c.getAttribute('data-fsk');
+      if (c.checked) FV_S.sel[k] = true; else delete FV_S.sel[k];
+      renderFav();
+    };
+  });
+  var all = document.getElementById('fvAll');
+  if (all) all.onchange = function(){
+    view.forEach(function(r){ if (all.checked) FV_S.sel[r.idx] = true; else delete FV_S.sel[r.idx]; });
+    renderFav();
+  };
+  [].forEach.call(document.querySelectorAll('#fvPager [data-p]'), function(b){
+    b.onclick = function(){ FV_S.page = +b.getAttribute('data-p'); renderFav(); };
+  });
+  var sz = document.getElementById('fvSize');
+  if (sz) sz.onchange = function(){ FV_S.size = +sz.value; FV_S.page = 1; renderFav(); };
+  [].forEach.call(document.querySelectorAll('#fvTable [data-fres]'), function(a){
+    a.onclick = function(){ fvShowResult(a.getAttribute('data-fres')); };
+  });
+  [].forEach.call(document.querySelectorAll('#fvTable [data-fraw]'), function(a){
+    a.onclick = function(){ fvShowRaw(a.getAttribute('data-fraw')); };
+  });
+}
+
+/* 表头设置 */
+function renderFvColMenu(){
+  var h = '';
+  FV_COLS.forEach(function(c){
+    h += '<label><input type="checkbox" data-fcol="' + c.k + '"' + (FV_S.hide[c.k] ? '' : ' checked') + '>' + c.t + '</label>';
+  });
+  h += '<label class="all"><input type="checkbox" id="fvColAll"' + (fvVisibleCols().length === FV_COLS.length ? ' checked' : '') + '>全选 / 全不选</label>';
+  document.getElementById('fvColMenu').innerHTML = h;
+  [].forEach.call(document.querySelectorAll('#fvColMenu [data-fcol]'), function(cb){
+    cb.onchange = function(){
+      var k = cb.getAttribute('data-fcol');
+      if (cb.checked) delete FV_S.hide[k]; else FV_S.hide[k] = true;
+      if (!fvVisibleCols().length) FV_S.hide = {};
+      renderFvColMenu(); renderFav();
+    };
+  });
+  var cl = document.getElementById('fvColAll');
+  if (cl) cl.onchange = function(){
+    FV_S.hide = {};
+    if (!cl.checked) FV_COLS.forEach(function(c){ if (c.k !== 'group') FV_S.hide[c.k] = true; });
+    renderFvColMenu(); renderFav();
+  };
+}
+
+function fvFind(sid){ return FAV.filter(function(r){ return r.sid === sid; })[0]; }
+
+function fvShowResult(sid){
+  var r = fvFind(sid); if (!r) return;
+  var partTxt = r.dev === 'MR' ? '颅脑' : '胸部';
+  dgOpen('<div class="dg-sheet">'
+    + '<div class="dg-shead"><div><b>诊断结果 · ' + esc(r.dev) + ' ' + partTxt + '</b>'
+    +   '<small>' + esc(r.group) + '　|　' + esc(r.name) + ' ' + esc(r.sex) + ' ' + esc(r.age) + '　|　检查号 ' + esc(r.sid) + '</small></div>'
+    +   '<button class="dg-x" id="dgX">关闭</button></div>'
+    + '<div class="dg-sbody">'
+    +   '<div class="dg-kv">'
+    +     '<div><small>AI工具</small><span>' + esc(r.tool) + '</span></div>'
+    +     '<div><small>收藏者 / 收藏时间</small><span>' + esc(r.owner) + ' / ' + esc(r.time) + '</span></div>'
+    +     '<div><small>患者号</small><span>' + esc(r.pid) + '</span></div>'
+    +     '<div><small>设备</small><span>' + esc(r.dev) + '</span></div>'
+    +   '</div>'
+    +   '<div class="dg-blk"><div class="t">AI 检出结果（结构化文本）</div>'
+    +     '<p>· 左肺上叶尖后段实性结节，最大径 7.8 mm，Lung-RADS 2</p>'
+    +     '<p>· 右肺下叶后基底段磨玻璃结节，4.2 mm，Lung-RADS 2</p>'
+    +     '<p>· 纵隔未见肿大淋巴结，双侧胸腔未见积液</p>'
+    +   '</div>'
+    +   '<div class="dg-blk"><div class="t">影像所见</div>'
+    +     '<p>双肺纹理清晰，左肺上叶尖后段见实性结节，最大径约 7.8 mm；右肺下叶后基底段见磨玻璃结节，约 4.2 mm。'
+    +     '气管及主支气管通畅，纵隔居中，未见明确肿大淋巴结。双侧胸腔未见积液。</p>'
+    +   '</div>'
+    +   '<div class="dg-blk"><div class="t">诊断意见</div>'
+    +     '<p>1. 左肺上叶尖后段实性结节（7.8 mm，Lung-RADS 2），建议 12 个月后复查胸部 CT。</p>'
+    +     '<p>2. 右肺下叶后基底段磨玻璃结节（4.2 mm，Lung-RADS 2），建议年度随访。</p>'
+    +   '</div>'
+    +   '<div class="dg-note">ⓘ 本结果由 AI 汇总各模型结构化输出生成，仅供临床医师参考，不作为最终诊断依据。</div>'
+    + '</div>'
+    + '<div class="dg-sfoot"><button class="btn" id="dgCopy">复制意见</button>'
+    +   '<button class="btn primary" id="dgUse">引用到报告</button></div>'
+    + '</div>');
+  var cp = document.getElementById('dgCopy');
+  if (cp) cp.onclick = function(){ toast('已复制诊断意见（示例）'); };
+  var us = document.getElementById('dgUse');
+  if (us) us.onclick = function(){ dgClose(); toast('已引用到报告（示例）'); };
+}
+
+function fvShowRaw(sid){
+  var r = fvFind(sid); if (!r) return;
+  dgOpen('<div class="dg-sheet">'
+    + '<div class="dg-shead"><div><b>原始影像调阅</b>'
+    +   '<small>' + esc(r.group) + '　|　' + esc(r.name) + '　|　检查号 ' + esc(r.sid) + '</small></div>'
+    +   '<button class="dg-x" id="dgX">关闭</button></div>'
+    + '<div class="dg-sbody">'
+    +   '<div class="dg-kv">'
+    +     '<div><small>设备</small><span>' + esc(r.dev) + '</span></div>'
+    +     '<div><small>收藏时间</small><span>' + esc(r.time) + '</span></div>'
+    +   '</div>'
+    +   '<div class="dg-blk"><div class="t">调阅方式</div>'
+    +     '<p>本原型不内置影像，实际部署按院内既有方式调阅：</p>'
+    +     '<p>· 客户端：调用 PACS Viewer 打开该检查（检查号 / StudyInstanceUID 透传）</p>'
+    +     '<p>· Web 端：以 DICOMweb 方式加载序列</p>'
+    +     '<p>· 影像不出院，AI 仅取结构化文本结果</p>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="dg-sfoot"><button class="btn" id="dgClose">关闭</button>'
+    +   '<button class="btn primary" id="dgGo">在 PACS 打开</button></div>'
+    + '</div>');
+  var go = document.getElementById('dgGo');
+  if (go) go.onclick = function(){ dgClose(); toast('已向 PACS 发起调阅：' + r.sid); };
+}
+
+/* 绑定（只绑一次） */
+function bindFav(){
+  if (bindFav._done) return;
+  bindFav._done = true;
+  var g = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+  var SEL = { fvGroup:'group', fvSex:'sex', fvDev:'dev', fvTool:'tool' };
+  var apply = function(){
+    FV_F.group = g('fvGroup') === '请选择' ? '' : g('fvGroup');
+    FV_F.sex   = g('fvSex') === '请选择' ? '' : g('fvSex');
+    FV_F.dev   = g('fvDev') === '请选择' ? '' : g('fvDev');
+    FV_F.tool  = g('fvTool') === '请选择' ? '' : g('fvTool');
+    FV_F.note  = g('fvNote'); FV_F.name = g('fvName'); FV_F.age = g('fvAge');
+    FV_F.pid   = g('fvPid');  FV_F.sid = g('fvSid');  FV_F.owner = g('fvOwner');
+    FV_F.from  = g('fvFrom'); FV_F.to = g('fvTo');
+    FV_S.page = 1; renderFav();
+  };
+  ['fvGroup','fvSex','fvDev','fvTool','fvFrom','fvTo'].forEach(function(id){
+    var e = document.getElementById(id); if (e) e.onchange = apply;
+  });
+  ['fvNote','fvName','fvAge','fvPid','fvSid','fvOwner'].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.onkeydown = function(ev){ if (ev.key === 'Enter') { ev.preventDefault(); apply(); } };
+  });
+
+  var q = document.getElementById('fvQuery'); if (q) q.onclick = function(){ apply(); toast('已按当前条件查询'); };
+  var rf = document.getElementById('fvRefresh'); if (rf) rf.onclick = function(){ renderFav(); toast('收藏列表已刷新'); };
+  var rs = document.getElementById('fvReset'); if (rs) rs.onclick = function(){
+    ['fvNote','fvName','fvAge','fvPid','fvSid','fvOwner','fvFrom','fvTo'].forEach(function(id){
+      var e = document.getElementById(id); if (e) e.value = '';
+    });
+    ['fvGroup','fvSex','fvDev','fvTool'].forEach(function(id){
+      var e = document.getElementById(id); if (e) e.value = '请选择';
+    });
+    FV_F = { group:'', note:'', name:'', age:'', sex:'', pid:'', sid:'', dev:'', tool:'', owner:'', from:'', to:'' };
+    FV_S.page = 1; renderFav(); toast('已重置查询条件');
+  };
+  var mv = document.getElementById('fvMove'); if (mv) mv.onclick = function(){
+    var n = fvSelCount();
+    toast(n ? '已选择 ' + n + ' 条，请选择目标分组（示例）' : '请先勾选要移动的收藏');
+  };
+  var uf = document.getElementById('fvUnfav'); if (uf) uf.onclick = function(){
+    var n = fvSelCount();
+    if (!n) { toast('请先勾选要取消收藏的检查'); return; }
+    toast('已取消收藏 ' + n + ' 条（示例）'); FV_S.sel = {}; renderFav();
+  };
+  var ca = document.getElementById('fvCalc'); if (ca) ca.onclick = function(){
+    var n = fvSelCount();
+    toast(n ? '已提交 ' + n + ' 条收藏进行 AI 计算' : '请先勾选要计算的收藏');
+  };
+
+  var gs = document.getElementById('fvGroup');
+  if (gs && gs.options.length === 1) {
+    var seen = {};
+    FAV.forEach(function(r){ if (!seen[r.group]) { seen[r.group] = 1; gs.innerHTML += '<option>' + r.group + '</option>'; } });
+  }
+  var ts = document.getElementById('fvTool');
+  if (ts && ts.options.length === 1) {
+    var seen2 = {};
+    FAV.forEach(function(r){ if (!seen2[r.tool]) { seen2[r.tool] = 1; ts.innerHTML += '<option>' + r.tool + '</option>'; } });
+  }
+  var cb = document.getElementById('fvColBtn');
+  if (cb) cb.onclick = function(e){
+    e.stopPropagation();
+    document.getElementById('fvColMenu').classList.toggle('hidden');
+  };
+  document.addEventListener('click', function(e){
+    var m = document.getElementById('fvColMenu');
+    if (!m || m.classList.contains('hidden')) return;
+    if (e.target.closest && e.target.closest('.dg-cols')) return;
+    m.classList.add('hidden');
+  });
+  renderFvColMenu();
 }
 
 </script>
