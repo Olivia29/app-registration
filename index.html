@@ -388,6 +388,59 @@ input,select,textarea{font-family:inherit}
 .qd-table td.ell{max-width:122px}
 .st-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle}
 .mutd{color:var(--muted2)}
+.bs-grid{display:grid;grid-template-columns:1fr 292px 1fr;grid-template-areas:"svc mid res" "chk mid det";gap:13px;margin-bottom:13px}
+.bs-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;min-width:0}
+.bs-card.tall{display:flex;flex-direction:column}
+.bs-ct{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.bs-ct b{font-size:12.5px;color:var(--head);font-weight:600;display:flex;align-items:center;gap:7px}
+.bs-ct b::before{content:"";width:3px;height:12px;border-radius:2px;background:var(--primary)}
+.bs-ct small{font-size:11px;color:var(--muted)}
+.bs-act{background:none;border:1px solid var(--line);border-radius:5px;padding:3px 9px;font-size:11px;color:var(--ink2);cursor:pointer}
+.bs-act:hover{border-color:var(--primary);color:var(--primary)}
+.bs-svc{grid-area:svc}
+.bs-chk{grid-area:chk}
+.bs-mid{grid-area:mid}
+.bs-res{grid-area:res}
+.bs-det{grid-area:det}
+.bs-kpis{display:flex;flex-direction:column;gap:11px;height:100%}
+.bs-kpi{background:linear-gradient(180deg,#FFFDFB,#FDF6F4);border:1px solid var(--line);border-radius:10px;
+  padding:12px 13px;display:flex;align-items:center;gap:11px}
+.bs-kpi .ic{flex:0 0 30px;height:30px;border-radius:8px;background:#FCECEC;color:var(--primary);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.bs-kpi .tx{display:flex;flex-direction:column;min-width:0}
+.bs-kpi .tx span{font-size:11.5px;color:var(--muted)}
+.bs-kpi .tx b{font-size:19px;color:var(--head);font-weight:600;line-height:1.25;font-variant-numeric:tabular-nums}
+.bs-kpi .tx b i{font-size:11px;font-style:normal;color:var(--muted);margin-left:3px;font-weight:400}
+.bs-leg{display:flex;flex-direction:column;gap:9px;font-size:11.5px;color:var(--ink2)}
+.bs-leg .r{display:flex;align-items:center;gap:7px}
+.bs-leg .r i{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+.bs-leg .r span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bs-leg .r b{font-weight:600;color:var(--head);font-variant-numeric:tabular-nums}
+.bs-leg .r em{font-style:normal;color:var(--muted);font-size:10.5px;min-width:52px;text-align:right}
+.bs-donut-wrap{display:flex;align-items:center;gap:10px}
+.bs-donut-wrap svg{flex:0 0 auto}
+.bs-tabs{display:flex;gap:14px;margin-bottom:6px}
+.bs-tabs button{background:none;border:none;padding:0 0 5px;font-size:11.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.bs-tabs button.on{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.bs-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.bs-tbl th{text-align:left;font-weight:500;color:var(--muted);padding:6px 5px;border-bottom:1px solid var(--line);white-space:nowrap}
+.bs-tbl th.s{cursor:pointer;user-select:none}
+.bs-tbl th.s:hover{color:var(--primary)}
+.bs-tbl td{padding:7px 5px;border-bottom:1px solid #F1F4F3;color:var(--ink);white-space:nowrap}
+.bs-tbl tbody tr:last-child td{border-bottom:none}
+.bs-tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.bs-tbl td.rk{color:var(--muted);width:30px}
+.bs-tbl td.ell{max-width:130px;overflow:hidden;text-overflow:ellipsis}
+.bs-tbl .mut{color:var(--muted2)}
+.bs-wide{margin-bottom:13px}
+.bs-split{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.bs-note{font-size:10.5px;color:var(--muted2);margin-top:8px;line-height:1.5}
+.bs-chart{display:block;width:100%;height:auto}
+.bs-chart text{font-family:inherit;fill:var(--muted);font-size:9px}
+.bs-chart .ax{stroke:#EDF1F0}
+.bs-chart .ref{stroke:#C9D3D1;stroke-dasharray:4 3}
+.bs-sel{border:1px solid var(--line);border-radius:5px;padding:3px 7px;font-size:11px;color:var(--ink2);background:#fff}
+
 /* ---------- 弹窗 ---------- */
 .mask{position:fixed;inset:0;background:rgba(23,61,67,.42);z-index:50;
   display:flex;align-items:center;justify-content:center;padding:20px}
@@ -519,15 +572,16 @@ body.nomark .f label .new{display:none}
       <a href="javascript:;"><i>09</i>计量账本</a>
       <a href="javascript:;"><i>10</i>医院账单</a>
       <a href="javascript:;" data-view="stats"><i>11</i>计算统计</a>
+      <a href="javascript:;" data-view="bs"><i>12</i>业务统计</a>
       <div class="g">影像应用中心</div>
-      <a href="javascript:;" data-view="org"><i>12</i>机构规则</a>
-      <a href="javascript:;" data-view="diag"><i>13</i>诊断列表</a>
-      <a href="javascript:;" data-view="fav"><i>14</i>收藏管理</a>
-      <a href="javascript:;" data-view="cq"><i>15</i>采集队列</a>
-      <a href="javascript:;" data-view="rcv"><i>16</i>接收队列</a>
-      <a href="javascript:;" data-view="qd"><i>17</i>计算队列</a>
+      <a href="javascript:;" data-view="org"><i>13</i>机构规则</a>
+      <a href="javascript:;" data-view="diag"><i>14</i>诊断列表</a>
+      <a href="javascript:;" data-view="fav"><i>15</i>收藏管理</a>
+      <a href="javascript:;" data-view="cq"><i>16</i>采集队列</a>
+      <a href="javascript:;" data-view="rcv"><i>17</i>接收队列</a>
+      <a href="javascript:;" data-view="qd"><i>18</i>计算队列</a>
       <div class="g">安全与治理</div>
-      <a href="javascript:;"><i>18</i>操作审计</a>
+      <a href="javascript:;"><i>19</i>操作审计</a>
     </nav>
     <div class="suser"><span class="av">王</span><div><b>王斌</b><small>企业管理员</small></div></div>
   </aside>
@@ -996,6 +1050,82 @@ body.nomark .f label .new{display:none}
       </div>
 
       <div class="note">演示数据：机构、姓名、患者号、检查号、请求ID、UID 均为示例。「过速数据」为重算耗时超过阈值的任务子集；「查看报告」打开结构化结论，「状态」打开任务流转详情。</div>
+    </div>
+
+    <div id="viewBs" class="hidden">
+      <div class="head">
+        <div>
+          <h1>业务统计</h1>
+          <div class="sub">交易与财务 · 按机构与 AI 工具统计服务量、AI 结果构成与临床使用情况。</div>
+        </div>
+        <div class="acts">
+          <button class="btn" id="bsRefresh">刷新</button>
+          <button class="btn" id="bsReset">重置</button>
+        </div>
+      </div>
+
+      <div class="fbar" id="bsFbar">
+        <div class="fitem"><label>计算时间</label>
+          <div class="range"><input type="date" id="bsFrom" value="2026-09-26"><span>至</span><input type="date" id="bsTo" value="2026-10-26"></div>
+        </div>
+        <div class="fitem"><label>机构名称</label>
+          <select id="bsOrg"><option>当前机构</option><option>全部机构</option></select>
+        </div>
+        <div class="fitem grow"></div>
+        <div class="fitem"><label>&nbsp;</label><span class="mutd" id="bsRange">2026-09-26 → 2026-10-26 · 32 例</span></div>
+      </div>
+
+      <div class="bs-grid">
+        <div class="bs-card bs-svc">
+          <div class="bs-ct"><b>服务次数</b><small>近 7 日</small></div>
+          <div id="bsSvc"></div>
+        </div>
+
+        <div class="bs-card bs-chk">
+          <div class="bs-ct"><b>适用检查</b><small id="bsChkNote">CT 100%</small></div>
+          <div class="bs-tabs" id="bsChkTabs">
+            <button data-t="part">部位</button><button data-t="mod" class="on">模态</button>
+          </div>
+          <div id="bsChk"></div>
+        </div>
+
+        <div class="bs-mid">
+          <div class="bs-kpis">
+            <div class="bs-kpi"><span class="ic">工</span><span class="tx"><span>AI工具数量</span><b id="bsK1">70</b></span></div>
+            <div class="bs-kpi"><span class="ic">天</span><span class="tx"><span>累计服务天数</span><b id="bsK2">1.1K<i>天</i></b></span></div>
+            <div class="bs-kpi"><span class="ic">次</span><span class="tx"><span>累计服务人次</span><b id="bsK3">32<i>人次</i></b></span></div>
+          </div>
+        </div>
+
+        <div class="bs-card bs-res">
+          <div class="bs-ct"><b>AI结果</b><small>共 29 次</small></div>
+          <div id="bsRes"></div>
+        </div>
+
+        <div class="bs-card bs-det">
+          <div class="bs-ct"><b>AI计算明细</b><button class="bs-act" id="bsExp1">↑ 导出</button></div>
+          <div id="bsDet"></div>
+        </div>
+      </div>
+
+      <div class="bs-card bs-wide">
+        <div class="bs-ct">
+          <b>使用统计</b>
+          <span style="display:flex;align-items:center;gap:7px">
+            <small>模型筛选</small>
+            <select class="bs-sel" id="bsModel"><option>全部模型</option><option>胸部骨折（推想）</option><option>胸部肺炎（推想）</option><option>肺结节（联影）</option></select>
+            <button class="bs-act" id="bsExp2">↑ 导出</button>
+          </span>
+        </div>
+        <div id="bsUse"></div>
+        <div class="bs-note">AI结果数量按计算完成时间归集；用户浏览数量按报告打开次数归集；查阅率 = 用户浏览数量 ÷ AI结果数量。</div>
+      </div>
+
+      <div class="bs-card bs-wide">
+        <div class="bs-ct"><b>机构使用明细</b><button class="bs-act" id="bsExp3">↑ 导出</button></div>
+        <div id="bsInst"></div>
+        <div class="bs-note">演示数据：机构、工具、指标均为原型示例，不代表生产口径。切换「机构名称 = 全部机构」可查看多家机构对比。</div>
+      </div>
     </div>
 
     </main>
@@ -1668,7 +1798,7 @@ function bindSchedFilters(){
 
 /* ---------- 视图切换 ---------- */
 function showView(v){
-  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav', cq:'viewCq', rcv:'viewRcv', qd:'viewQd' };
+  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav', cq:'viewCq', rcv:'viewRcv', qd:'viewQd', bs:'viewBs' };
   Object.keys(views).forEach(function(k){
     var el = document.getElementById(views[k]);
     if (el) el.classList.toggle('hidden', k !== v);
@@ -1676,7 +1806,7 @@ function showView(v){
   [].forEach.call(document.querySelectorAll('.snav a'), function(a){
     a.classList.toggle('on', a.getAttribute('data-view') === v);
   });
-  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理', cq:'采集队列', rcv:'接收队列', qd:'计算队列' }[v] || '应用管理';
+  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理', cq:'采集队列', rcv:'接收队列', qd:'计算队列', bs:'业务统计' }[v] || '应用管理';
   var cr = document.querySelector('.topbar .crumb');
   if (cr) cr.innerHTML = '生态伙伴端 / <b>' + name + '</b>';
   if (v === 'stats') { renderStats(); bindSchedFilters(); }
@@ -1686,6 +1816,7 @@ function showView(v){
   if (v === 'cq') { bindCq(); renderCq(); }
   if (v === 'rcv') { bindRcv(); renderRcv(); }
   if (v === 'qd') { bindQd(); renderQd(); }
+  if (v === 'bs') { bindBs(); renderBs(); }
   var main = document.querySelector('.main');
   if (main) main.scrollTop = 0;
 }
@@ -3748,6 +3879,299 @@ function bindQd(){
     m.classList.add('hidden');
   });
   renderQdColMenu();
+}
+
+/* ============================================================================
+   交易与财务 · 业务统计
+   ============================================================================ */
+var BS_USE = (function(){   /* 2026-09-27 ~ 2026-10-26，30 天 */
+  var d = new Date(2026, 8, 27), out = [];
+  var hit = { '10-10':[1,1], '10-11':[6,6], '10-12':[2,2], '10-13':[6,6], '10-14':[2,2],
+              '10-15':[2,2], '10-17':[4,3], '10-19':[1,1], '10-21':[4,3], '10-23':[1,1], '10-25':[3,3] };
+  for (var i = 0; i < 30; i++) {
+    var p = function(n){ return (n < 10 ? '0' : '') + n; };
+    var key = p(d.getMonth() + 1) + '-' + p(d.getDate());
+    var h = hit[key] || [0, 0];
+    out.push({ md:key, iso:d.getFullYear() + '-' + key, ai:h[0], uv:h[1] });
+    d.setDate(d.getDate() + 1);
+  }
+  return out;
+})();
+
+var BS_RES = [
+  { n:'AI提示阳性', v:21, c:'#A9473F' },
+  { n:'AI提示阴性', v:7,  c:'#2E7D74' },
+  { n:'临床分析',   v:1,  c:'#C8862A' }
+];
+
+var BS_CHK = {
+  mod:  [{ n:'CT', v:32, c:'#A9473F' }],
+  part: [{ n:'胸部', v:24, c:'#A9473F' }, { n:'颅脑', v:8, c:'#2E7D74' }]
+};
+
+var BS_DET = [
+  { tool:'CT胸部骨折辅助诊断（推想）', mod:'CT', part:'胸部', n:15 },
+  { tool:'CT胸部肺炎辅助诊断（推想）', mod:'CT', part:'胸部', n:8 },
+  { tool:'CT胸部肺结节辅助诊断（联影）', mod:'CT', part:'胸部', n:6 },
+  { tool:'CT颅脑脑出血辅助诊断（联影）', mod:'CT', part:'颅脑', n:3 }
+];
+
+var BS_INST = [
+  { name:'影禾医脉',       tools:70, calc:32, avg:'00:04:59', pos:75.0, read:84.4 },
+  { name:'金华广福医院',   tools:12, calc:18, avg:'00:05:12', pos:61.1, read:72.2 },
+  { name:'江西省人民医院', tools:9,  calc:14, avg:'00:06:03', pos:57.1, read:64.3 },
+  { name:'遂川县人民医院', tools:6,  calc:9,  avg:'00:07:41', pos:44.4, read:55.6 }
+];
+
+var BS_F = { from:'2026-09-26', to:'2026-10-26', org:'当前机构' };
+var BS_S = { chk:'mod', sort:'calc', desc:true };
+
+function bsDays(){
+  return BS_USE.filter(function(r){ return r.iso >= BS_F.from && r.iso <= BS_F.to; });
+}
+
+function bsSmooth(pts){
+  if (pts.length < 2) return '';
+  var d = 'M' + pts[0][0] + ',' + pts[0][1];
+  for (var i = 1; i < pts.length; i++) {
+    var p0 = pts[i-1], p1 = pts[i], mx = (p0[0] + p1[0]) / 2;
+    d += ' C' + mx + ',' + p0[1] + ' ' + mx + ',' + p1[1] + ' ' + p1[0] + ',' + p1[1];
+  }
+  return d;
+}
+
+/* ---------- 服务次数：近 7 日面积图 ---------- */
+function bsAreaSvg(){
+  var days = bsDays().slice(-7);
+  if (!days.length) return '<div class="bs-note">所选区间内无数据</div>';
+  var W = 520, H = 196, pl = 26, pr = 10, pt = 16, pb = 24;
+  var iw = W - pl - pr, ih = H - pt - pb, max = 4;
+  var n = days.length;
+  var X = function(i){ return pl + (n === 1 ? iw / 2 : iw * i / (n - 1)); };
+  var Y = function(v){ return pt + ih * (1 - v / max); };
+  var s = '<svg class="bs-chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet">';
+  s += '<defs><linearGradient id="bsFill" x1="0" y1="0" x2="0" y2="1">'
+     + '<stop offset="0%" stop-color="#A9473F" stop-opacity=".22"/>'
+     + '<stop offset="100%" stop-color="#A9473F" stop-opacity=".02"/></linearGradient></defs>';
+  for (var g = 0; g <= max; g++) {
+    var y = Y(g);
+    s += '<line class="ax" x1="' + pl + '" y1="' + y + '" x2="' + (W - pr) + '" y2="' + y + '"/>'
+       + '<text x="' + (pl - 6) + '" y="' + (y + 3) + '" text-anchor="end">' + g + '</text>';
+  }
+  var pts = days.map(function(d, i){ return [X(i), Y(d.ai)]; });
+  s += '<path d="' + bsSmooth(pts) + ' L' + X(n - 1) + ',' + Y(0) + ' L' + X(0) + ',' + Y(0) + ' Z" fill="url(#bsFill)"/>';
+  s += '<path d="' + bsSmooth(pts) + '" fill="none" stroke="#A9473F" stroke-width="1.8"/>';
+  pts.forEach(function(p, i){
+    s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.6" fill="#fff" stroke="#A9473F" stroke-width="1.6"/>'
+       + '<text x="' + p[0] + '" y="' + (p[1] - 8) + '" text-anchor="middle" style="fill:#A9473F">' + days[i].ai + '</text>';
+  });
+  days.forEach(function(d, i){
+    s += '<text x="' + X(i) + '" y="' + (H - 7) + '" text-anchor="middle">' + d.md + '</text>';
+  });
+  s += '</svg>';
+  return s;
+}
+
+/* ---------- 环形图 ---------- */
+function bsDonut(segs, total, centerLabel, unit, size){
+  var S = size || 128, r = S / 2 - 14, c = 2 * Math.PI * r, off = 0, cx = S / 2;
+  var s = '<svg width="' + S + '" height="' + S + '" viewBox="0 0 ' + S + ' ' + S + '" style="flex:0 0 auto">';
+  s += '<circle cx="' + cx + '" cy="' + cx + '" r="' + r + '" fill="none" stroke="#F1F4F3" stroke-width="15"/>';
+  segs.forEach(function(sg){
+    var len = c * sg.v / total;
+    s += '<circle cx="' + cx + '" cy="' + cx + '" r="' + r + '" fill="none" stroke="' + sg.c + '"'
+       + ' stroke-width="15" stroke-dasharray="' + len.toFixed(2) + ' ' + (c - len).toFixed(2) + '"'
+       + ' stroke-dashoffset="' + (-off).toFixed(2) + '" transform="rotate(-90 ' + cx + ' ' + cx + ')"/>';
+    off += len;
+  });
+  s += '<text x="' + cx + '" y="' + (cx - 5) + '" text-anchor="middle" style="font-size:9.5px;fill:#8A9A97">' + centerLabel + '</text>'
+     + '<text x="' + cx + '" y="' + (cx + 12) + '" text-anchor="middle" style="font-size:18px;font-weight:600;fill:#173D43">' + total + '</text>'
+     + '<text x="' + cx + '" y="' + (cx + 24) + '" text-anchor="middle" style="font-size:9px;fill:#8A9A97">' + unit + '</text>';
+  s += '</svg>';
+  return s;
+}
+
+function renderBsRes(){
+  var total = BS_RES.reduce(function(a, b){ return a + b.v; }, 0);
+  var h = '<div class="bs-donut-wrap">' + bsDonut(BS_RES, total, '总数', '次', 120) + '<div class="bs-leg">';
+  BS_RES.forEach(function(r){
+    h += '<div class="r"><i style="background:' + r.c + '"></i><span>' + esc(r.n) + '</span>'
+       + '<b>' + (r.v / total * 100).toFixed(2) + '%</b><em>' + r.v + ' 人次</em></div>';
+  });
+  h += '</div></div>';
+  document.getElementById('bsRes').innerHTML = h;
+}
+
+function renderBsChk(){
+  var segs = BS_CHK[BS_S.chk];
+  var total = segs.reduce(function(a, b){ return a + b.v; }, 0);
+  var h = '<div class="bs-donut-wrap">' + bsDonut(segs, total, '总数', '例', 118) + '<div class="bs-leg">';
+  segs.forEach(function(r){
+    h += '<div class="r"><i style="background:' + r.c + '"></i><span>' + esc(r.n) + '</span>'
+       + '<b>' + (r.v / total * 100).toFixed(0) + '%</b><em>' + r.v + ' 例</em></div>';
+  });
+  h += '</div></div>';
+  document.getElementById('bsChk').innerHTML = h;
+  document.getElementById('bsChkNote').textContent =
+    segs.length === 1 ? segs[0].n + ' 100%' : segs.map(function(s){ return s.n + ' ' + (s.v / total * 100).toFixed(0) + '%'; }).join(' · ');
+}
+
+/* ---------- AI 计算明细 ---------- */
+function renderBsDet(){
+  var rows = BS_DET.slice().sort(function(a, b){ return b.n - a.n; });
+  var h = '<table class="bs-tbl"><thead><tr><th class="rk">排名</th><th>AI工具</th><th>模态</th><th>部位</th>'
+        + '<th class="n">计算次数</th></tr></thead><tbody>';
+  var sum = 0;
+  rows.forEach(function(r, i){
+    sum += r.n;
+    h += '<tr><td class="rk">' + (i + 1) + '</td>'
+       + '<td class="ell" title="' + esc(r.tool) + '">' + esc(r.tool) + '</td>'
+       + '<td>' + esc(r.mod) + '</td><td>' + esc(r.part) + '</td>'
+       + '<td class="n">' + r.n + '</td></tr>';
+  });
+  h += '<tr><td></td><td class="mut">合计</td><td></td><td></td><td class="n mut">' + sum + '</td></tr>';
+  h += '</tbody></table>';
+  document.getElementById('bsDet').innerHTML = h;
+}
+
+/* ---------- 使用统计：柱 + 线 ---------- */
+function bsUseSvg(){
+  var days = bsDays();
+  if (!days.length) return '<div class="bs-note">所选区间内无数据</div>';
+  var W = 1180, H = 226, pl = 32, pr = 12, pt = 18, pb = 26;
+  var iw = W - pl - pr, ih = H - pt - pb, max = 7;
+  var n = days.length;
+  var X = function(i){ return pl + (n === 1 ? iw / 2 : iw * (i + .5) / n); };
+  var Y = function(v){ return pt + ih * (1 - v / max); };
+  var bw = Math.max(4, Math.min(16, iw / n * .46));
+  var s = '<svg class="bs-chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet">';
+  s += '<defs><linearGradient id="bsBar" x1="0" y1="0" x2="0" y2="1">'
+     + '<stop offset="0%" stop-color="#A9473F" stop-opacity=".85"/>'
+     + '<stop offset="100%" stop-color="#A9473F" stop-opacity=".45"/></linearGradient></defs>';
+  for (var g = 0; g <= max; g++) {
+    var y = Y(g);
+    s += '<line class="ax" x1="' + pl + '" y1="' + y + '" x2="' + (W - pr) + '" y2="' + y + '"/>'
+       + '<text x="' + (pl - 6) + '" y="' + (y + 3) + '" text-anchor="end">' + g + '</text>';
+  }
+  /* 参考线 6.59 */
+  var ry = Y(6.59);
+  s += '<line class="ref" x1="' + pl + '" y1="' + ry + '" x2="' + (W - pr) + '" y2="' + ry + '"/>'
+     + '<text x="' + (pl + 3) + '" y="' + (ry - 4) + '" style="fill:#8A9A97">6.59</text>';
+  days.forEach(function(d, i){
+    if (!d.uv) return;
+    s += '<rect x="' + (X(i) - bw / 2) + '" y="' + Y(d.uv) + '" width="' + bw + '" height="' + (Y(0) - Y(d.uv))
+       + '" rx="1.5" fill="url(#bsBar)"><title>' + d.md + '　用户浏览数量 ' + d.uv + ' 次</title></rect>';
+  });
+  var pts = days.map(function(d, i){ return [X(i), Y(d.ai)]; });
+  s += '<path d="' + bsSmooth(pts) + '" fill="none" stroke="#2E7D74" stroke-width="1.6"/>';
+  days.forEach(function(d, i){
+    if (d.ai === 0) return;
+    s += '<circle cx="' + X(i) + '" cy="' + Y(d.ai) + '" r="2.8" fill="#fff" stroke="#2E7D74" stroke-width="1.7"><title>'
+       + d.md + '　AI结果数量 ' + d.ai + ' 次</title></circle>';
+  });
+  days.forEach(function(d, i){
+    if (i % 2 === 0 || i === n - 1) s += '<text x="' + X(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + d.md + '</text>';
+  });
+  s += '</svg>';
+  s += '<div class="bs-leg" style="flex-direction:row;gap:16px;margin-top:4px">'
+     + '<div class="r" style="flex:0 0 auto"><i style="background:#A9473F"></i><span>用户浏览数量</span></div>'
+     + '<div class="r" style="flex:0 0 auto"><i style="background:#2E7D74"></i><span>AI结果数量</span></div>'
+     + '<div class="r" style="flex:0 0 auto"><i style="background:#C9D3D1"></i><span>参考线 6.59</span></div></div>';
+  return s;
+}
+
+/* ---------- 机构使用明细 ---------- */
+function bsInstRows(){
+  var days = bsDays();
+  var sum = days.reduce(function(a, b){ return a + b.ai; }, 0);
+  var rows = BS_INST.map(function(r, i){
+    return { name:r.name, tools:r.tools, calc: (i === 0 ? sum : r.calc),
+             avg:r.avg, pos:r.pos, read:r.read };
+  });
+  if (BS_F.org === '当前机构') rows = rows.slice(0, 1);
+  return rows;
+}
+
+function bsSec(t){ var p = t.split(':'); return (+p[0]) * 3600 + (+p[1]) * 60 + (+p[2]); }
+
+function renderBsInst(){
+  var rows = bsInstRows().slice();
+  var k = BS_S.sort, desc = BS_S.desc;
+  rows.sort(function(a, b){
+    var x = a[k], y = b[k];
+    if (k === 'avg') { x = bsSec(x); y = bsSec(y); }
+    if (typeof x === 'string') return desc ? y.localeCompare(x) : x.localeCompare(y);
+    return desc ? y - x : x - y;
+  });
+  var arrow = function(k2){ return BS_S.sort === k2 ? (BS_S.desc ? ' ↓' : ' ↑') : ''; };
+  var h = '<table class="bs-tbl"><thead><tr><th class="rk">排名</th><th>机构名称</th>'
+        + '<th class="n s" data-sort="tools">AI工具数量' + arrow('tools') + '</th>'
+        + '<th class="n s" data-sort="calc">计算次数' + arrow('calc') + '</th>'
+        + '<th class="n s" data-sort="avg">平均耗时' + arrow('avg') + '</th>'
+        + '<th class="n s" data-sort="pos">阳性占比' + arrow('pos') + '</th>'
+        + '<th class="n s" data-sort="read">AI已阅率' + arrow('read') + '</th></tr></thead><tbody>';
+  rows.forEach(function(r, i){
+    h += '<tr><td class="rk">' + (i + 1) + '</td><td>' + esc(r.name) + '</td>'
+       + '<td class="n">' + r.tools + '</td><td class="n">' + r.calc + '</td>'
+       + '<td class="n">' + esc(r.avg) + '</td>'
+       + '<td class="n">' + r.pos.toFixed(1) + '%</td><td class="n">' + r.read.toFixed(1) + '%</td></tr>';
+  });
+  h += '</tbody></table>';
+  document.getElementById('bsInst').innerHTML = h;
+  [].forEach.call(document.querySelectorAll('#bsInst th[data-sort]'), function(th){
+    th.onclick = function(){
+      var k2 = th.getAttribute('data-sort');
+      if (BS_S.sort === k2) BS_S.desc = !BS_S.desc; else { BS_S.sort = k2; BS_S.desc = true; }
+      renderBsInst();
+    };
+  });
+}
+
+function renderBs(){
+  var days = bsDays();
+  var sum = days.reduce(function(a, b){ return a + b.ai; }, 0);
+  document.getElementById('bsSvc').innerHTML = bsAreaSvg();
+  document.getElementById('bsUse').innerHTML = bsUseSvg();
+  document.getElementById('bsRange').textContent = BS_F.from + ' → ' + BS_F.to + ' · ' + sum + ' 次';
+  renderBsRes(); renderBsChk(); renderBsDet(); renderBsInst();
+}
+
+function bindBs(){
+  if (bindBs._done) return;
+  bindBs._done = true;
+  var apply = function(){
+    BS_F.from = document.getElementById('bsFrom').value || '2026-09-26';
+    BS_F.to   = document.getElementById('bsTo').value || '2026-10-26';
+    BS_F.org  = document.getElementById('bsOrg').value;
+    renderBs();
+  };
+  ['bsFrom','bsTo','bsOrg'].forEach(function(id){
+    var e = document.getElementById(id); if (e) e.onchange = apply;
+  });
+  var r1 = document.getElementById('bsRefresh'); if (r1) r1.onclick = function(){ renderBs(); toast('业务统计已刷新'); };
+  var r2 = document.getElementById('bsReset'); if (r2) r2.onclick = function(){
+    document.getElementById('bsFrom').value = '2026-09-26';
+    document.getElementById('bsTo').value = '2026-10-26';
+    document.getElementById('bsOrg').value = '当前机构';
+    BS_S.chk = 'mod'; BS_S.sort = 'calc'; BS_S.desc = true;
+    [].forEach.call(document.querySelectorAll('#bsChkTabs button'), function(b){
+      b.classList.toggle('on', b.getAttribute('data-t') === 'mod');
+    });
+    apply(); toast('已重置查询条件');
+  };
+  [].forEach.call(document.querySelectorAll('#bsChkTabs button'), function(b){
+    b.onclick = function(){
+      [].forEach.call(document.querySelectorAll('#bsChkTabs button'), function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      BS_S.chk = b.getAttribute('data-t');
+      renderBsChk();
+    };
+  });
+  ['bsExp1','bsExp2','bsExp3'].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.onclick = function(){ toast('已导出统计报表（示例）'); };
+  });
+  renderBs();
 }
 
 </script>
