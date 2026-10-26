@@ -371,6 +371,8 @@ input,select,textarea{font-family:inherit}
 .or-table .ck{width:34px;text-align:center}
 .or-table tbody tr.sel td{background:#FDF3F1}
 .or-table td.ell{max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.or-table .idxr{width:52px;color:var(--muted);font-family:Consolas,Menlo,monospace;font-size:11.5px}
+.or-table .num{text-align:right;font-family:Consolas,Menlo,monospace;font-size:11.5px}
 /* ---------- 弹窗 ---------- */
 .mask{position:fixed;inset:0;background:rgba(23,61,67,.42);z-index:50;
   display:flex;align-items:center;justify-content:center;padding:20px}
@@ -507,8 +509,9 @@ body.nomark .f label .new{display:none}
       <a href="javascript:;" data-view="diag"><i>13</i>诊断列表</a>
       <a href="javascript:;" data-view="fav"><i>14</i>收藏管理</a>
       <a href="javascript:;" data-view="cq"><i>15</i>采集队列</a>
+      <a href="javascript:;" data-view="rcv"><i>16</i>接收队列</a>
       <div class="g">安全与治理</div>
-      <a href="javascript:;"><i>16</i>操作审计</a>
+      <a href="javascript:;"><i>17</i>操作审计</a>
     </nav>
     <div class="suser"><span class="av">王</span><div><b>王斌</b><small>企业管理员</small></div></div>
   </aside>
@@ -859,6 +862,58 @@ body.nomark .f label .new{display:none}
       </div>
 
       <div class="note">演示数据：机构、姓名、患者号、检查号、UID 均为示例。「查看」打开检查详情，「详情」打开采集详情（来源、批次、文件数、校验结果）。</div>
+    </div>
+
+    <div id="viewRcv" class="hidden">
+      <div class="head">
+        <div>
+          <h1>接收队列</h1>
+          <div class="sub">影像应用中心 · 查看平台已接收的检查及其归档 / 计算状态。</div>
+        </div>
+        <div class="acts">
+          <button class="btn" id="rcRefresh">刷新</button>
+          <button class="btn" id="rcReset">重置</button>
+        </div>
+      </div>
+
+      <div class="dg-bar">
+        <div class="l">
+          <button class="btn primary" id="rcCalc">AI 计算 ▾</button>
+        </div>
+        <div class="r"></div>
+      </div>
+
+      <div class="fbar">
+        <div class="fitem"><label>机构名称</label><select id="rcOrg"><option>当前机构</option></select></div>
+        <div class="fitem"><label>患者姓名</label><input id="rcName" placeholder="请输入" style="width:110px"></div>
+        <div class="fitem"><label>患者号</label><input id="rcPid" placeholder="请输入" style="width:120px"></div>
+        <div class="fitem"><label>检查号</label><input id="rcSid" placeholder="请输入" style="width:120px"></div>
+        <div class="fitem"><label>检查时间</label>
+          <div class="dr"><input type="date" id="rcStudyFrom"><span>→</span><input type="date" id="rcStudyTo"></div>
+        </div>
+        <div class="fitem"><label>接收时间</label>
+          <div class="dr"><input type="date" id="rcFrom" value="2026-10-20"><span>→</span><input type="date" id="rcTo" value="2026-10-26"></div>
+        </div>
+        <div class="fitem"><label>部位</label><input id="rcPart" placeholder="请输入" style="width:100px"></div>
+        <div class="fitem"><label>状态</label><select id="rcState"><option>请选择</option><option>请求已接收</option><option>影像已归档</option><option>部分成功</option><option>计算成功</option><option>接收失败</option></select></div>
+        <button class="btn primary sm" id="rcQuery">查询</button>
+      </div>
+
+      <div class="panel">
+        <div class="dg-tw">
+          <div class="dg-tbar">
+            <span id="rcCount">—</span>
+            <div class="dg-cols">
+              <button class="dg-colbtn" id="rcColBtn">表头设置 ▾</button>
+              <div class="dg-colmenu hidden" id="rcColMenu"></div>
+            </div>
+          </div>
+          <div class="dg-scroll"><div id="rcTable"></div></div>
+          <div class="pg" id="rcPager"></div>
+        </div>
+      </div>
+
+      <div class="note">演示数据：机构、姓名、患者号、检查号、图像张数均为示例。「查看」打开接收详情，含接收流程与各环节时间。</div>
     </div>
 
     </main>
@@ -1531,7 +1586,7 @@ function bindSchedFilters(){
 
 /* ---------- 视图切换 ---------- */
 function showView(v){
-  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav', cq:'viewCq' };
+  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav', cq:'viewCq', rcv:'viewRcv' };
   Object.keys(views).forEach(function(k){
     var el = document.getElementById(views[k]);
     if (el) el.classList.toggle('hidden', k !== v);
@@ -1539,7 +1594,7 @@ function showView(v){
   [].forEach.call(document.querySelectorAll('.snav a'), function(a){
     a.classList.toggle('on', a.getAttribute('data-view') === v);
   });
-  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理', cq:'采集队列' }[v] || '应用管理';
+  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理', cq:'采集队列', rcv:'接收队列' }[v] || '应用管理';
   var cr = document.querySelector('.topbar .crumb');
   if (cr) cr.innerHTML = '生态伙伴端 / <b>' + name + '</b>';
   if (v === 'stats') { renderStats(); bindSchedFilters(); }
@@ -1547,6 +1602,7 @@ function showView(v){
   if (v === 'org') { bindOrgRule(); renderOrgRules(); }
   if (v === 'fav') { bindFav(); renderFav(); }
   if (v === 'cq') { bindCq(); renderCq(); }
+  if (v === 'rcv') { bindRcv(); renderRcv(); }
   var main = document.querySelector('.main');
   if (main) main.scrollTop = 0;
 }
@@ -2936,6 +2992,262 @@ function bindCq(){
     m.classList.add('hidden');
   });
   renderCqColMenu();
+}
+
+/* ============================================================================
+   影像应用中心 · 接收队列
+   ============================================================================ */
+var RCV = (function(){
+  var seed = [
+    ['影禾医脉','LIU FENG','2605210021','2605210021','2026-05-21 09:05:10','2026-10-26 15:46:36','---',670,'影像已归档'],
+    ['影禾医脉','胡金连','CT596126102','4435776','2026-10-25 08:15:26','2026-10-25 15:27:55','---',696,'计算成功'],
+    ['影禾医脉','Zhang Zhen Hua','CT20261016078','0000078981','2026-10-16 15:15:53','2026-10-25 14:14:09','---',557,'请求已接收'],
+    ['影禾医脉','李秀兰','CT596126118','4435801','2026-10-24 10:22:41','2026-10-24 18:02:12','CHEST',712,'部分成功'],
+    ['影禾医脉','张桂芳','CT596126130','4435822','2026-10-22 14:08:36','2026-10-22 20:09:47','HEAD',438,'计算成功'],
+    ['影禾医脉','罗小燕','CT596126155','4435901','2026-10-21 09:31:12','2026-10-21 16:44:03','CHEST',655,'影像已归档'],
+    ['金华广福医院','马长林','CT202610220','0000082055','2026-10-20 16:05:44','2026-10-20 21:11:26','CHEST',801,'计算成功'],
+    ['金华广福医院','曾宪明','MR202610240','0000081023','2026-10-19 11:47:03','2026-10-19 17:21:38','HEAD',324,'影像已归档'],
+    ['金华广福医院','陈国强','CT596126170','4435920','2026-10-20 08:52:19','2026-10-20 12:30:05','ABDOMEN',588,'部分成功'],
+    ['江西省人民医院','邓志远','J202610180','0000083011','2026-10-18 09:05:33','2026-10-20 10:18:52','HEAD',402,'请求已接收'],
+    ['江西省人民医院','胡雅琴','J202610185','0000083022','2026-10-19 15:40:27','2026-10-20 11:02:41','CHEST',617,'接收失败']
+  ];
+  return seed.map(function(a, i){
+    return { idx:i+1, org:a[0], name:a[1], pid:a[2], sid:a[3], studyTime:a[4],
+             recvTime:a[5], part:a[6], images:a[7], state:a[8] };
+  });
+})();
+
+var RCV_COLS = [
+  { k:'idx2', t:'序号', cls:'idxr' },
+  { k:'org',  t:'机构名称' },
+  { k:'name', t:'患者姓名' },
+  { k:'pid',  t:'患者号', cls:'mono' },
+  { k:'sid',  t:'检查号', cls:'mono' },
+  { k:'studyTime', t:'检查时间', cls:'mono' },
+  { k:'recvTime',  t:'接收时间', cls:'mono' },
+  { k:'part', t:'部位' },
+  { k:'images', t:'图像张数', cls:'num' },
+  { k:'state', t:'状态' }
+];
+
+var RCV_F = { org:'', name:'', pid:'', sid:'', part:'', state:'',
+              studyFrom:'', studyTo:'', from:'', to:'' };
+var RCV_S = { page:1, size:10, sel:{}, hide:{} };
+
+function rcVisibleCols(){ return RCV_COLS.filter(function(c){ return !RCV_S.hide[c.k]; }); }
+
+function rcFiltered(){
+  var f = RCV_F;
+  return RCV.filter(function(r){
+    if (f.org   && r.org !== f.org) return false;
+    if (f.name  && r.name.toUpperCase().indexOf(f.name.toUpperCase()) < 0) return false;
+    if (f.pid   && r.pid.toUpperCase().indexOf(f.pid.toUpperCase()) < 0) return false;
+    if (f.sid   && r.sid.indexOf(f.sid) < 0) return false;
+    if (f.part  && r.part.toUpperCase().indexOf(f.part.toUpperCase()) < 0) return false;
+    if (f.state && r.state !== f.state) return false;
+    if (f.studyFrom && r.studyTime.slice(0,10) < f.studyFrom) return false;
+    if (f.studyTo   && r.studyTime.slice(0,10) > f.studyTo)   return false;
+    if (f.from && r.recvTime.slice(0,10) < f.from) return false;
+    if (f.to   && r.recvTime.slice(0,10) > f.to)   return false;
+    return true;
+  });
+}
+
+function rcSelCount(){ return Object.keys(RCV_S.sel).filter(function(k){ return RCV_S.sel[k]; }).length; }
+
+function renderRcv(){
+  var rows = rcFiltered();
+  var cols = rcVisibleCols();
+  var maxP = Math.max(1, Math.ceil(rows.length / RCV_S.size));
+  if (RCV_S.page > maxP) RCV_S.page = maxP;
+  var view = rows.slice((RCV_S.page - 1) * RCV_S.size, RCV_S.page * RCV_S.size);
+
+  var h = '<table class="or-table"><thead><tr><th class="ck"><input type="checkbox" id="rcAll"></th>';
+  cols.forEach(function(c){ h += '<th>' + c.t + '</th>'; });
+  h += '<th>操作</th></tr></thead><tbody>';
+  if (!view.length) {
+    h += '<tr class="or-empty"><td colspan="' + (cols.length + 2) + '">没有符合条件的接收记录</td></tr>';
+  } else {
+    view.forEach(function(r){
+      var on = !!RCV_S.sel[r.idx];
+      h += '<tr' + (on ? ' class="sel"' : '') + '><td class="ck">'
+         + '<input type="checkbox" data-rck="' + r.idx + '"' + (on ? ' checked' : '') + '></td>';
+      cols.forEach(function(c){
+        var v = (c.k === 'idx2') ? r.idx : r[c.k];
+        h += '<td' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + esc(v) + '</td>';
+      });
+      h += '<td><a class="dg-link" data-rcv="' + r.idx + '">查看</a></td></tr>';
+    });
+  }
+  h += '</tbody></table>';
+  document.getElementById('rcTable').innerHTML = h;
+  document.getElementById('rcCount').innerHTML =
+      '共 <b>' + rows.length + '</b> 条 · 显示 <b>' + (cols.length + 1) + '</b> 列（' + cols.length + ' 列数据 + 操作，可表头设置）';
+
+  var btns = '<button data-p="' + (RCV_S.page - 1) + '"' + (RCV_S.page <= 1 ? ' disabled' : '') + '>‹</button>';
+  for (var p = 1; p <= maxP; p++) btns += '<button data-p="' + p + '" class="' + (p === RCV_S.page ? 'on' : '') + '">' + p + '</button>';
+  btns += '<button data-p="' + (RCV_S.page + 1) + '"' + (RCV_S.page >= maxP ? ' disabled' : '') + '>›</button>';
+  document.getElementById('rcPager').innerHTML =
+      '<span>共 ' + rows.length + ' 条 · 演示数据</span>'
+    + '<span class="btns"><select id="rcSize">'
+    +   [10,20,50].map(function(n){ return '<option value="' + n + '"' + (n === RCV_S.size ? ' selected' : '') + '>' + n + ' 条/页</option>'; }).join('')
+    + '</select>' + btns
+    + '<span style="color:var(--muted);font-size:11.5px;margin-left:6px">前往</span>'
+    + '<input id="rcJump" value="' + RCV_S.page + '" style="width:38px;border:1px solid var(--line);border-radius:4px;padding:2px 5px;font-size:11.5px;text-align:center">'
+    + '<span style="color:var(--muted);font-size:11.5px">页</span></span>';
+
+  [].forEach.call(document.querySelectorAll('#rcTable input[data-rck]'), function(c){
+    c.onchange = function(){
+      var k = c.getAttribute('data-rck');
+      if (c.checked) RCV_S.sel[k] = true; else delete RCV_S.sel[k];
+      renderRcv();
+    };
+  });
+  var all = document.getElementById('rcAll');
+  if (all) all.onchange = function(){
+    view.forEach(function(r){ if (all.checked) RCV_S.sel[r.idx] = true; else delete RCV_S.sel[r.idx]; });
+    renderRcv();
+  };
+  [].forEach.call(document.querySelectorAll('#rcPager [data-p]'), function(b){
+    b.onclick = function(){ RCV_S.page = +b.getAttribute('data-p'); renderRcv(); };
+  });
+  var sz = document.getElementById('rcSize');
+  if (sz) sz.onchange = function(){ RCV_S.size = +sz.value; RCV_S.page = 1; renderRcv(); };
+  var jp = document.getElementById('rcJump');
+  if (jp) jp.onkeydown = function(e){
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    var n = parseInt(jp.value, 10);
+    if (!n || n < 1 || n > maxP) { toast('页码需在 1–' + maxP + ' 之间'); return; }
+    RCV_S.page = n; renderRcv();
+  };
+  [].forEach.call(document.querySelectorAll('#rcTable [data-rcv]'), function(a){
+    a.onclick = function(){ rcShow(a.getAttribute('data-rcv')); };
+  });
+}
+
+function renderRcColMenu(){
+  var h = '';
+  RCV_COLS.forEach(function(c){
+    h += '<label><input type="checkbox" data-rcol="' + c.k + '"' + (RCV_S.hide[c.k] ? '' : ' checked') + '>' + c.t + '</label>';
+  });
+  h += '<label class="all"><input type="checkbox" id="rcColAll"' + (rcVisibleCols().length === RCV_COLS.length ? ' checked' : '') + '>全选 / 全不选</label>';
+  document.getElementById('rcColMenu').innerHTML = h;
+  [].forEach.call(document.querySelectorAll('#rcColMenu [data-rcol]'), function(cb){
+    cb.onchange = function(){
+      var k = cb.getAttribute('data-rcol');
+      if (cb.checked) delete RCV_S.hide[k]; else RCV_S.hide[k] = true;
+      if (!rcVisibleCols().length) RCV_S.hide = {};
+      renderRcColMenu(); renderRcv();
+    };
+  });
+  var cl = document.getElementById('rcColAll');
+  if (cl) cl.onchange = function(){
+    RCV_S.hide = {};
+    if (!cl.checked) RCV_COLS.forEach(function(c){ if (c.k !== 'idx2') RCV_S.hide[c.k] = true; });
+    renderRcColMenu(); renderRcv();
+  };
+}
+
+function rcFind(idx){ return RCV.filter(function(r){ return String(r.idx) === String(idx); })[0]; }
+
+function rcShow(idx){
+  var r = rcFind(idx); if (!r) return;
+  var steps = [
+    ['请求已接收', r.recvTime, '平台收到院内推送的检查请求'],
+    ['影像已归档', r.recvTime, '影像写入存储并完成 MD5 校验，共 ' + r.images + ' 张'],
+    ['AI 计算', r.state === '计算成功' ? '已完成' : (r.state === '部分成功' ? '部分完成' : '待执行'),
+      r.state === '计算成功' ? '全部 AI 工具计算成功' : (r.state === '部分成功' ? '部分工具计算失败，可单独重算' : '等待调度')]
+  ];
+  var tl = '';
+  steps.forEach(function(s, i){
+    var ok = (i === 0) || (i === 1 && r.state !== '请求已接收') ||
+             (i === 2 && (r.state === '计算成功' || r.state === '部分成功'));
+    tl += '<div style="display:flex;gap:9px;margin-bottom:9px">'
+        + '<span style="flex:0 0 8px;height:8px;margin-top:5px;border-radius:50%;background:'
+        + (ok ? 'var(--primary)' : 'var(--line)') + '"></span>'
+        + '<div><div style="font-size:12.5px;color:var(--ink);font-weight:600">' + esc(s[0])
+        +   '<span style="font-weight:400;color:var(--muted);margin-left:8px;font-size:11.5px">' + esc(s[1]) + '</span></div>'
+        + '<div style="font-size:11.5px;color:var(--muted);margin-top:1px">' + esc(s[2]) + '</div></div></div>';
+  });
+
+  dgOpen('<div class="dg-sheet">'
+    + '<div class="dg-shead"><div><b>接收详情 · ' + esc(r.state) + '</b>'
+    +   '<small>' + esc(r.org) + '　|　' + esc(r.name) + '　|　检查号 ' + esc(r.sid) + '</small></div>'
+    +   '<button class="dg-x" id="dgX">关闭</button></div>'
+    + '<div class="dg-sbody">'
+    +   '<div class="dg-kv">'
+    +     '<div><small>患者号</small><span>' + esc(r.pid) + '</span></div>'
+    +     '<div><small>图像张数</small><span>' + r.images + ' 张</span></div>'
+    +     '<div><small>检查时间</small><span>' + esc(r.studyTime) + '</span></div>'
+    +     '<div><small>接收时间</small><span>' + esc(r.recvTime) + '</span></div>'
+    +     '<div><small>部位</small><span>' + esc(r.part) + '</span></div>'
+    +     '<div><small>当前状态</small><span>' + esc(r.state) + '</span></div>'
+    +   '</div>'
+    +   '<div class="dg-blk"><div class="t">接收流程</div>' + tl + '</div>'
+    +   '<div class="dg-note">ⓘ 流程与时间为示例数据，实际以院内传输日志为准。</div>'
+    + '</div>'
+    + '<div class="dg-sfoot"><button class="btn" id="dgClose">关闭</button>'
+    +   '<button class="btn primary" id="rcGo">重新接收</button></div>'
+    + '</div>');
+  var go = document.getElementById('rcGo');
+  if (go) go.onclick = function(){ dgClose(); toast('已发起重新接收：' + r.sid); };
+}
+
+function bindRcv(){
+  if (bindRcv._done) return;
+  bindRcv._done = true;
+  var g = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+  var apply = function(){
+    RCV_F.org = g('rcOrg') === '当前机构' ? '' : g('rcOrg');
+    RCV_F.state = g('rcState') === '请选择' ? '' : g('rcState');
+    RCV_F.name = g('rcName'); RCV_F.pid = g('rcPid'); RCV_F.sid = g('rcSid'); RCV_F.part = g('rcPart');
+    RCV_F.studyFrom = g('rcStudyFrom'); RCV_F.studyTo = g('rcStudyTo');
+    RCV_F.from = g('rcFrom'); RCV_F.to = g('rcTo');
+    RCV_S.page = 1; renderRcv();
+  };
+  ['rcOrg','rcState','rcStudyFrom','rcStudyTo','rcFrom','rcTo'].forEach(function(id){
+    var e = document.getElementById(id); if (e) e.onchange = apply;
+  });
+  ['rcName','rcPid','rcSid','rcPart'].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.onkeydown = function(ev){ if (ev.key === 'Enter') { ev.preventDefault(); apply(); } };
+  });
+
+  var q = document.getElementById('rcQuery'); if (q) q.onclick = function(){ apply(); toast('已按当前条件查询'); };
+  var rf = document.getElementById('rcRefresh'); if (rf) rf.onclick = function(){ renderRcv(); toast('接收队列已刷新'); };
+  var rs = document.getElementById('rcReset'); if (rs) rs.onclick = function(){
+    ['rcName','rcPid','rcSid','rcPart','rcStudyFrom','rcStudyTo','rcFrom','rcTo'].forEach(function(id){
+      var e = document.getElementById(id); if (e) e.value = '';
+    });
+    var o = document.getElementById('rcOrg'); if (o) o.value = '当前机构';
+    var st = document.getElementById('rcState'); if (st) st.value = '请选择';
+    RCV_F = { org:'', name:'', pid:'', sid:'', part:'', state:'',
+              studyFrom:'', studyTo:'', from:'', to:'' };
+    RCV_S.page = 1; renderRcv(); toast('已重置查询条件');
+  };
+  var ca = document.getElementById('rcCalc'); if (ca) ca.onclick = function(){
+    var n = rcSelCount();
+    toast(n ? '已提交 ' + n + ' 条检查进行 AI 计算' : '未勾选时默认提交当前页（示例）');
+  };
+
+  var os = document.getElementById('rcOrg');
+  if (os && os.options.length === 1) {
+    var seen = {};
+    RCV.forEach(function(r){ if (!seen[r.org]) { seen[r.org] = 1; os.innerHTML += '<option>' + r.org + '</option>'; } });
+  }
+  var cb = document.getElementById('rcColBtn');
+  if (cb) cb.onclick = function(e){
+    e.stopPropagation();
+    document.getElementById('rcColMenu').classList.toggle('hidden');
+  };
+  document.addEventListener('click', function(e){
+    var m = document.getElementById('rcColMenu');
+    if (!m || m.classList.contains('hidden')) return;
+    if (e.target.closest && e.target.closest('.dg-cols')) return;
+    m.classList.add('hidden');
+  });
+  renderRcColMenu();
 }
 
 </script>
