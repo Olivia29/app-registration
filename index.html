@@ -373,6 +373,21 @@ input,select,textarea{font-family:inherit}
 .or-table td.ell{max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .or-table .idxr{width:52px;color:var(--muted);font-family:Consolas,Menlo,monospace;font-size:11.5px}
 .or-table .num{text-align:right;font-family:Consolas,Menlo,monospace;font-size:11.5px}
+.qd-tabs{display:flex;gap:2px;margin:0 0 12px;border-bottom:1px solid var(--line)}
+.qd-tabs button{background:none;border:none;border-bottom:2.5px solid transparent;padding:8px 14px;
+  font-size:13px;color:var(--ink2)}
+.qd-tabs button:hover{color:var(--head)}
+.qd-tabs button.on{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.qd-table{min-width:1560px}
+.qd-table th,.qd-table td{padding-left:3px;padding-right:3px}
+.qd-table th.ops,.qd-table td.ops{position:sticky;right:0;background:#fff;
+  box-shadow:-7px 0 8px -7px rgba(23,61,67,.18);z-index:1}
+.qd-table th.ops{z-index:3}
+.qd-table tbody tr:hover td.ops{background:#FBFCFB}
+.qd-table tbody tr.sel td.ops{background:#FDF3F1}
+.qd-table td.ell{max-width:122px}
+.st-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.mutd{color:var(--muted2)}
 /* ---------- 弹窗 ---------- */
 .mask{position:fixed;inset:0;background:rgba(23,61,67,.42);z-index:50;
   display:flex;align-items:center;justify-content:center;padding:20px}
@@ -510,8 +525,9 @@ body.nomark .f label .new{display:none}
       <a href="javascript:;" data-view="fav"><i>14</i>收藏管理</a>
       <a href="javascript:;" data-view="cq"><i>15</i>采集队列</a>
       <a href="javascript:;" data-view="rcv"><i>16</i>接收队列</a>
+      <a href="javascript:;" data-view="qd"><i>17</i>计算队列</a>
       <div class="g">安全与治理</div>
-      <a href="javascript:;"><i>17</i>操作审计</a>
+      <a href="javascript:;"><i>18</i>操作审计</a>
     </nav>
     <div class="suser"><span class="av">王</span><div><b>王斌</b><small>企业管理员</small></div></div>
   </aside>
@@ -914,6 +930,72 @@ body.nomark .f label .new{display:none}
       </div>
 
       <div class="note">演示数据：机构、姓名、患者号、检查号、图像张数均为示例。「查看」打开接收详情，含接收流程与各环节时间。</div>
+    </div>
+
+    <div id="viewQd" class="hidden">
+      <div class="head">
+        <div>
+          <h1>计算队列</h1>
+          <div class="sub">影像应用中心 · 按「检查 × AI 工具」粒度追踪计算任务的发起、排队与完成。</div>
+        </div>
+        <div class="acts">
+          <button class="btn" id="qdRefresh">刷新</button>
+          <button class="btn" id="qdReset">重置</button>
+        </div>
+      </div>
+
+      <div class="qd-tabs" id="qdTabs">
+        <button data-tab="normal" class="on">计算数据</button>
+        <button data-tab="slow">过速数据</button>
+      </div>
+
+      <div class="dg-bar">
+        <div class="l">
+          <button class="btn primary" id="qdStop">结束任务 ▾</button>
+          <button class="btn" id="qdCalc">AI 计算 ▾</button>
+        </div>
+        <div class="r"></div>
+      </div>
+
+      <div class="fbar">
+        <div class="fitem"><label>机构名称</label><select id="qdOrg"><option>当前机构</option></select></div>
+        <div class="fitem"><label>患者号</label><input id="qdPid" placeholder="请输入" style="width:130px"></div>
+        <div class="fitem"><label>检查号</label><input id="qdSid" placeholder="请输入" style="width:100px"></div>
+        <div class="fitem"><label>部位</label><select id="qdPart"><option>请选择</option><option>CHEST</option><option>HEAD</option><option>ABDOMEN</option></select></div>
+        <div class="fitem"><label>AI工具</label><select id="qdTool"><option>请选择</option></select></div>
+        <div class="fitem"><label>状态</label><select id="qdState"><option>请选择</option><option>排队中</option><option>计算中</option><option>计算成功</option><option>计算失败</option><option>发起失败</option></select></div>
+        <div class="fitem"><label>检查时间</label>
+          <div class="dr"><input type="date" id="qdStudyFrom"><span>→</span><input type="date" id="qdStudyTo"></div>
+        </div>
+        <div class="fitem"><label>AI计算时间</label>
+          <div class="dr"><input type="date" id="qdCalcFrom"><span>→</span><input type="date" id="qdCalcTo"></div>
+        </div>
+        <div class="fitem"><label>请求ID</label><input id="qdReq" placeholder="请输入" style="width:120px"></div>
+        <div class="fitem"><label>云地址</label><select id="qdCloud"><option>请选择</option></select></div>
+        <div class="fitem"><label>模态类型</label><select id="qdMod"><option>请选择</option><option>CT</option><option>MR</option><option>DR</option></select></div>
+        <div class="fitem"><label>姓名</label><input id="qdName" placeholder="请输入" style="width:100px"></div>
+        <div class="fitem"><label>发起时间</label>
+          <div class="dr"><input type="date" id="qdFrom" value="2026-10-20"><span>→</span><input type="date" id="qdTo" value="2026-10-26"></div>
+        </div>
+        <div class="fitem"><label>检查项目</label><input id="qdStudy" placeholder="请输入" style="width:100px"></div>
+        <button class="btn primary sm" id="qdQuery">查询</button>
+      </div>
+
+      <div class="panel">
+        <div class="dg-tw">
+          <div class="dg-tbar">
+            <span><span id="qdCount">—</span><span class="dg-hint" id="qdHint">← 左右滑动查看更多列</span></span>
+            <div class="dg-cols">
+              <button class="dg-colbtn" id="qdColBtn">表头设置 ▾</button>
+              <div class="dg-colmenu hidden" id="qdColMenu"></div>
+            </div>
+          </div>
+          <div class="dg-scroll"><div id="qdTable"></div></div>
+          <div class="pg" id="qdPager"></div>
+        </div>
+      </div>
+
+      <div class="note">演示数据：机构、姓名、患者号、检查号、请求ID、UID 均为示例。「过速数据」为重算耗时超过阈值的任务子集；「查看报告」打开结构化结论，「状态」打开任务流转详情。</div>
     </div>
 
     </main>
@@ -1586,7 +1668,7 @@ function bindSchedFilters(){
 
 /* ---------- 视图切换 ---------- */
 function showView(v){
-  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav', cq:'viewCq', rcv:'viewRcv' };
+  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav', cq:'viewCq', rcv:'viewRcv', qd:'viewQd' };
   Object.keys(views).forEach(function(k){
     var el = document.getElementById(views[k]);
     if (el) el.classList.toggle('hidden', k !== v);
@@ -1594,7 +1676,7 @@ function showView(v){
   [].forEach.call(document.querySelectorAll('.snav a'), function(a){
     a.classList.toggle('on', a.getAttribute('data-view') === v);
   });
-  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理', cq:'采集队列', rcv:'接收队列' }[v] || '应用管理';
+  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理', cq:'采集队列', rcv:'接收队列', qd:'计算队列' }[v] || '应用管理';
   var cr = document.querySelector('.topbar .crumb');
   if (cr) cr.innerHTML = '生态伙伴端 / <b>' + name + '</b>';
   if (v === 'stats') { renderStats(); bindSchedFilters(); }
@@ -1603,6 +1685,7 @@ function showView(v){
   if (v === 'fav') { bindFav(); renderFav(); }
   if (v === 'cq') { bindCq(); renderCq(); }
   if (v === 'rcv') { bindRcv(); renderRcv(); }
+  if (v === 'qd') { bindQd(); renderQd(); }
   var main = document.querySelector('.main');
   if (main) main.scrollTop = 0;
 }
@@ -3248,6 +3331,423 @@ function bindRcv(){
     m.classList.add('hidden');
   });
   renderRcColMenu();
+}
+
+/* ============================================================================
+   影像应用中心 · 计算队列（计算数据 / 过速数据）
+   ============================================================================ */
+var QD_SLOW_SEC = 170;   /* 过速阈值：单任务计算耗时 > 170 秒 */
+
+function qdAddTo(baseStr, sec){   /* 在给定时间上加秒数 */
+  var m = baseStr.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+  var d = new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+  d.setSeconds(d.getSeconds() + sec);
+  var p = function(n){ return (n < 10 ? '0' : '') + n; };
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' '
+       + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+}
+
+var QD_BASE = [
+  { org:'影禾医脉', pid:'CT5961261025001', sid:'4435776', part:'---', mod:'CT', name:'胡金连',
+    studyTime:'2026-10-25 08:15:26', launch:'2026-10-25 15:30:07', req:'4041864916',
+    cloud:'华为云（上海1）', uid:'1.2.876877.2041301270660261', study:'---',
+    tools:['CT胸部骨折辅助诊断（推想）','CT胸部肺炎辅助诊断（推想）','CT胸部肺结节辅助诊断（联影）'],
+    states:['计算成功','计算成功','计算成功'], secs:[176,172,181] },
+  { org:'影禾医脉', pid:'2605210021', sid:'2605210021', part:'CHEST', mod:'CT', name:'LIU FENG',
+    studyTime:'2026-05-21 09:05:10', launch:'2026-10-26 15:46:36', req:'4041865033',
+    cloud:'华为云（上海1）', uid:'1.2.840.113619.2.55.3.6657.20260521.1', study:'胸部CT平扫',
+    tools:['CT胸部肺结节辅助诊断（联影）','CT胸部肺炎辅助诊断（推想）','CT骨密度辅助诊断（联影）'],
+    states:['计算成功','计算中','计算成功'], secs:[148,0,132] },
+  { org:'影禾医脉', pid:'CT20261016078', sid:'0000078981', part:'---', mod:'CT', name:'Zhang Zhen Hua',
+    studyTime:'2026-10-16 15:15:53', launch:'2026-10-25 14:14:09', req:'4041863388',
+    cloud:'天翼云（华东一区）', uid:'1.2.840.113619.2.55.3.6657.20261016.8', study:'---',
+    tools:['CT颅脑脑出血辅助诊断（联影）','CT颅脑CTP灌注（联影）','CT颅脑骨窗辅助诊断（联影）'],
+    states:['发起失败','发起失败','发起失败'], secs:[0,0,0] },
+  { org:'金华广福医院', pid:'CT596126118', sid:'4435801', part:'HEAD', mod:'MR', name:'李秀兰',
+    studyTime:'2026-10-24 10:22:41', launch:'2026-10-24 18:02:12', req:'4041862019',
+    cloud:'阿里云（华东一区）', uid:'1.2.840.113619.2.55.3.6657.20261024.5', study:'颅脑MR平扫',
+    tools:['MR颅脑转移瘤辅助诊断（联影）','MR颅脑小血管病辅助诊断（联影）','MR颅脑灌注辅助诊断（联影）'],
+    states:['计算成功','计算失败','计算成功'], secs:[198,64,205] },
+  { org:'江西省人民医院', pid:'J202610185', sid:'0000083022', part:'CHEST', mod:'CT', name:'胡雅琴',
+    studyTime:'2026-10-19 15:40:27', launch:'2026-10-20 11:02:41', req:'4041861770',
+    cloud:'天翼云（华东二区）', uid:'1.2.840.113619.2.55.3.6657.20261019.2', study:'胸部CT增强',
+    tools:['CT胸部肺结节辅助诊断（联影）','CT胸部气胸辅助诊断（联影）','CT胸部骨折辅助诊断（推想）'],
+    states:['排队中','计算成功','计算成功'], secs:[0,155,162] }
+];
+
+var QD = (function(){
+  var out = [];
+  QD_BASE.forEach(function(s){
+    s.tools.forEach(function(t, i){
+      var st = s.states[i], sec = s.secs[i];
+      var done = (st === '计算成功' || st === '计算失败');
+      out.push({
+        idx: out.length + 1, org:s.org, pid:s.pid, sid:s.sid, part:s.part, tool:t, state:st,
+        studyTime:s.studyTime,
+        calcStart: (st === '发起失败' || st === '排队中') ? '' : s.launch,
+        calcEnd: done ? qdAddTo(s.launch, sec) : '',
+        req:s.req, cloud:s.cloud, mod:s.mod, name:s.name, launch:s.launch,
+        study:s.study, uid:s.uid, sec:sec, slow: (sec > QD_SLOW_SEC), done:done
+      });
+    });
+  });
+  return out;
+})();
+
+var QD_COLS = [
+  { k:'org',  t:'机构名称' },
+  { k:'pid',  t:'患者号', cls:'mono' },
+  { k:'sid',  t:'检查号', cls:'mono' },
+  { k:'part', t:'部位' },
+  { k:'tool', t:'AI工具', cls:'ell' },
+  { k:'state',t:'状态' },
+  { k:'studyTime', t:'检查时间', cls:'mono' },
+  { k:'calcTime',  t:'AI计算时间', cls:'mono' },
+  { k:'req',  t:'请求ID', cls:'mono' },
+  { k:'cloud',t:'云地址' },
+  { k:'mod',  t:'模态类型' },
+  { k:'name', t:'姓名' },
+  { k:'launch', t:'发起时间', cls:'mono' },
+  { k:'study',t:'检查项目' },
+  { k:'uid',  t:'UID', cls:'ell' }
+];
+
+var QD_F = { org:'', pid:'', sid:'', part:'', tool:'', state:'', req:'', cloud:'', mod:'',
+             name:'', study:'', studyFrom:'', studyTo:'', calcFrom:'', calcTo:'', from:'', to:'' };
+var QD_S = { page:1, size:10, sel:{}, hide:{}, tab:'normal' };
+
+var QD_ST_DOT = { '计算成功':'var(--ok)', '计算中':'var(--warn)', '排队中':'var(--muted2)',
+                  '计算失败':'#B3261E', '发起失败':'#B3261E' };
+
+function qdVisibleCols(){ return QD_COLS.filter(function(c){ return !QD_S.hide[c.k]; }); }
+
+function qdPool(){ return QD_S.tab === 'slow' ? QD.filter(function(r){ return r.slow; }) : QD; }
+
+function qdFiltered(){
+  var f = QD_F;
+  return qdPool().filter(function(r){
+    if (f.org   && r.org !== f.org) return false;
+    if (f.pid   && r.pid.toUpperCase().indexOf(f.pid.toUpperCase()) < 0) return false;
+    if (f.sid   && r.sid.indexOf(f.sid) < 0) return false;
+    if (f.part  && r.part.toUpperCase().indexOf(f.part.toUpperCase()) < 0) return false;
+    if (f.tool  && r.tool !== f.tool) return false;
+    if (f.state && r.state !== f.state) return false;
+    if (f.req   && r.req.indexOf(f.req) < 0) return false;
+    if (f.cloud && r.cloud !== f.cloud) return false;
+    if (f.mod   && r.mod !== f.mod) return false;
+    if (f.name  && r.name.toUpperCase().indexOf(f.name.toUpperCase()) < 0) return false;
+    if (f.study && r.study.indexOf(f.study) < 0) return false;
+    if (f.studyFrom && r.studyTime.slice(0,10) < f.studyFrom) return false;
+    if (f.studyTo   && r.studyTime.slice(0,10) > f.studyTo)   return false;
+    if (f.calcFrom && (!r.calcEnd || r.calcEnd.slice(0,10) < f.calcFrom)) return false;
+    if (f.calcTo   && (!r.calcEnd || r.calcEnd.slice(0,10) > f.calcTo))   return false;
+    if (f.from && r.launch.slice(0,10) < f.from) return false;
+    if (f.to   && r.launch.slice(0,10) > f.to)   return false;
+    return true;
+  });
+}
+
+function qdSelCount(){ return Object.keys(QD_S.sel).filter(function(k){ return QD_S.sel[k]; }).length; }
+
+function renderQd(){
+  var rows = qdFiltered();
+  var cols = qdVisibleCols();
+  var maxP = Math.max(1, Math.ceil(rows.length / QD_S.size));
+  if (QD_S.page > maxP) QD_S.page = maxP;
+  var view = rows.slice((QD_S.page - 1) * QD_S.size, QD_S.page * QD_S.size);
+
+  var h = '<table class="or-table qd-table"><thead><tr><th class="ck"><input type="checkbox" id="qdAll"></th>';
+  cols.forEach(function(c){ h += '<th>' + c.t + '</th>'; });
+  h += '<th class="ops">操作</th></tr></thead><tbody>';
+  if (!view.length) {
+    h += '<tr class="or-empty"><td colspan="' + (cols.length + 2) + '">没有符合条件的计算任务</td></tr>';
+  } else {
+    view.forEach(function(r){
+      var on = !!QD_S.sel[r.idx];
+      h += '<tr' + (on ? ' class="sel"' : '') + '><td class="ck">'
+         + '<input type="checkbox" data-qdk="' + r.idx + '"' + (on ? ' checked' : '') + '></td>';
+      cols.forEach(function(c){
+        var v;
+        if (c.k === 'calcTime') {
+          v = r.calcEnd
+              ? esc(r.calcStart.slice(0,10)) + '<span class="sub">' + esc(r.calcStart.slice(11)) + ' → ' + esc(r.calcEnd.slice(11)) + '</span>'
+              : '<span class="mutd">—</span>';
+        } else if (c.k === 'state') {
+          v = '<span class="st-dot" style="background:' + (QD_ST_DOT[r.state] || 'var(--muted2)') + '"></span>' + esc(r.state);
+        } else if (c.k === 'tool' || c.k === 'uid') {
+          v = '<span class="ell" title="' + esc(r[c.k]) + '">' + esc(r[c.k]) + '</span>';
+        } else {
+          v = esc(r[c.k]);
+        }
+        h += '<td' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + v + '</td>';
+      });
+      h += '<td class="ops">'
+         +   '<a class="dg-link" data-qdr="' + r.idx + '">查看报告</a>'
+         +   '<a class="dg-link" data-qdi="' + r.idx + '">原始影像</a>'
+         +   '<a class="dg-link" data-qds="' + r.idx + '">状态</a>'
+         + '</td></tr>';
+    });
+  }
+  h += '</tbody></table>';
+  document.getElementById('qdTable').innerHTML = h;
+  document.getElementById('qdCount').innerHTML =
+      '共 <b>' + rows.length + '</b> 条 · 显示 <b>' + (cols.length + 1) + '</b> 列（' + cols.length + ' 列数据 + 操作，可表头设置）'
+    + (QD_S.tab === 'slow' ? ' · 过速阈值 > ' + QD_SLOW_SEC + 's' : '');
+
+  var btns = '<button data-p="' + (QD_S.page - 1) + '"' + (QD_S.page <= 1 ? ' disabled' : '') + '>‹</button>';
+  for (var p = 1; p <= maxP; p++) btns += '<button data-p="' + p + '" class="' + (p === QD_S.page ? 'on' : '') + '">' + p + '</button>';
+  btns += '<button data-p="' + (QD_S.page + 1) + '"' + (QD_S.page >= maxP ? ' disabled' : '') + '>›</button>';
+  document.getElementById('qdPager').innerHTML =
+      '<span>已选 ' + qdSelCount() + ' 个 · 共 ' + rows.length + ' 条 · 演示数据</span>'
+    + '<span class="btns"><select id="qdSize">'
+    +   [10,20,50].map(function(n){ return '<option value="' + n + '"' + (n === QD_S.size ? ' selected' : '') + '>' + n + ' 条/页</option>'; }).join('')
+    + '</select>' + btns
+    + '<span style="color:var(--muted);font-size:11.5px;margin-left:6px">前往</span>'
+    + '<input id="qdJump" value="' + QD_S.page + '" style="width:38px;border:1px solid var(--line);border-radius:4px;padding:2px 5px;font-size:11.5px;text-align:center">'
+    + '<span style="color:var(--muted);font-size:11.5px">页</span></span>';
+
+  [].forEach.call(document.querySelectorAll('#qdTable input[data-qdk]'), function(c){
+    c.onchange = function(){
+      var k = c.getAttribute('data-qdk');
+      if (c.checked) QD_S.sel[k] = true; else delete QD_S.sel[k];
+      renderQd();
+    };
+  });
+  var all = document.getElementById('qdAll');
+  if (all) all.onchange = function(){
+    view.forEach(function(r){ if (all.checked) QD_S.sel[r.idx] = true; else delete QD_S.sel[r.idx]; });
+    renderQd();
+  };
+  [].forEach.call(document.querySelectorAll('#qdPager [data-p]'), function(b){
+    b.onclick = function(){ QD_S.page = +b.getAttribute('data-p'); renderQd(); };
+  });
+  var sz = document.getElementById('qdSize');
+  if (sz) sz.onchange = function(){ QD_S.size = +sz.value; QD_S.page = 1; renderQd(); };
+  var sc = document.querySelector('#viewQd .dg-scroll'), hint = document.getElementById('qdHint');
+  if (sc && hint) hint.style.display = (sc.scrollWidth - sc.clientWidth > 4) ? 'inline' : 'none';
+  var jp = document.getElementById('qdJump');
+  if (jp) jp.onkeydown = function(e){
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    var n = parseInt(jp.value, 10);
+    if (!n || n < 1 || n > maxP) { toast('页码需在 1–' + maxP + ' 之间'); return; }
+    QD_S.page = n; renderQd();
+  };
+  [].forEach.call(document.querySelectorAll('#qdTable [data-qdr]'), function(a){
+    a.onclick = function(){ qdReport(a.getAttribute('data-qdr')); };
+  });
+  [].forEach.call(document.querySelectorAll('#qdTable [data-qdi]'), function(a){
+    a.onclick = function(){ qdImage(a.getAttribute('data-qdi')); };
+  });
+  [].forEach.call(document.querySelectorAll('#qdTable [data-qds]'), function(a){
+    a.onclick = function(){ qdStatus(a.getAttribute('data-qds')); };
+  });
+}
+
+function renderQdColMenu(){
+  var h = '';
+  QD_COLS.forEach(function(c){
+    h += '<label><input type="checkbox" data-qcol="' + c.k + '"' + (QD_S.hide[c.k] ? '' : ' checked') + '>' + c.t + '</label>';
+  });
+  h += '<label class="all"><input type="checkbox" id="qdColAll"' + (qdVisibleCols().length === QD_COLS.length ? ' checked' : '') + '>全选 / 全不选</label>';
+  document.getElementById('qdColMenu').innerHTML = h;
+  [].forEach.call(document.querySelectorAll('#qdColMenu [data-qcol]'), function(cb){
+    cb.onchange = function(){
+      var k = cb.getAttribute('data-qcol');
+      if (cb.checked) delete QD_S.hide[k]; else QD_S.hide[k] = true;
+      if (!qdVisibleCols().length) QD_S.hide = {};
+      renderQdColMenu(); renderQd();
+    };
+  });
+  var cl = document.getElementById('qdColAll');
+  if (cl) cl.onchange = function(){
+    QD_S.hide = {};
+    if (!cl.checked) QD_COLS.forEach(function(c){ if (c.k !== 'org') QD_S.hide[c.k] = true; });
+    renderQdColMenu(); renderQd();
+  };
+}
+
+function qdFind(idx){ return QD.filter(function(r){ return String(r.idx) === String(idx); })[0]; }
+
+function qdReport(idx){
+  var r = qdFind(idx); if (!r) return;
+  if (!r.done) { toast('该任务尚未计算完成：' + r.state); return; }
+  dgOpen('<div class="dg-sheet">'
+    + '<div class="dg-shead"><div><b>查看报告 · ' + esc(r.tool) + '</b>'
+    +   '<small>' + esc(r.org) + '　|　' + esc(r.name) + '　|　检查号 ' + esc(r.sid) + '</small></div>'
+    +   '<button class="dg-x" id="dgX">关闭</button></div>'
+    + '<div class="dg-sbody">'
+    +   '<div class="dg-kv">'
+    +     '<div><small>请求ID</small><span>' + esc(r.req) + '</span></div>'
+    +     '<div><small>状态</small><span>' + esc(r.state) + '</span></div>'
+    +     '<div><small>发起时间</small><span>' + esc(r.launch) + '</span></div>'
+    +     '<div><small>计算耗时</small><span>' + r.sec + ' 秒</span></div>'
+    +   '</div>'
+    +   '<div class="dg-blk"><div class="t">影像所见</div>'
+    +     '<p>双肺纹理清晰，左肺上叶尖后段见实性结节，最大径约 7.8 mm；右肺下叶后基底段见磨玻璃结节，约 4.2 mm。'
+    +     '纵隔未见明确肿大淋巴结，双侧胸腔未见积液。</p></div>'
+    +   '<div class="dg-blk"><div class="t">诊断意见</div>'
+    +     '<p>1. 左肺上叶尖后段实性结节（7.8 mm，Lung-RADS 2），建议 12 个月后复查。</p>'
+    +     '<p>2. 右肺下叶后基底段磨玻璃结节（4.2 mm，Lung-RADS 2），建议年度随访。</p></div>'
+    +   '<div class="dg-note">ⓘ AI 汇总结果，仅供临床医师参考，不作为最终诊断依据。</div>'
+    + '</div>'
+    + '<div class="dg-sfoot"><button class="btn" id="dgClose">关闭</button>'
+    +   '<button class="btn primary" id="qdUse">引用到报告</button></div>'
+    + '</div>');
+  var u = document.getElementById('qdUse');
+  if (u) u.onclick = function(){ dgClose(); toast('已引用到报告（示例）'); };
+}
+
+function qdImage(idx){
+  var r = qdFind(idx); if (!r) return;
+  dgOpen('<div class="dg-sheet">'
+    + '<div class="dg-shead"><div><b>原始影像调阅</b>'
+    +   '<small>' + esc(r.org) + '　|　' + esc(r.name) + '　|　检查号 ' + esc(r.sid) + '</small></div>'
+    +   '<button class="dg-x" id="dgX">关闭</button></div>'
+    + '<div class="dg-sbody">'
+    +   '<div class="dg-kv">'
+    +     '<div><small>模态 / 部位</small><span>' + esc(r.mod) + ' / ' + esc(r.part) + '</span></div>'
+    +     '<div><small>云地址</small><span>' + esc(r.cloud) + '</span></div>'
+    +   '</div>'
+    +   '<div class="dg-blk"><div class="t">调阅方式</div>'
+    +     '<p>本原型不内置影像，实际部署按院内既有方式调阅：</p>'
+    +     '<p>· 客户端：调用 PACS Viewer 打开该检查（检查号 / StudyInstanceUID 透传）</p>'
+    +     '<p>· Web 端：以 DICOMweb 方式加载序列</p>'
+    +     '<p>· 影像不出院，AI 仅取结构化文本结果</p></div>'
+    + '</div>'
+    + '<div class="dg-sfoot"><button class="btn" id="dgClose">关闭</button>'
+    +   '<button class="btn primary" id="qdGo">在 PACS 打开</button></div>'
+    + '</div>');
+  var g = document.getElementById('qdGo');
+  if (g) g.onclick = function(){ dgClose(); toast('已向 PACS 发起调阅：' + r.sid); };
+}
+
+function qdStatus(idx){
+  var r = qdFind(idx); if (!r) return;
+  var steps = [
+    ['已发起', r.launch, '平台向算法服务下发计算请求'],
+    ['排队', r.state === '发起失败' ? '—' : r.launch, r.state === '发起失败' ? '请求下发失败' : '进入算法队列等待算力'],
+    ['计算', r.calcStart || '—', r.calcEnd ? '计算完成，耗时 ' + r.sec + ' 秒' : (r.state === '计算中' ? '正在计算' : '未开始')],
+    ['出结果', r.calcEnd || '—', r.done ? (r.state === '计算失败' ? '计算失败（可重算）' : '结构化结果已回传') : '等待计算']
+  ];
+  var tl = '';
+  steps.forEach(function(s, i){
+    var ok = (i === 0) || (i === 1 && r.state !== '发起失败') ||
+             (i === 2 && !!r.calcStart) || (i === 3 && r.done);
+    tl += '<div style="display:flex;gap:9px;margin-bottom:9px">'
+        + '<span style="flex:0 0 8px;height:8px;margin-top:5px;border-radius:50%;background:'
+        + (ok ? 'var(--primary)' : 'var(--line)') + '"></span>'
+        + '<div><div style="font-size:12.5px;color:var(--ink);font-weight:600">' + esc(s[0])
+        +   '<span style="font-weight:400;color:var(--muted);margin-left:8px;font-size:11.5px">' + esc(s[1]) + '</span></div>'
+        + '<div style="font-size:11.5px;color:var(--muted);margin-top:1px">' + esc(s[2]) + '</div></div></div>';
+  });
+  dgOpen('<div class="dg-sheet">'
+    + '<div class="dg-shead"><div><b>任务状态 · ' + esc(r.state) + '</b>'
+    +   '<small>' + esc(r.tool) + '　|　请求ID ' + esc(r.req) + '</small></div>'
+    +   '<button class="dg-x" id="dgX">关闭</button></div>'
+    + '<div class="dg-sbody">'
+    +   '<div class="dg-kv">'
+    +     '<div><small>状态</small><span>' + esc(r.state) + '</span></div>'
+    +     '<div><small>计算耗时</small><span>' + (r.sec ? r.sec + ' 秒' + (r.slow ? '（过速）' : '') : '—') + '</span></div>'
+    +     '<div><small>发起时间</small><span>' + esc(r.launch) + '</span></div>'
+    +     '<div><small>完成时间</small><span>' + (r.calcEnd || '—') + '</span></div>'
+    +   '</div>'
+    +   '<div class="dg-blk"><div class="t">任务流转</div>' + tl + '</div>'
+    + '</div>'
+    + '<div class="dg-sfoot"><button class="btn" id="dgClose">关闭</button>'
+    +   '<button class="btn primary" id="qdRe">重新计算</button></div>'
+    + '</div>');
+  var re = document.getElementById('qdRe');
+  if (re) re.onclick = function(){ dgClose(); toast('已提交重新计算：' + r.req); };
+}
+
+function bindQd(){
+  if (bindQd._done) return;
+  bindQd._done = true;
+  var g = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+  var pick = function(id, ph){ var v = g(id); return v === ph ? '' : v; };
+  var apply = function(){
+    QD_F.org = pick('qdOrg','当前机构'); QD_F.part = pick('qdPart','请选择');
+    QD_F.tool = pick('qdTool','请选择'); QD_F.state = pick('qdState','请选择');
+    QD_F.cloud = pick('qdCloud','请选择'); QD_F.mod = pick('qdMod','请选择');
+    QD_F.pid = g('qdPid'); QD_F.sid = g('qdSid'); QD_F.req = g('qdReq');
+    QD_F.name = g('qdName'); QD_F.study = g('qdStudy');
+    QD_F.studyFrom = g('qdStudyFrom'); QD_F.studyTo = g('qdStudyTo');
+    QD_F.calcFrom = g('qdCalcFrom'); QD_F.calcTo = g('qdCalcTo');
+    QD_F.from = g('qdFrom'); QD_F.to = g('qdTo');
+    QD_S.page = 1; renderQd();
+  };
+  ['qdOrg','qdPart','qdTool','qdState','qdCloud','qdMod','qdStudyFrom','qdStudyTo','qdCalcFrom','qdCalcTo','qdFrom','qdTo']
+    .forEach(function(id){ var e = document.getElementById(id); if (e) e.onchange = apply; });
+  ['qdPid','qdSid','qdReq','qdName','qdStudy'].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.onkeydown = function(ev){ if (ev.key === 'Enter') { ev.preventDefault(); apply(); } };
+  });
+
+  var q = document.getElementById('qdQuery'); if (q) q.onclick = function(){ apply(); toast('已按当前条件查询'); };
+  var rf = document.getElementById('qdRefresh'); if (rf) rf.onclick = function(){ renderQd(); toast('计算队列已刷新'); };
+  var rs = document.getElementById('qdReset'); if (rs) rs.onclick = function(){
+    ['qdPid','qdSid','qdReq','qdName','qdStudy','qdStudyFrom','qdStudyTo','qdCalcFrom','qdCalcTo'].forEach(function(id){
+      var e = document.getElementById(id); if (e) e.value = '';
+    });
+    ['qdOrg'].forEach(function(id){ var e = document.getElementById(id); if (e) e.value = '当前机构'; });
+    ['qdPart','qdTool','qdState','qdCloud','qdMod'].forEach(function(id){ var e = document.getElementById(id); if (e) e.value = '请选择'; });
+    var f = document.getElementById('qdFrom'); if (f) f.value = '2026-10-20';
+    var t = document.getElementById('qdTo'); if (t) t.value = '2026-10-26';
+    QD_F = { org:'', pid:'', sid:'', part:'', tool:'', state:'', req:'', cloud:'', mod:'',
+             name:'', study:'', studyFrom:'', studyTo:'', calcFrom:'', calcTo:'', from:'', to:'' };
+    QD_S.page = 1; renderQd(); toast('已重置查询条件');
+  };
+  var st = document.getElementById('qdStop'); if (st) st.onclick = function(){
+    var n = qdSelCount();
+    if (!n) { toast('请先勾选要结束的任务'); return; }
+    toast('已结束 ' + n + ' 个计算任务（示例）'); QD_S.sel = {}; renderQd();
+  };
+  var ca = document.getElementById('qdCalc'); if (ca) ca.onclick = function(){
+    var n = qdSelCount();
+    toast(n ? '已提交 ' + n + ' 个任务进行 AI 计算' : '未勾选时默认提交当前页（示例）');
+  };
+
+  /* tab 切换 */
+  [].forEach.call(document.querySelectorAll('#qdTabs button'), function(b){
+    b.onclick = function(){
+      [].forEach.call(document.querySelectorAll('#qdTabs button'), function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      QD_S.tab = b.getAttribute('data-tab');
+      QD_S.page = 1;
+      renderQd();
+    };
+  });
+
+  /* 下拉选项 */
+  var os = document.getElementById('qdOrg');
+  if (os && os.options.length === 1) {
+    var s1 = {};
+    QD.forEach(function(r){ if (!s1[r.org]) { s1[r.org] = 1; os.innerHTML += '<option>' + r.org + '</option>'; } });
+  }
+  var ts = document.getElementById('qdTool');
+  if (ts && ts.options.length === 1) {
+    var s2 = {};
+    QD.forEach(function(r){ if (!s2[r.tool]) { s2[r.tool] = 1; ts.innerHTML += '<option>' + r.tool + '</option>'; } });
+  }
+  var cs = document.getElementById('qdCloud');
+  if (cs && cs.options.length === 1) {
+    var s3 = {};
+    QD.forEach(function(r){ if (!s3[r.cloud]) { s3[r.cloud] = 1; cs.innerHTML += '<option>' + r.cloud + '</option>'; } });
+  }
+
+  var cb = document.getElementById('qdColBtn');
+  if (cb) cb.onclick = function(e){
+    e.stopPropagation();
+    document.getElementById('qdColMenu').classList.toggle('hidden');
+  };
+  document.addEventListener('click', function(e){
+    var m = document.getElementById('qdColMenu');
+    if (!m || m.classList.contains('hidden')) return;
+    if (e.target.closest && e.target.closest('.dg-cols')) return;
+    m.classList.add('hidden');
+  });
+  renderQdColMenu();
 }
 
 </script>
