@@ -441,6 +441,11 @@ input,select,textarea{font-family:inherit}
 .bs-chart .ref{stroke:#C9D3D1;stroke-dasharray:4 3}
 .bs-sel{border:1px solid var(--line);border-radius:5px;padding:3px 7px;font-size:11px;color:var(--ink2);background:#fff}
 
+.or-table .sub{display:block;font-size:10.5px;color:var(--muted);margin-top:1px}
+.us-table{min-width:1300px}
+.us-table th,.us-table td{padding-left:4px;padding-right:4px}
+.us-table td.ell{max-width:150px}
+
 /* ---------- 弹窗 ---------- */
 .mask{position:fixed;inset:0;background:rgba(23,61,67,.42);z-index:50;
   display:flex;align-items:center;justify-content:center;padding:20px}
@@ -573,15 +578,16 @@ body.nomark .f label .new{display:none}
       <a href="javascript:;"><i>10</i>医院账单</a>
       <a href="javascript:;" data-view="stats"><i>11</i>计算统计</a>
       <a href="javascript:;" data-view="bs"><i>12</i>业务统计</a>
+      <a href="javascript:;" data-view="us"><i>13</i>使用统计</a>
       <div class="g">影像应用中心</div>
-      <a href="javascript:;" data-view="org"><i>13</i>机构规则</a>
-      <a href="javascript:;" data-view="diag"><i>14</i>诊断列表</a>
-      <a href="javascript:;" data-view="fav"><i>15</i>收藏管理</a>
-      <a href="javascript:;" data-view="cq"><i>16</i>采集队列</a>
-      <a href="javascript:;" data-view="rcv"><i>17</i>接收队列</a>
-      <a href="javascript:;" data-view="qd"><i>18</i>计算队列</a>
+      <a href="javascript:;" data-view="org"><i>14</i>机构规则</a>
+      <a href="javascript:;" data-view="diag"><i>15</i>诊断列表</a>
+      <a href="javascript:;" data-view="fav"><i>16</i>收藏管理</a>
+      <a href="javascript:;" data-view="cq"><i>17</i>采集队列</a>
+      <a href="javascript:;" data-view="rcv"><i>18</i>接收队列</a>
+      <a href="javascript:;" data-view="qd"><i>19</i>计算队列</a>
       <div class="g">安全与治理</div>
-      <a href="javascript:;"><i>19</i>操作审计</a>
+      <a href="javascript:;"><i>20</i>操作审计</a>
     </nav>
     <div class="suser"><span class="av">王</span><div><b>王斌</b><small>企业管理员</small></div></div>
   </aside>
@@ -1125,6 +1131,59 @@ body.nomark .f label .new{display:none}
         <div class="bs-ct"><b>机构使用明细</b><button class="bs-act" id="bsExp3">↑ 导出</button></div>
         <div id="bsInst"></div>
         <div class="bs-note">演示数据：机构、工具、指标均为原型示例，不代表生产口径。切换「机构名称 = 全部机构」可查看多家机构对比。</div>
+      </div>
+    </div>
+
+    <div id="viewUs" class="hidden">
+      <div class="head">
+        <div>
+          <h1>使用统计</h1>
+          <div class="sub">交易与财务 · 按「检查 × AI 工具」逐条查看计算、结果与导出记录。</div>
+        </div>
+        <div class="acts">
+          <button class="btn" id="usRefresh">刷新</button>
+          <button class="btn" id="usReset">重置</button>
+          <button class="btn primary" id="usExport">↑ 导出明细</button>
+        </div>
+      </div>
+
+      <div class="fbar" id="usFbar">
+        <div class="fitem"><label>机构名称</label><select id="usOrg"><option>当前机构</option><option>全部机构</option></select></div>
+        <div class="fitem"><label>厂商简称</label><select id="usVendor"><option>请选择</option><option>推想</option><option>联影智能</option><option>影禾</option></select></div>
+        <div class="fitem"><label>AI工具</label><select id="usTool"><option>请选择</option></select></div>
+        <div class="fitem"><label>姓名</label><input id="usName" placeholder="请输入"></div>
+        <div class="fitem"><label>性别</label><select id="usSex"><option>请选择</option><option>男</option><option>女</option></select></div>
+        <div class="fitem"><label>年龄</label><input id="usAge" placeholder="请输入"></div>
+        <div class="fitem"><label>患者号</label><input id="usPid" placeholder="请输入"></div>
+        <div class="fitem"><label>检查号</label><input id="usSid" placeholder="请输入"></div>
+        <div class="fitem"><label>设备</label><select id="usDev"><option>请选择</option><option>CT</option><option>MR</option><option>DR</option></select></div>
+        <div class="fitem"><label>检查时间</label>
+          <div class="range"><input type="date" id="usStudyFrom" value="2026-10-01"><span>—</span><input type="date" id="usStudyTo" value="2026-10-26"></div>
+        </div>
+        <div class="fitem"><label>计算时间</label>
+          <div class="range"><input type="date" id="usCalcFrom"><span>—</span><input type="date" id="usCalcTo"></div>
+        </div>
+        <div class="fitem"><label>计算状态</label>
+          <select id="usState"><option>请选择</option><option selected>计算成功</option><option>计算失败</option><option>计算中</option></select>
+        </div>
+        <div class="fitem"><label>AI结果</label><select id="usAiRes"><option>请选择</option><option>阳性</option><option>阴性</option><option>未知</option></select></div>
+        <div class="fitem"><label>阅片状态</label><select id="usRead"><option>请选择</option><option>未阅</option><option>已阅</option></select></div>
+        <div class="fitem"><label>导出时间</label>
+          <div class="range"><input type="date" id="usExpFrom"><span>—</span><input type="date" id="usExpTo"></div>
+        </div>
+        <div class="fitem"><label>&nbsp;</label><button class="btn primary" id="usQuery">查询</button></div>
+      </div>
+
+      <div class="panel">
+        <div class="dg-tbar">
+          <span><span id="usCount">—</span><span class="dg-hint" id="usHint">← 左右滑动查看更多列</span></span>
+          <span class="dg-cols" id="usCols">
+            <button class="btn" id="usColBtn">表头设置 ▾</button>
+            <div class="dg-colmenu hidden" id="usColMenu"></div>
+          </span>
+        </div>
+        <div class="dg-scroll"><div id="usTable"></div></div>
+        <div class="pg" id="usPager"></div>
       </div>
     </div>
 
@@ -1798,7 +1857,7 @@ function bindSchedFilters(){
 
 /* ---------- 视图切换 ---------- */
 function showView(v){
-  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav', cq:'viewCq', rcv:'viewRcv', qd:'viewQd', bs:'viewBs' };
+  var views = { apps:'viewApps', stats:'viewStats', diag:'viewDiag', org:'viewOrgRule', fav:'viewFav', cq:'viewCq', rcv:'viewRcv', qd:'viewQd', bs:'viewBs', us:'viewUs' };
   Object.keys(views).forEach(function(k){
     var el = document.getElementById(views[k]);
     if (el) el.classList.toggle('hidden', k !== v);
@@ -1806,7 +1865,7 @@ function showView(v){
   [].forEach.call(document.querySelectorAll('.snav a'), function(a){
     a.classList.toggle('on', a.getAttribute('data-view') === v);
   });
-  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理', cq:'采集队列', rcv:'接收队列', qd:'计算队列', bs:'业务统计' }[v] || '应用管理';
+  var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理', cq:'采集队列', rcv:'接收队列', qd:'计算队列', bs:'业务统计', us:'使用统计' }[v] || '应用管理';
   var cr = document.querySelector('.topbar .crumb');
   if (cr) cr.innerHTML = '生态伙伴端 / <b>' + name + '</b>';
   if (v === 'stats') { renderStats(); bindSchedFilters(); }
@@ -1817,6 +1876,7 @@ function showView(v){
   if (v === 'rcv') { bindRcv(); renderRcv(); }
   if (v === 'qd') { bindQd(); renderQd(); }
   if (v === 'bs') { bindBs(); renderBs(); }
+  if (v === 'us') { bindUs(); renderUs(); }
   var main = document.querySelector('.main');
   if (main) main.scrollTop = 0;
 }
@@ -4172,6 +4232,308 @@ function bindBs(){
     if (e) e.onclick = function(){ toast('已导出统计报表（示例）'); };
   });
   renderBs();
+}
+
+/* ============================================================================
+   交易与财务 · 使用统计（检查 × AI 工具 逐条明细）
+   ============================================================================ */
+var US_TOOLS = [
+  { t:'CT胸部骨折辅助诊断（推想）',   v:'推想',    dev:'CT' },
+  { t:'CT胸部肺炎辅助诊断（推想）',   v:'推想',    dev:'CT' },
+  { t:'CT胸部肺结节辅助诊断（推想）', v:'推想',    dev:'CT' },
+  { t:'CT胸部肺结节辅助诊断（联影）', v:'联影智能', dev:'CT' },
+  { t:'CT头颈部辅助诊断（联影）',     v:'联影智能', dev:'CT' },
+  { t:'CT颅脑AIR',                    v:'影禾',    dev:'CT' }
+];
+
+var US_PTS = [
+  { name:'胡金连',        sex:'女', age:'053Y', pid:'CT5961261025001', sid:'4435776',    study:'2026-10-25 08:15:26' },
+  { name:'Zhang Zhen Hong', sex:'男', age:'074Y', pid:'CT20261016078',   sid:'0000078981', study:'2026-10-16 15:15:53' },
+  { name:'LI GONG CHENG', sex:'男', age:'079Y', pid:'2610150041',       sid:'2610150041', study:'2026-10-15 15:01:57' },
+  { name:'LI LI',         sex:'男', age:'054Y', pid:'P2610140040',       sid:'2610140085', study:'2026-10-14 07:32:32' },
+  { name:'LIU MIN JIE',   sex:'女', age:'071Y', pid:'2610120061',       sid:'2610120061', study:'2026-10-12 15:57:48' },
+  { name:'XING LI HUA',   sex:'女', age:'067Y', pid:'2610100019',       sid:'2610100019', study:'2026-10-10 11:07:32' },
+  { name:'WANG HAI TAO',  sex:'男', age:'062Y', pid:'2610090088',       sid:'2610090088', study:'2026-10-09 10:22:14' },
+  { name:'陈玉兰',        sex:'女', age:'058Y', pid:'CT596126118',      sid:'4435801',    study:'2026-10-08 16:41:02' },
+  { name:'赵金山',        sex:'男', age:'066Y', pid:'2610060033',       sid:'2610060033', study:'2026-10-06 09:18:45' },
+  { name:'周文娟',        sex:'女', age:'049Y', pid:'P2610030012',       sid:'2610030012', study:'2026-10-03 14:05:39' }
+];
+
+function usTime(base, addSec){
+  var m = base.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+  var d = new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+  d.setSeconds(d.getSeconds() + addSec);
+  var p = function(n){ return (n < 10 ? '0' : '') + n; };
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' '
+       + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+}
+
+var US = (function(){
+  var rows = [];
+  /* 前 10 条按参考图落地 */
+  var seed = [
+    { p:0, tl:0, cs:'2026-10-25 15:30:08', ce:'2026-10-25 15:33:03', res:'阴性', read:'未阅', exp:'' },
+    { p:0, tl:1, cs:'2026-10-25 15:30:07', ce:'2026-10-25 15:33:03', res:'未知', read:'未阅', exp:'' },
+    { p:0, tl:2, cs:'2026-10-25 15:30:07', ce:'2026-10-25 15:33:03', res:'阳性', read:'未阅', exp:'' },
+    { p:1, tl:4, cs:'2026-10-23 19:28:40', ce:'2026-10-23 19:32:15', res:'阳性', read:'已阅', exp:'2026-10-26 17:50:37' },
+    { p:2, tl:3, cs:'2026-10-15 18:41:34', ce:'2026-10-15 18:43:05', res:'阳性', read:'已阅', exp:'2026-10-25 14:11:46' },
+    { p:3, tl:3, cs:'2026-10-15 01:27:21', ce:'2026-10-15 01:28:18', res:'阳性', read:'已阅', exp:'2026-10-25 14:12:22' },
+    { p:4, tl:5, cs:'2026-10-21 23:16:07', ce:'2026-10-21 23:16:18', res:'阴性', read:'未阅', exp:'' },
+    { p:5, tl:1, cs:'2026-10-11 08:50:15', ce:'2026-10-11 08:54:39', res:'未知', read:'已阅', exp:'2026-10-11 10:21:22' },
+    { p:5, tl:3, cs:'2026-10-11 14:03:41', ce:'2026-10-11 14:04:18', res:'阳性', read:'已阅', exp:'2026-10-11 14:05:18' },
+    { p:5, tl:2, cs:'2026-10-11 14:04:31', ce:'2026-10-11 14:04:37', res:'阳性', read:'已阅', exp:'2026-10-15 10:33:25' }
+  ];
+  seed.forEach(function(s){
+    var pt = US_PTS[s.p], tool = US_TOOLS[s.tl];
+    rows.push({ idx:rows.length + 1, org:'影禾医脉', vendor:tool.v, tool:tool.t, name:pt.name,
+      sex:pt.sex, age:pt.age, pid:pt.pid, sid:pt.sid, dev:tool.dev, study:pt.study,
+      cs:s.cs, ce:s.ce, state:'计算成功', res:s.res, read:s.read, exp:s.exp });
+  });
+  /* 其余按患者 × 工具循环生成，共 138 条（成功 130 + 失败 8） */
+  var FAIL = { 37:1, 52:1, 71:1, 83:1, 96:1, 111:1, 124:1, 133:1 };
+  for (var i = 10; i < 138; i++) {
+    var pt2 = US_PTS[i % 10], tool2 = US_TOOLS[i % 6];
+    var lag = 3600 * (3 + (i % 9)) + (i % 59) * 37;
+    var cs2 = usTime(pt2.study, lag);
+    var dur = 22 + (i % 13) * 9 + (i % 7) * 11;
+    var failed = !!FAIL[i];
+    var res = failed ? '未知' : ['阳性','阴性','未知','阳性','阳性','阴性'][i % 6];
+    var expd = (!failed && i % 7 === 3) ? usTime(cs2, 86400 * 2 + 1800) : '';
+    var read = failed ? '未阅' : (expd || i % 5 === 3 || i % 5 === 4 ? '已阅' : '未阅');
+    rows.push({ idx:i + 1, org:'影禾医脉', vendor:tool2.v, tool:tool2.t, name:pt2.name,
+      sex:pt2.sex, age:pt2.age, pid:pt2.pid, sid:pt2.sid, dev:tool2.dev, study:pt2.study,
+      cs:failed ? '' : cs2, ce:failed ? '' : usTime(cs2, dur),
+      state:failed ? '计算失败' : '计算成功', res:res, read:read, exp:expd });
+  }
+  return rows;
+})();
+
+var US_COLS = [
+  { k:'org',    t:'机构名称' },
+  { k:'vendor', t:'厂商简称' },
+  { k:'tool',   t:'AI工具', cls:'ell' },
+  { k:'name',   t:'姓名' },
+  { k:'sex',    t:'性别' },
+  { k:'age',    t:'年龄', cls:'mono' },
+  { k:'pid',    t:'患者号', cls:'mono' },
+  { k:'sid',    t:'检查号', cls:'mono' },
+  { k:'dev',    t:'设备' },
+  { k:'study',  t:'检查时间', cls:'mono' },
+  { k:'calc',   t:'计算时间', cls:'mono' },
+  { k:'state',  t:'计算状态' },
+  { k:'res',    t:'AI结果' },
+  { k:'read',   t:'阅片状态' },
+  { k:'exp',    t:'导出时间', cls:'mono' }
+];
+
+var US_F = { org:'当前机构', vendor:'', tool:'', name:'', sex:'', age:'', pid:'', sid:'', dev:'',
+             state:'计算成功', res:'', read:'', studyFrom:'2026-10-01', studyTo:'2026-10-26',
+             calcFrom:'', calcTo:'', expFrom:'', expTo:'' };
+var US_S = { page:1, size:10, hide:{} };
+
+var US_DOT = { '计算成功':'var(--ok)', '计算失败':'#B3261E', '计算中':'var(--warn)' };
+var US_RES_C = { '阳性':'#A9473F', '阴性':'#2E7D74', '未知':'#8A9A97' };
+
+function usVisibleCols(){ return US_COLS.filter(function(c){ return !US_S.hide[c.k]; }); }
+
+function usFiltered(){
+  var f = US_F;
+  return US.filter(function(r){
+    if (f.org === '当前机构' && r.org !== '影禾医脉') return false;
+    if (f.vendor && r.vendor !== f.vendor) return false;
+    if (f.tool   && r.tool !== f.tool) return false;
+    if (f.name   && r.name.toUpperCase().indexOf(f.name.toUpperCase()) < 0) return false;
+    if (f.sex    && r.sex !== f.sex) return false;
+    if (f.age    && r.age.indexOf(f.age) < 0) return false;
+    if (f.pid    && r.pid.toUpperCase().indexOf(f.pid.toUpperCase()) < 0) return false;
+    if (f.sid    && r.sid.toUpperCase().indexOf(f.sid.toUpperCase()) < 0) return false;
+    if (f.dev    && r.dev !== f.dev) return false;
+    if (f.state  && r.state !== f.state) return false;
+    if (f.res    && r.res !== f.res) return false;
+    if (f.read   && r.read !== f.read) return false;
+    if (f.studyFrom && r.study.slice(0,10) < f.studyFrom) return false;
+    if (f.studyTo   && r.study.slice(0,10) > f.studyTo) return false;
+    if (f.calcFrom || f.calcTo) {
+      if (!r.cs) return false;
+      if (f.calcFrom && r.cs.slice(0,10) < f.calcFrom) return false;
+      if (f.calcTo   && r.cs.slice(0,10) > f.calcTo) return false;
+    }
+    if (f.expFrom || f.expTo) {
+      if (!r.exp) return false;
+      if (f.expFrom && r.exp.slice(0,10) < f.expFrom) return false;
+      if (f.expTo   && r.exp.slice(0,10) > f.expTo) return false;
+    }
+    return true;
+  });
+}
+
+function renderUs(){
+  var rows = usFiltered();
+  var cols = usVisibleCols();
+  var maxP = Math.max(1, Math.ceil(rows.length / US_S.size));
+  if (US_S.page > maxP) US_S.page = maxP;
+  var view = rows.slice((US_S.page - 1) * US_S.size, US_S.page * US_S.size);
+
+  var h = '<table class="or-table us-table"><thead><tr>';
+  cols.forEach(function(c){ h += '<th>' + c.t + '</th>'; });
+  h += '</tr></thead><tbody>';
+  if (!view.length) {
+    h += '<tr class="or-empty"><td colspan="' + cols.length + '">没有符合条件的使用记录</td></tr>';
+  } else {
+    view.forEach(function(r){
+      h += '<tr>';
+      cols.forEach(function(c){
+        var v;
+        if (c.k === 'calc') {
+          v = r.ce
+              ? esc(r.cs.slice(0,10)) + '<span class="sub">' + esc(r.cs.slice(11)) + ' → ' + esc(r.ce.slice(11)) + '</span>'
+              : '<span class="mutd">—</span>';
+        } else if (c.k === 'state') {
+          v = '<span class="st-dot" style="background:' + (US_DOT[r.state] || 'var(--muted2)') + '"></span>' + esc(r.state);
+        } else if (c.k === 'res') {
+          v = '<span style="color:' + (US_RES_C[r.res] || 'var(--ink)') + '">' + esc(r.res) + '</span>';
+        } else if (c.k === 'read') {
+          v = '<span class="st-dot" style="background:' + (r.read === '已阅' ? 'var(--ok)' : '#3F7FBF') + '"></span>' + esc(r.read);
+        } else if (c.k === 'exp') {
+          v = r.exp ? esc(r.exp) : '<span class="mutd">—</span>';
+        } else if (c.k === 'tool') {
+          v = '<span class="ell" title="' + esc(r.tool) + '">' + esc(r.tool) + '</span>';
+        } else {
+          v = esc(r[c.k]);
+        }
+        h += '<td' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + v + '</td>';
+      });
+      h += '</tr>';
+    });
+  }
+  h += '</tbody></table>';
+  document.getElementById('usTable').innerHTML = h;
+  document.getElementById('usCount').innerHTML =
+    '共 <b>' + rows.length + '</b> 条 · 显示 <b>' + cols.length + '</b> 列（可表头设置）';
+
+  var btns = '<button data-p="' + (US_S.page - 1) + '"' + (US_S.page <= 1 ? ' disabled' : '') + '>‹</button>';
+  for (var p = 1; p <= maxP; p++) btns += '<button data-p="' + p + '" class="' + (p === US_S.page ? 'on' : '') + '">' + p + '</button>';
+  btns += '<button data-p="' + (US_S.page + 1) + '"' + (US_S.page >= maxP ? ' disabled' : '') + '>›</button>';
+  document.getElementById('usPager').innerHTML =
+      '<span>共 ' + rows.length + ' 条 · 演示数据 · 第 ' + US_S.page + '/' + maxP + ' 页</span>'
+    + '<span class="btns"><select id="usSize">'
+    +   [10,20,50].map(function(n){ return '<option value="' + n + '"' + (n === US_S.size ? ' selected' : '') + '>' + n + ' 条/页</option>'; }).join('')
+    + '</select>' + btns
+    + '<span style="color:var(--muted);font-size:11.5px;margin-left:6px">前往</span>'
+    + '<input id="usJump" value="' + US_S.page + '" style="width:38px;border:1px solid var(--line);border-radius:4px;padding:2px 5px;font-size:11.5px;text-align:center">'
+    + '<span style="color:var(--muted);font-size:11.5px">页</span></span>';
+
+  [].forEach.call(document.querySelectorAll('#usPager [data-p]'), function(b){
+    b.onclick = function(){ US_S.page = +b.getAttribute('data-p'); renderUs(); };
+  });
+  var sz = document.getElementById('usSize');
+  if (sz) sz.onchange = function(){ US_S.size = +sz.value; US_S.page = 1; renderUs(); };
+  var jp = document.getElementById('usJump');
+  if (jp) jp.onkeydown = function(e){
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    var n = parseInt(jp.value, 10);
+    if (!n || n < 1 || n > maxP) { toast('页码需在 1–' + maxP + ' 之间'); return; }
+    US_S.page = n; renderUs();
+  };
+  var sc = document.querySelector('#viewUs .dg-scroll'), hint = document.getElementById('usHint');
+  if (sc && hint) hint.style.display = (sc.scrollWidth - sc.clientWidth > 4) ? 'inline' : 'none';
+}
+
+function renderUsColMenu(){
+  var h = '';
+  US_COLS.forEach(function(c){
+    h += '<label><input type="checkbox" data-ucol="' + c.k + '"' + (US_S.hide[c.k] ? '' : ' checked') + '>' + c.t + '</label>';
+  });
+  h += '<label class="all"><input type="checkbox" id="usColAll"' + (usVisibleCols().length === US_COLS.length ? ' checked' : '') + '>全选 / 全不选</label>';
+  document.getElementById('usColMenu').innerHTML = h;
+  [].forEach.call(document.querySelectorAll('#usColMenu [data-ucol]'), function(cb){
+    cb.onchange = function(){
+      var k = cb.getAttribute('data-ucol');
+      if (cb.checked) delete US_S.hide[k]; else US_S.hide[k] = true;
+      if (!usVisibleCols().length) US_S.hide = {};
+      renderUsColMenu(); renderUs();
+    };
+  });
+  var cl = document.getElementById('usColAll');
+  if (cl) cl.onchange = function(){
+    US_S.hide = {};
+    if (!cl.checked) US_COLS.forEach(function(c){ if (c.k !== 'org') US_S.hide[c.k] = true; });
+    renderUsColMenu(); renderUs();
+  };
+}
+
+function bindUs(){
+  if (bindUs._done) return;
+  bindUs._done = true;
+
+  var ts = document.getElementById('usTool');
+  if (ts && ts.options.length === 1) {
+    US_TOOLS.forEach(function(t){ ts.innerHTML += '<option>' + t.t + '</option>'; });
+  }
+
+  var g = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+  var pick = function(id){ var v = g(id); return v === '请选择' ? '' : v; };
+  var apply = function(){
+    US_F.org = g('usOrg'); US_F.vendor = pick('usVendor'); US_F.tool = pick('usTool');
+    US_F.name = g('usName'); US_F.sex = pick('usSex'); US_F.age = g('usAge');
+    US_F.pid = g('usPid'); US_F.sid = g('usSid'); US_F.dev = pick('usDev');
+    US_F.state = pick('usState'); US_F.res = pick('usAiRes'); US_F.read = pick('usRead');
+    US_F.studyFrom = g('usStudyFrom'); US_F.studyTo = g('usStudyTo');
+    US_F.calcFrom = g('usCalcFrom'); US_F.calcTo = g('usCalcTo');
+    US_F.expFrom = g('usExpFrom'); US_F.expTo = g('usExpTo');
+    US_S.page = 1; renderUs();
+  };
+  ['usOrg','usVendor','usTool','usSex','usDev','usState','usAiRes','usRead',
+   'usStudyFrom','usStudyTo','usCalcFrom','usCalcTo','usExpFrom','usExpTo'].forEach(function(id){
+    var e = document.getElementById(id); if (e) e.onchange = apply;
+  });
+  ['usName','usAge','usPid','usSid'].forEach(function(id){
+    var e = document.getElementById(id);
+    if (e) e.onkeydown = function(ev){ if (ev.key === 'Enter') { ev.preventDefault(); apply(); } };
+  });
+
+  var q = document.getElementById('usQuery'); if (q) q.onclick = function(){ apply(); toast('已按当前条件查询'); };
+  var rf = document.getElementById('usRefresh'); if (rf) rf.onclick = function(){ renderUs(); toast('使用统计已刷新'); };
+  var rs = document.getElementById('usReset'); if (rs) rs.onclick = function(){
+    ['usName','usAge','usPid','usSid','usCalcFrom','usCalcTo','usExpFrom','usExpTo'].forEach(function(id){
+      var e = document.getElementById(id); if (e) e.value = '';
+    });
+    document.getElementById('usOrg').value = '当前机构';
+    ['usVendor','usTool','usSex','usDev','usAiRes','usRead'].forEach(function(id){ document.getElementById(id).value = '请选择'; });
+    document.getElementById('usState').value = '计算成功';
+    document.getElementById('usStudyFrom').value = '2026-10-01';
+    document.getElementById('usStudyTo').value = '2026-10-26';
+    US_F = { org:'当前机构', vendor:'', tool:'', name:'', sex:'', age:'', pid:'', sid:'', dev:'',
+             state:'计算成功', res:'', read:'', studyFrom:'2026-10-01', studyTo:'2026-10-26',
+             calcFrom:'', calcTo:'', expFrom:'', expTo:'' };
+    US_S.page = 1; renderUs(); toast('已重置查询条件');
+  };
+
+  var ex = document.getElementById('usExport'); if (ex) ex.onclick = function(){
+    var rows = usFiltered();
+    var start = (US_S.page - 1) * US_S.size;
+    var view = rows.slice(start, start + US_S.size);
+    var now = '2026-10-26 17:52:08';
+    var n = 0;
+    view.forEach(function(r){ if (!r.exp) { r.exp = now; r.read = '已阅'; n++; } });
+    renderUs();
+    toast('当前页已导出 ' + n + ' 条（共 ' + rows.length + ' 条命中），导出时间已回写');
+  };
+
+  var cb = document.getElementById('usColBtn');
+  if (cb) cb.onclick = function(e){
+    e.stopPropagation();
+    document.getElementById('usColMenu').classList.toggle('hidden');
+  };
+  document.addEventListener('click', function(e){
+    var m = document.getElementById('usColMenu');
+    if (!m || m.classList.contains('hidden')) return;
+    if (e.target.closest && e.target.closest('#usCols')) return;
+    m.classList.add('hidden');
+  });
+
+  renderUsColMenu();
 }
 
 </script>
