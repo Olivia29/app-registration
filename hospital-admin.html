@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>医院管理端 · 应用中心（原生态伙伴端 影像应用中心 15-20 页）V1.0</title>
+<title>浮梁县人民医院 · 用户管理端（含应用中心）V2.0</title>
 <!--
-  医院管理端 · 应用中心  V1.0（2026-10-28）
-  来源：生态伙伴端「影像应用中心」模块 15-20 页 —— 机构规则 / 诊断列表 / 收藏管理 / 采集队列 / 接收队列 / 计算队列
-  变更：把上述 6 个菜单与页面整体迁移到医院管理端，作为底部新增的「应用中心」菜单组；
-        复用原有渲染逻辑与样式，页面内容与交互保持一致；
-        医院管理（机构概览 / 科室人员 / 权限 / 接口 / 字典 / 审计）为占位菜单，点击提示不在本期范围
-  说明：演示数据为模拟数据，不连接院内生产系统
+  浮梁县人民医院 · 用户管理端（含「应用中心」）  V2.0（2026-10-29）
+  样式：对齐目标管理端（顶栏 56px / 侧栏 240px / 主色 #C00000 / 选中 #FCE8E6 / 表头 #F9FAFB / 圆角 4-8px）
+  菜单：工作台（概览·机构与资质·采购订单·已购服务·服务工单）
+        管理（组织与授权·用量分析·账单与对账·操作审计）
+        应用中心（机构规则·诊断列表·收藏管理·采集队列·接收队列·计算队列，由生态伙伴端 15-20 页迁移）
+  数据：应用中心内所有机构名称统一为「浮梁县人民医院」；演示数据为模拟数据
 -->
 <style>
 *{box-sizing:border-box}
@@ -575,43 +575,129 @@ body.nomark .f label .new{display:none}
   .stats{grid-template-columns:repeat(2,1fr)}
   .side{display:none}
 }
+
+/* ================= 医院管理端视觉（对齐目标管理端） ================= */
+:root{
+  --bg:#F5F6F7; --surface:#FFFFFF; --ink:#1F2329; --ink2:#4E5969; --head:#1F2329;
+  --line:#EBEDF0; --line2:#F2F3F5; --muted:#86909C; --muted2:#A9AEB8;
+  --primary:#C00000; --primary-d:#A50000; --primary-l:#FCE8E6;
+  --ok:#008040; --ok-l:#E6F7EE; --warn:#B7791F; --warn-l:#FDF6E3;
+  --info:#1D4ED8; --info-l:#EEF2FF;
+  --r:6px; --sh:0 2px 8px rgba(0,0,0,.06);
+}
+body{background:#F5F6F7 !important;color:#1F2329}
+/* 侧栏 */
+.side{width:240px !important;flex:0 0 240px !important;background:#F8F9FA !important;
+  border-right:1px solid #EBEDF0 !important}
+.sbrand{padding:16px 18px 14px !important;border-bottom:1px solid #EBEDF0 !important;
+  display:flex;align-items:center;gap:10px;background:#F8F9FA !important}
+.sbrand .m{width:34px;height:34px;border-radius:6px !important;background:#C00000 !important;
+  color:#fff !important;font-size:13px !important;font-weight:700;display:flex;align-items:center;
+  justify-content:center;letter-spacing:0;line-height:1.1;text-align:center}
+.sbrand .tx b{font-size:14px !important;color:#1F2329 !important;font-weight:700 !important;
+  display:block;line-height:1.35}
+.sbrand .tx small{font-size:11.5px !important;color:#86909C !important;display:block;margin-top:2px}
+.snav{padding:8px 10px 14px !important;overflow:auto}
+.snav .g{font-size:12px !important;color:#86909C !important;font-weight:400 !important;
+  padding:12px 8px 6px !important;letter-spacing:.5px}
+.snav a{display:flex !important;align-items:center;gap:9px;height:38px !important;
+  padding:0 10px !important;border-radius:6px !important;color:#4E5969 !important;
+  font-size:13.5px !important;margin:1px 0;text-decoration:none}
+.snav a:hover{background:#F2F3F5 !important;color:#1F2329 !important}
+.snav a.on{background:#FCE8E6 !important;color:#C00000 !important;font-weight:600 !important}
+.snav a i{width:22px !important;height:20px;border-radius:4px;background:#E5E6EB !important;
+  color:#4E5969 !important;font-size:11px !important;font-style:normal;font-weight:600;
+  display:flex;align-items:center;justify-content:center;flex:0 0 22px}
+.snav a.on i{background:#C00000 !important;color:#fff !important}
+.snav a .ic{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:#86909C;stroke-width:1.6}
+.snav a.on .ic{stroke:#C00000}
+.suser{border-top:1px solid #EBEDF0 !important;background:#F8F9FA !important;padding:12px 16px !important}
+.suser .av{background:#C00000 !important;color:#fff !important}
+.suser b{font-size:13px !important;color:#1F2329 !important}
+.suser small{color:#86909C !important;font-size:11.5px !important}
+/* 顶栏 */
+.topbar{height:56px !important;min-height:56px !important;max-height:56px !important;
+  box-sizing:border-box !important;background:#fff !important;border-bottom:1px solid #EBEDF0 !important;
+  padding:0 20px !important;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.topbar .crumb{font-size:13px !important;color:#86909C !important}
+.topbar .crumb b{color:#1F2329 !important;font-weight:600}
+.topbar .topr{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#86909C}
+.topbar .topr .tbtn,.topbar .btn-link{border:1px solid #E5E6EB !important;background:#fff !important;
+  color:#1F2329 !important;border-radius:4px !important;padding:5px 12px !important;font-size:12.5px !important;
+  cursor:pointer}
+.topbar .topr .tbtn:hover,.topbar .btn-link:hover{border-color:#C00000 !important;color:#C00000 !important}
+/* 内容区 */
+.main{padding:20px 24px 28px !important;background:#F5F6F7 !important}
+.head h1,h1{font-size:24px !important;color:#1F2329 !important;font-weight:700 !important;letter-spacing:.2px}
+.head .sub,.sub{font-size:13px !important;color:#86909C !important;margin-top:6px;line-height:1.7}
+.card,.panel,.box{background:#fff !important;border:1px solid #EBEDF0 !important;
+  border-radius:8px !important;box-shadow:0 2px 8px rgba(0,0,0,.04) !important}
+/* 按钮 */
+.btn{border-radius:4px !important;border:1px solid #E5E6EB !important;background:#fff !important;
+  color:#1F2329 !important;font-size:13px !important}
+.btn:hover{border-color:#C00000 !important;color:#C00000 !important}
+.btn.primary{background:#C00000 !important;border-color:#C00000 !important;color:#fff !important}
+.btn.primary:hover{background:#A50000 !important;border-color:#A50000 !important;color:#fff !important}
+.btn.danger{color:#C00000 !important;border-color:#F0D3CE !important}
+/* 表格 */
+table thead th,.dg-table th{background:#F9FAFB !important;color:#86909C !important;
+  font-weight:500 !important;font-size:12.5px !important;border-bottom:1px solid #EBEDF0 !important}
+table tbody td,.dg-table td{border-bottom:1px solid #F2F3F5 !important;font-size:13px !important;color:#1F2329}
+table tbody tr:hover td,.dg-table tbody tr:hover td{background:#FAFAFB !important}
+/* 状态标签 */
+.spill.ok{background:#E6F7EE !important;color:#008040 !important}
+.spill.bad{background:#FCE8E6 !important;color:#C00000 !important}
+.spill.run{background:#FFF7E6 !important;color:#B7791F !important}
+.spill.wait{background:#F2F3F5 !important;color:#86909C !important}
+/* 输入与下拉 */
+input,select,textarea{border-radius:6px !important;border-color:#E5E6EB !important;font-size:13px !important}
+input:focus,select:focus,textarea:focus{border-color:#C00000 !important;outline:none;
+  box-shadow:0 0 0 2px rgba(192,0,0,.08)}
+/* 分页与链接 */
+.pg .btns button.on{background:#C00000 !important;border-color:#C00000 !important;color:#fff !important}
+.dg-link,a{color:#C00000 !important}
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="side">
     <div class="sbrand">
-      <span class="m">院</span>
+      <span class="m">浮梁</span>
       <div class="tx">
         <b>浮梁县人民医院</b>
-        <small>医院管理端 · HIS 管理员</small>
+        <small>用户管理端 · H360222001</small>
       </div>
     </div>
     <nav class="snav">
-      <div class="g">医院管理</div>
-      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块；医院管理其他菜单不在本期范围')"><i>01</i>机构概览</a>
-      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块')"><i>02</i>科室与人员</a>
-      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块')"><i>03</i>角色与权限</a>
-      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块')"><i>04</i>接入与接口</a>
-      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块')"><i>05</i>数据与字典</a>
-      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块')"><i>06</i>操作审计</a>
+      <div class="g">工作台</div>
+      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块；该菜单不在本期范围')"><svg class="ic" viewBox="0 0 16 16"><path d="M3 13V7M7 13V4M11 13V9M15 13V6"/></svg><i>01</i>概览</a>
+      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块；该菜单不在本期范围')"><svg class="ic" viewBox="0 0 16 16"><path d="M3 13V6l5-2 5 2v7M3 13h10M6 13V9h4v4"/></svg><i>02</i>机构与资质</a>
+      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块；该菜单不在本期范围')"><svg class="ic" viewBox="0 0 16 16"><path d="M2 3h2l2 8h7l2-6H5"/><circle cx="6.5" cy="13" r="1"/><circle cx="11.5" cy="13" r="1"/></svg><i>03</i>采购订单</a>
+      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块；该菜单不在本期范围')"><svg class="ic" viewBox="0 0 16 16"><path d="M3 5h9v8H3z"/><path d="M12 7h2v4h-2"/><circle cx="11" cy="9" r=".8"/></svg><i>04</i>已购服务</a>
+      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块；该菜单不在本期范围')"><svg class="ic" viewBox="0 0 16 16"><path d="M3 5h10v2a1.5 1.5 0 000 3v2H3v-2a1.5 1.5 0 000-3z"/></svg><i>05</i>服务工单</a>
+      <div class="g">管理</div>
+      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块；该菜单不在本期范围')"><svg class="ic" viewBox="0 0 16 16"><path d="M2 4h5l1 2h6v7H2z"/></svg><i>06</i>组织与授权</a>
+      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块；该菜单不在本期范围')"><svg class="ic" viewBox="0 0 16 16"><path d="M2 12l4-4 3 2 5-6"/><path d="M11 4h3v3"/></svg><i>07</i>用量分析</a>
+      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块；该菜单不在本期范围')"><svg class="ic" viewBox="0 0 16 16"><path d="M4 2h8v12H4z"/><path d="M6 5h4M6 8h4M6 11h2"/></svg><i>08</i>账单与对账</a>
+      <a href="javascript:;" onclick="toast('原型仅演示「应用中心」模块；该菜单不在本期范围')"><svg class="ic" viewBox="0 0 16 16"><path d="M3 3h8v8H3z"/><circle cx="10" cy="10" r="2.6"/></svg><i>09</i>操作审计</a>
       <div class="g">应用中心</div>
-      <a href="javascript:;" data-view="org"><i>07</i>机构规则</a>
-      <a href="javascript:;" data-view="diag" class="on"><i>08</i>诊断列表</a>
-      <a href="javascript:;" data-view="fav"><i>09</i>收藏管理</a>
-      <a href="javascript:;" data-view="cq"><i>10</i>采集队列</a>
-      <a href="javascript:;" data-view="rcv"><i>11</i>接收队列</a>
-      <a href="javascript:;" data-view="qd"><i>12</i>计算队列</a>
+      <a href="javascript:;" data-view="org"><svg class="ic" viewBox="0 0 16 16"><path d="M3 4h10M3 8h10M3 12h10"/><circle cx="6" cy="4" r="1.3"/><circle cx="10" cy="8" r="1.3"/><circle cx="5" cy="12" r="1.3"/></svg><i>10</i>机构规则</a>
+      <a href="javascript:;" data-view="diag" class="on"><svg class="ic" viewBox="0 0 16 16"><path d="M3 4h10M3 8h10M3 12h7"/></svg><i>11</i>诊断列表</a>
+      <a href="javascript:;" data-view="fav"><svg class="ic" viewBox="0 0 16 16"><path d="M8 2.5l1.7 3.5 3.8.5-2.8 2.6.7 3.7L8 11.2 4.6 12.8l.7-3.7L2.5 6.5l3.8-.5z"/></svg><i>12</i>收藏管理</a>
+      <a href="javascript:;" data-view="cq"><svg class="ic" viewBox="0 0 16 16"><path d="M2 9h3l1 2h4l1-2h3"/><path d="M3 4h10v9H3z"/></svg><i>13</i>采集队列</a>
+      <a href="javascript:;" data-view="rcv"><svg class="ic" viewBox="0 0 16 16"><path d="M2 9h3l1-2h4l1 2h3"/><path d="M3 4h10v9H3z"/></svg><i>14</i>接收队列</a>
+      <a href="javascript:;" data-view="qd"><svg class="ic" viewBox="0 0 16 16"><path d="M4 4h8v8H4z"/><path d="M6 1v3M10 1v3M6 12v3M10 12v3M1 6h3M1 10h3M12 6h3M12 10h3"/></svg><i>15</i>计算队列</a>
     </nav>
     <div class="suser"><span class="av">管</span><div><b>张海</b><small>信息科 · 系统管理员</small></div></div>
   </aside>
 
   <div class="pane">
     <div class="topbar">
-      <div class="crumb">医院管理端 / <b>应用中心</b></div>
+      <div class="crumb">用户管理端 / <b>诊断列表</b></div>
       <div class="topr">
-        <span>当前机构：浮梁县人民医院</span>
+        <span style="color:#86909C">浮梁县人民医院</span>
         <button class="btn-link">返回门户</button>
+        <button class="btn-link" onclick="location.reload()">↻ 刷新</button>
       </div>
     </div>
 
@@ -1692,14 +1778,14 @@ var ST_KPI = [
 
 /* 机构明细：接收 / 匹配 / 过滤 / 排队 / 计算中 / 成功 / 失败 */
 var ST_ORGS = [
-  { n:'金华广福医院',         recv:246, match:935,  filt:783,  wait:0, run:24, ok:494, fail:38 },
-  { n:'一脉阳光互联网医院',   recv:244, match:917,  filt:1279, wait:0, run:62, ok:171, fail:19 },
-  { n:'射洪市中医院',         recv:229, match:1092, filt:4381, wait:0, run:23, ok:732, fail:61 },
-  { n:'遂川县人民医院',       recv:218, match:1043, filt:2905, wait:0, run:18, ok:663, fail:47 },
-  { n:'南昌市第三医院',       recv:196, match:876,  filt:2114, wait:0, run:31, ok:528, fail:35 },
-  { n:'九江市第一人民医院',   recv:174, match:802,  filt:1958, wait:0, run:27, ok:471, fail:33 },
-  { n:'赣州市人民医院',       recv:162, match:758,  filt:1832, wait:0, run:22, ok:449, fail:29 },
-  { n:'上饶市人民医院',       recv:148, match:690,  filt:1647, wait:0, run:19, ok:402, fail:26 }
+  { n:'浮梁县人民医院',         recv:246, match:935,  filt:783,  wait:0, run:24, ok:494, fail:38 },
+  { n:'浮梁县人民医院',   recv:244, match:917,  filt:1279, wait:0, run:62, ok:171, fail:19 },
+  { n:'浮梁县人民医院',         recv:229, match:1092, filt:4381, wait:0, run:23, ok:732, fail:61 },
+  { n:'浮梁县人民医院',       recv:218, match:1043, filt:2905, wait:0, run:18, ok:663, fail:47 },
+  { n:'浮梁县人民医院',       recv:196, match:876,  filt:2114, wait:0, run:31, ok:528, fail:35 },
+  { n:'浮梁县人民医院',   recv:174, match:802,  filt:1958, wait:0, run:27, ok:471, fail:33 },
+  { n:'浮梁县人民医院',       recv:162, match:758,  filt:1832, wait:0, run:22, ok:449, fail:29 },
+  { n:'浮梁县人民医院',       recv:148, match:690,  filt:1647, wait:0, run:19, ok:402, fail:26 }
 ];
 
 /* 机构数量分布（按省） */
@@ -1711,7 +1797,7 @@ var ST_PROV = [
 
 /* 计算调度：24 条演示任务 */
 var SCHED = (function(){
-  var orgs = ['遂川县人民医院','金华广福医院','一脉阳光互联网医院','射洪市中医院','九江市第一人民医院'];
+  var orgs = ['浮梁县人民医院','浮梁县人民医院','浮梁县人民医院','浮梁县人民医院','浮梁县人民医院'];
   var parts = ['胸部','颅脑','腹部'];
   var tools = ['CT骨密度辅助诊断（联影）','CT胸部气胸辅助诊断（联影）','CT胸部肺结节辅助诊断（联影）',
                'CT颅脑脑出血辅助诊断（联影）','CT胸部肺炎辅助诊断（推想）','MR颅脑转移瘤辅助诊断（联影）'];
@@ -1937,7 +2023,7 @@ function showView(v){
   });
   var name = { apps:'应用管理', stats:'计算统计', diag:'诊断列表', org:'机构规则', fav:'收藏管理', cq:'采集队列', rcv:'接收队列', qd:'计算队列', bs:'业务统计', us:'使用统计', bl:'计费统计' }[v] || '应用管理';
   var cr = document.querySelector('.topbar .crumb');
-  if (cr) cr.innerHTML = '医院管理端 / 应用中心 / <b>' + name + '</b>';
+  if (cr) cr.innerHTML = '用户管理端 / <b>' + name + '</b>';
   if (v === 'stats') { renderStats(); bindSchedFilters(); }
   if (v === 'diag') { bindDiagView(); renderDiagList(); }
   if (v === 'org') { bindOrgRule(); renderOrgRules(); }
@@ -2002,7 +2088,7 @@ var DG_TOOLSET = [
 var DG_STATES = ['计算失败','已完成','已完成','已完成','计算中','排队中'];
 
 var DG = (function(){
-  var orgs = ['影禾医脉','影禾医脉','影禾医脉','金华广福医院','江西省人民医院','遂川县人民医院'];
+  var orgs = ['浮梁县人民医院','浮梁县人民医院','浮梁县人民医院','浮梁县人民医院','浮梁县人民医院','浮梁县人民医院'];
   var names = ['何火喜','李秀兰','张桂芳','陈国强','刘建华','徐国强','胡雅琴','邓志远',
                '罗小燕','马长林','黄丽华','曾宪明'];
   var ages = [64,58,71,45,80,53,66,49,38,72,61,55];
@@ -2427,7 +2513,7 @@ var OR_ROWS = (function(){
     var skey = parts[i] + mods[i];
     out.push({
       idx: i + 1,
-      org: '影禾医脉',
+      org: '浮梁县人民医院',
       tool: tools[i],
       cloud: clouds[i % clouds.length],
       mod: mods[i],
@@ -2659,7 +2745,7 @@ function orRenderRule(){
 function orOpenMatch(idx){
   var r = idx ? OR_ROWS.filter(function(x){ return String(x.idx) === String(idx); })[0] : null;
   var key = r ? r.idx : 'global';
-  var subTxt = r ? (r.org + '　|　' + r.tool) : ('当前机构 · 影禾医脉　|　全部规则 ' + OR_ROWS.length + ' 条');
+  var subTxt = r ? (r.org + '　|　' + r.tool) : ('当前机构 · 浮梁县人民医院　|　全部规则 ' + OR_ROWS.length + ' 条');
   orOpen('<div class="or-sheet" style="width:min(760px,100%)">'
     + '<div class="or-sheader"><div><b>设置适用检查项目</b>'
     +   '<small>' + esc(subTxt) + '</small></div>'
@@ -3071,14 +3157,14 @@ function bindFav(){
    ============================================================================ */
 var CQ = (function(){
   var seed = [
-    ['影禾','CT','LIU FENG','2605210021','2605210021','1.2.840.113619.2.55.3.6657.20260521.1','---','2026-05-21 09:05:10','2026-10-26 15:47:07'],
-    ['影禾','CT','胡金连','CT596126102','4435776','1.2.876877.204.20261025.4435776','---','2026-10-25 08:15:26','2026-10-25 15:28:15'],
-    ['影禾','CT','Zhang Zhen Hua','CT202610160','0000078981','1.2.840.113619.2.55.3.6657.20261016.8','---','2026-10-16 15:15:53','2026-10-23 19:28:12'],
-    ['影禾','MR','李秀兰','CT596126118','4435801','1.2.840.113619.2.55.3.6657.20261024.5','颅脑MR平扫','2026-10-24 10:22:41','2026-10-24 18:03:55'],
-    ['影禾','CT','张桂芳','CT596126130','4435822','1.2.840.113619.2.55.3.6657.20261022.9','胸部CT平扫','2026-10-22 14:08:36','2026-10-22 20:11:09'],
-    ['金华广福医院','CT','罗小燕','CT596126155','4435901','1.2.840.113619.2.55.3.6657.20261021.3','胸部CT平扫','2026-10-21 09:31:12','2026-10-21 16:45:20'],
-    ['金华广福医院','CT','马长林','CT202610220','0000082055','1.2.840.113619.2.55.3.6657.20261020.7','---','2026-10-20 16:05:44','2026-10-20 21:12:38'],
-    ['金华广福医院','DR','曾宪明','MR202610240','0000081023','1.2.840.113619.2.55.3.6657.20261019.2','胸部DR正侧位','2026-10-19 11:47:03','2026-10-19 17:22:51']
+    ['浮梁县人民医院','CT','LIU FENG','2605210021','2605210021','1.2.840.113619.2.55.3.6657.20260521.1','---','2026-05-21 09:05:10','2026-10-26 15:47:07'],
+    ['浮梁县人民医院','CT','胡金连','CT596126102','4435776','1.2.876877.204.20261025.4435776','---','2026-10-25 08:15:26','2026-10-25 15:28:15'],
+    ['浮梁县人民医院','CT','Zhang Zhen Hua','CT202610160','0000078981','1.2.840.113619.2.55.3.6657.20261016.8','---','2026-10-16 15:15:53','2026-10-23 19:28:12'],
+    ['浮梁县人民医院','MR','李秀兰','CT596126118','4435801','1.2.840.113619.2.55.3.6657.20261024.5','颅脑MR平扫','2026-10-24 10:22:41','2026-10-24 18:03:55'],
+    ['浮梁县人民医院','CT','张桂芳','CT596126130','4435822','1.2.840.113619.2.55.3.6657.20261022.9','胸部CT平扫','2026-10-22 14:08:36','2026-10-22 20:11:09'],
+    ['浮梁县人民医院','CT','罗小燕','CT596126155','4435901','1.2.840.113619.2.55.3.6657.20261021.3','胸部CT平扫','2026-10-21 09:31:12','2026-10-21 16:45:20'],
+    ['浮梁县人民医院','CT','马长林','CT202610220','0000082055','1.2.840.113619.2.55.3.6657.20261020.7','---','2026-10-20 16:05:44','2026-10-20 21:12:38'],
+    ['浮梁县人民医院','DR','曾宪明','MR202610240','0000081023','1.2.840.113619.2.55.3.6657.20261019.2','胸部DR正侧位','2026-10-19 11:47:03','2026-10-19 17:22:51']
   ];
   return seed.map(function(a, i){
     return { idx:i+1, org:a[0], dev:a[1], name:a[2], pid:a[3], sid:a[4], uid:a[5],
@@ -3344,17 +3430,17 @@ function bindCq(){
    ============================================================================ */
 var RCV = (function(){
   var seed = [
-    ['影禾医脉','LIU FENG','2605210021','2605210021','2026-05-21 09:05:10','2026-10-26 15:46:36','---',670,'影像已归档'],
-    ['影禾医脉','胡金连','CT596126102','4435776','2026-10-25 08:15:26','2026-10-25 15:27:55','---',696,'计算成功'],
-    ['影禾医脉','Zhang Zhen Hua','CT20261016078','0000078981','2026-10-16 15:15:53','2026-10-25 14:14:09','---',557,'请求已接收'],
-    ['影禾医脉','李秀兰','CT596126118','4435801','2026-10-24 10:22:41','2026-10-24 18:02:12','CHEST',712,'部分成功'],
-    ['影禾医脉','张桂芳','CT596126130','4435822','2026-10-22 14:08:36','2026-10-22 20:09:47','HEAD',438,'计算成功'],
-    ['影禾医脉','罗小燕','CT596126155','4435901','2026-10-21 09:31:12','2026-10-21 16:44:03','CHEST',655,'影像已归档'],
-    ['金华广福医院','马长林','CT202610220','0000082055','2026-10-20 16:05:44','2026-10-20 21:11:26','CHEST',801,'计算成功'],
-    ['金华广福医院','曾宪明','MR202610240','0000081023','2026-10-19 11:47:03','2026-10-19 17:21:38','HEAD',324,'影像已归档'],
-    ['金华广福医院','陈国强','CT596126170','4435920','2026-10-20 08:52:19','2026-10-20 12:30:05','ABDOMEN',588,'部分成功'],
-    ['江西省人民医院','邓志远','J202610180','0000083011','2026-10-18 09:05:33','2026-10-20 10:18:52','HEAD',402,'请求已接收'],
-    ['江西省人民医院','胡雅琴','J202610185','0000083022','2026-10-19 15:40:27','2026-10-20 11:02:41','CHEST',617,'接收失败']
+    ['浮梁县人民医院','LIU FENG','2605210021','2605210021','2026-05-21 09:05:10','2026-10-26 15:46:36','---',670,'影像已归档'],
+    ['浮梁县人民医院','胡金连','CT596126102','4435776','2026-10-25 08:15:26','2026-10-25 15:27:55','---',696,'计算成功'],
+    ['浮梁县人民医院','Zhang Zhen Hua','CT20261016078','0000078981','2026-10-16 15:15:53','2026-10-25 14:14:09','---',557,'请求已接收'],
+    ['浮梁县人民医院','李秀兰','CT596126118','4435801','2026-10-24 10:22:41','2026-10-24 18:02:12','CHEST',712,'部分成功'],
+    ['浮梁县人民医院','张桂芳','CT596126130','4435822','2026-10-22 14:08:36','2026-10-22 20:09:47','HEAD',438,'计算成功'],
+    ['浮梁县人民医院','罗小燕','CT596126155','4435901','2026-10-21 09:31:12','2026-10-21 16:44:03','CHEST',655,'影像已归档'],
+    ['浮梁县人民医院','马长林','CT202610220','0000082055','2026-10-20 16:05:44','2026-10-20 21:11:26','CHEST',801,'计算成功'],
+    ['浮梁县人民医院','曾宪明','MR202610240','0000081023','2026-10-19 11:47:03','2026-10-19 17:21:38','HEAD',324,'影像已归档'],
+    ['浮梁县人民医院','陈国强','CT596126170','4435920','2026-10-20 08:52:19','2026-10-20 12:30:05','ABDOMEN',588,'部分成功'],
+    ['浮梁县人民医院','邓志远','J202610180','0000083011','2026-10-18 09:05:33','2026-10-20 10:18:52','HEAD',402,'请求已接收'],
+    ['浮梁县人民医院','胡雅琴','J202610185','0000083022','2026-10-19 15:40:27','2026-10-20 11:02:41','CHEST',617,'接收失败']
   ];
   return seed.map(function(a, i){
     return { idx:i+1, org:a[0], name:a[1], pid:a[2], sid:a[3], studyTime:a[4],
@@ -3610,27 +3696,27 @@ function qdAddTo(baseStr, sec){   /* 在给定时间上加秒数 */
 }
 
 var QD_BASE = [
-  { org:'影禾医脉', pid:'CT5961261025001', sid:'4435776', part:'---', mod:'CT', name:'胡金连',
+  { org:'浮梁县人民医院', pid:'CT5961261025001', sid:'4435776', part:'---', mod:'CT', name:'胡金连',
     studyTime:'2026-10-25 08:15:26', launch:'2026-10-25 15:30:07', req:'4041864916',
     cloud:'华为云（上海1）', uid:'1.2.876877.2041301270660261', study:'---',
     tools:['CT胸部骨折辅助诊断（推想）','CT胸部肺炎辅助诊断（推想）','CT胸部肺结节辅助诊断（联影）'],
     states:['计算成功','计算成功','计算成功'], secs:[176,172,181] },
-  { org:'影禾医脉', pid:'2605210021', sid:'2605210021', part:'CHEST', mod:'CT', name:'LIU FENG',
+  { org:'浮梁县人民医院', pid:'2605210021', sid:'2605210021', part:'CHEST', mod:'CT', name:'LIU FENG',
     studyTime:'2026-05-21 09:05:10', launch:'2026-10-26 15:46:36', req:'4041865033',
     cloud:'华为云（上海1）', uid:'1.2.840.113619.2.55.3.6657.20260521.1', study:'胸部CT平扫',
     tools:['CT胸部肺结节辅助诊断（联影）','CT胸部肺炎辅助诊断（推想）','CT骨密度辅助诊断（联影）'],
     states:['计算成功','计算中','计算成功'], secs:[148,0,132] },
-  { org:'影禾医脉', pid:'CT20261016078', sid:'0000078981', part:'---', mod:'CT', name:'Zhang Zhen Hua',
+  { org:'浮梁县人民医院', pid:'CT20261016078', sid:'0000078981', part:'---', mod:'CT', name:'Zhang Zhen Hua',
     studyTime:'2026-10-16 15:15:53', launch:'2026-10-25 14:14:09', req:'4041863388',
     cloud:'天翼云（华东一区）', uid:'1.2.840.113619.2.55.3.6657.20261016.8', study:'---',
     tools:['CT颅脑脑出血辅助诊断（联影）','CT颅脑CTP灌注（联影）','CT颅脑骨窗辅助诊断（联影）'],
     states:['发起失败','发起失败','发起失败'], secs:[0,0,0] },
-  { org:'金华广福医院', pid:'CT596126118', sid:'4435801', part:'HEAD', mod:'MR', name:'李秀兰',
+  { org:'浮梁县人民医院', pid:'CT596126118', sid:'4435801', part:'HEAD', mod:'MR', name:'李秀兰',
     studyTime:'2026-10-24 10:22:41', launch:'2026-10-24 18:02:12', req:'4041862019',
     cloud:'阿里云（华东一区）', uid:'1.2.840.113619.2.55.3.6657.20261024.5', study:'颅脑MR平扫',
     tools:['MR颅脑转移瘤辅助诊断（联影）','MR颅脑小血管病辅助诊断（联影）','MR颅脑灌注辅助诊断（联影）'],
     states:['计算成功','计算失败','计算成功'], secs:[198,64,205] },
-  { org:'江西省人民医院', pid:'J202610185', sid:'0000083022', part:'CHEST', mod:'CT', name:'胡雅琴',
+  { org:'浮梁县人民医院', pid:'J202610185', sid:'0000083022', part:'CHEST', mod:'CT', name:'胡雅琴',
     studyTime:'2026-10-19 15:40:27', launch:'2026-10-20 11:02:41', req:'4041861770',
     cloud:'天翼云（华东二区）', uid:'1.2.840.113619.2.55.3.6657.20261019.2', study:'胸部CT增强',
     tools:['CT胸部肺结节辅助诊断（联影）','CT胸部气胸辅助诊断（联影）','CT胸部骨折辅助诊断（推想）'],
@@ -4048,10 +4134,10 @@ var BS_DET = [
 ];
 
 var BS_INST = [
-  { name:'影禾医脉',       tools:70, calc:32, avg:'00:04:59', pos:75.0, read:84.4 },
-  { name:'金华广福医院',   tools:12, calc:18, avg:'00:05:12', pos:61.1, read:72.2 },
-  { name:'江西省人民医院', tools:9,  calc:14, avg:'00:06:03', pos:57.1, read:64.3 },
-  { name:'遂川县人民医院', tools:6,  calc:9,  avg:'00:07:41', pos:44.4, read:55.6 }
+  { name:'浮梁县人民医院',       tools:70, calc:32, avg:'00:04:59', pos:75.0, read:84.4 },
+  { name:'浮梁县人民医院',   tools:12, calc:18, avg:'00:05:12', pos:61.1, read:72.2 },
+  { name:'浮梁县人民医院', tools:9,  calc:14, avg:'00:06:03', pos:57.1, read:64.3 },
+  { name:'浮梁县人民医院', tools:6,  calc:9,  avg:'00:07:41', pos:44.4, read:55.6 }
 ];
 
 var BS_F = { from:'2026-09-26', to:'2026-10-26', org:'当前机构' };
@@ -4356,7 +4442,7 @@ var US = (function(){
   ];
   seed.forEach(function(s){
     var pt = US_PTS[s.p], tool = US_TOOLS[s.tl];
-    rows.push({ idx:rows.length + 1, org:'影禾医脉', vendor:tool.v, tool:tool.t, name:pt.name,
+    rows.push({ idx:rows.length + 1, org:'浮梁县人民医院', vendor:tool.v, tool:tool.t, name:pt.name,
       sex:pt.sex, age:pt.age, pid:pt.pid, sid:pt.sid, dev:tool.dev, study:pt.study,
       cs:s.cs, ce:s.ce, state:'计算成功', res:s.res, read:s.read, exp:s.exp });
   });
@@ -4371,7 +4457,7 @@ var US = (function(){
     var res = failed ? '未知' : ['阳性','阴性','未知','阳性','阳性','阴性'][i % 6];
     var expd = (!failed && i % 7 === 3) ? usTime(cs2, 86400 * 2 + 1800) : '';
     var read = failed ? '未阅' : (expd || i % 5 === 3 || i % 5 === 4 ? '已阅' : '未阅');
-    rows.push({ idx:i + 1, org:'影禾医脉', vendor:tool2.v, tool:tool2.t, name:pt2.name,
+    rows.push({ idx:i + 1, org:'浮梁县人民医院', vendor:tool2.v, tool:tool2.t, name:pt2.name,
       sex:pt2.sex, age:pt2.age, pid:pt2.pid, sid:pt2.sid, dev:tool2.dev, study:pt2.study,
       cs:failed ? '' : cs2, ce:failed ? '' : usTime(cs2, dur),
       state:failed ? '计算失败' : '计算成功', res:res, read:read, exp:expd });
@@ -4410,7 +4496,7 @@ function usVisibleCols(){ return US_COLS.filter(function(c){ return !US_S.hide[c
 function usFiltered(){
   var f = US_F;
   return US.filter(function(r){
-    if (f.org === '当前机构' && r.org !== '影禾医脉') return false;
+    if (f.org === '当前机构' && r.org !== '浮梁县人民医院') return false;
     if (f.vendor && r.vendor !== f.vendor) return false;
     if (f.tool   && r.tool !== f.tool) return false;
     if (f.name   && r.name.toUpperCase().indexOf(f.name.toUpperCase()) < 0) return false;
@@ -4611,11 +4697,11 @@ function bindUs(){
    交易与财务 · 计费统计
    ============================================================================ */
 var BL = [
-  { org:'影禾医脉', vendor:'联影智能', tool:'非门控钙化积分CT辅助诊断(联影)', mode:'阅片付费', calc:1, ok:1, pay:1 },
-  { org:'影禾医脉', vendor:'联影智能', tool:'CT骨密度辅助诊断（联影）',        mode:'阅片付费', calc:3, ok:2, pay:1 },
-  { org:'影禾医脉', vendor:'达摩院',   tool:'结直肠癌CT健康评估（达摩院）',    mode:'发起付费', calc:6, ok:0, pay:6 },
-  { org:'影禾医脉', vendor:'达摩院',   tool:'胃癌CT健康评估（达摩院）',        mode:'发起付费', calc:9, ok:3, pay:9 },
-  { org:'影禾医脉', vendor:'达摩院',   tool:'胰腺癌CT健康评估（达摩院）',      mode:'发起付费', calc:1, ok:1, pay:1 }
+  { org:'浮梁县人民医院', vendor:'联影智能', tool:'非门控钙化积分CT辅助诊断(联影)', mode:'阅片付费', calc:1, ok:1, pay:1 },
+  { org:'浮梁县人民医院', vendor:'联影智能', tool:'CT骨密度辅助诊断（联影）',        mode:'阅片付费', calc:3, ok:2, pay:1 },
+  { org:'浮梁县人民医院', vendor:'达摩院',   tool:'结直肠癌CT健康评估（达摩院）',    mode:'发起付费', calc:6, ok:0, pay:6 },
+  { org:'浮梁县人民医院', vendor:'达摩院',   tool:'胃癌CT健康评估（达摩院）',        mode:'发起付费', calc:9, ok:3, pay:9 },
+  { org:'浮梁县人民医院', vendor:'达摩院',   tool:'胰腺癌CT健康评估（达摩院）',      mode:'发起付费', calc:1, ok:1, pay:1 }
 ];
 
 var BL_F = { org:'当前机构', vendor:'', tool:'', mode:'', calc:'', ok:'', pay:'' };
@@ -4649,7 +4735,7 @@ function blRange(){
 function blFiltered(){
   var f = BL_F;
   return BL.filter(function(r){
-    if (f.org === '当前机构' && r.org !== '影禾医脉') return false;
+    if (f.org === '当前机构' && r.org !== '浮梁县人民医院') return false;
     if (f.vendor && r.vendor !== f.vendor) return false;
     if (f.tool && r.tool !== f.tool) return false;
     if (f.mode && r.mode !== f.mode) return false;
