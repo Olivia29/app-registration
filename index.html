@@ -3,9 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>生态伙伴端 · 应用管理 V1.2</title>
+<title>生态伙伴端 · 应用管理 V1.3</title>
 <!--
-  生态伙伴端 · 应用管理  V1.2（2026-10-29）
+  生态伙伴端 · 应用管理  V1.3（2026-10-29）
+  变更：① 业务统计 · AI计算明细 工具改为 CT胸部AIR（影禾）/ CT颅脑AIR（影禾）/ MR颅脑（影禾）/ MR膝关节（影禾），
+             适用检查环形图与模型筛选同步；② 计费统计 机构名称改为 5 家医疗机构、厂商简称统一「影禾」、
+             AI工具为 CT胸部AIR / CT颅脑AIR / MR颅脑 / MR膝关节 / DR胸部（均影禾）
+  版本：V1.2（2026-10-29）
   变更：计算统计页删除「机构数量」与「计算调度」两个模块（机构明细改为通栏）
   版本：V1.1（2026-10-29）
   变更：① 删除「影像应用中心」菜单模块（机构规则 / 诊断列表 / 收藏管理 / 采集队列 / 接收队列 / 计算队列）
@@ -772,7 +776,7 @@ body.nomark .f label .new{display:none}
           <b>使用统计</b>
           <span style="display:flex;align-items:center;gap:7px">
             <small>模型筛选</small>
-            <select class="bs-sel" id="bsModel"><option>全部模型</option><option>胸部骨折（推想）</option><option>胸部肺炎（推想）</option><option>肺结节（联影）</option></select>
+            <select class="bs-sel" id="bsModel"><option>全部模型</option><option>CT胸部AIR（影禾）</option><option>CT颅脑AIR（影禾）</option><option>MR颅脑（影禾）</option><option>MR膝关节（影禾）</option></select>
             <button class="bs-act" id="bsExp2">↑ 导出</button>
           </span>
         </div>
@@ -820,8 +824,8 @@ body.nomark .f label .new{display:none}
       </div>
 
       <div class="fbar" id="blFilters">
-        <div class="fitem"><label>机构名称</label><select id="blOrg"><option>当前机构</option><option>全部机构</option></select></div>
-        <div class="fitem"><label>厂商简称</label><select id="blVendor"><option>请选择</option><option>联影智能</option><option>达摩院</option><option>推想</option><option>影禾</option></select></div>
+        <div class="fitem"><label>机构名称</label><select id="blOrg"><option>全部机构</option><option>当前机构</option><option>浮梁县人民医院</option><option>江西省人民医院</option><option>金华广福医院</option><option>遂川县人民医院</option><option>九江市第一人民医院</option></select></div>
+        <div class="fitem"><label>厂商简称</label><select id="blVendor"><option>请选择</option><option>影禾</option></select></div>
         <div class="fitem"><label>AI工具</label><select id="blTool"><option>请选择</option></select></div>
         <div class="fitem"><label>结算模式</label><select id="blMode"><option>请选择</option><option>阅片付费</option><option>发起付费</option></select></div>
         <div class="fitem"><label>计算次数</label><input id="blCalcN" class="bl-num" placeholder="请输入" inputmode="numeric"></div>
@@ -3625,15 +3629,15 @@ var BS_RES = [
 ];
 
 var BS_CHK = {
-  mod:  [{ n:'CT', v:32, c:'#A9473F' }],
-  part: [{ n:'胸部', v:24, c:'#A9473F' }, { n:'颅脑', v:8, c:'#2E7D74' }]
+  mod:  [{ n:'CT', v:23, c:'#A9473F' }, { n:'MR', v:9, c:'#2E7D74' }],
+  part: [{ n:'胸部', v:15, c:'#A9473F' }, { n:'颅脑', v:14, c:'#2E7D74' }, { n:'膝关节', v:3, c:'#C8862A' }]
 };
 
 var BS_DET = [
-  { tool:'CT胸部骨折辅助诊断（推想）', mod:'CT', part:'胸部', n:15 },
-  { tool:'CT胸部肺炎辅助诊断（推想）', mod:'CT', part:'胸部', n:8 },
-  { tool:'CT胸部肺结节辅助诊断（联影）', mod:'CT', part:'胸部', n:6 },
-  { tool:'CT颅脑脑出血辅助诊断（联影）', mod:'CT', part:'颅脑', n:3 }
+  { tool:'CT胸部AIR（影禾）', mod:'CT', part:'胸部',   n:15 },
+  { tool:'CT颅脑AIR（影禾）', mod:'CT', part:'颅脑',   n:8  },
+  { tool:'MR颅脑（影禾）',    mod:'MR', part:'颅脑',   n:6  },
+  { tool:'MR膝关节（影禾）',  mod:'MR', part:'膝关节', n:3  }
 ];
 
 var BS_INST = [
@@ -4200,14 +4204,14 @@ function bindUs(){
    交易与财务 · 计费统计
    ============================================================================ */
 var BL = [
-  { org:'影禾医脉', vendor:'联影智能', tool:'非门控钙化积分CT辅助诊断(联影)', mode:'阅片付费', calc:1, ok:1, pay:1 },
-  { org:'影禾医脉', vendor:'联影智能', tool:'CT骨密度辅助诊断（联影）',        mode:'阅片付费', calc:3, ok:2, pay:1 },
-  { org:'影禾医脉', vendor:'达摩院',   tool:'结直肠癌CT健康评估（达摩院）',    mode:'发起付费', calc:6, ok:0, pay:6 },
-  { org:'影禾医脉', vendor:'达摩院',   tool:'胃癌CT健康评估（达摩院）',        mode:'发起付费', calc:9, ok:3, pay:9 },
-  { org:'影禾医脉', vendor:'达摩院',   tool:'胰腺癌CT健康评估（达摩院）',      mode:'发起付费', calc:1, ok:1, pay:1 }
+  { org:'浮梁县人民医院',     vendor:'影禾', tool:'CT胸部AIR（影禾）', mode:'阅片付费', calc:1, ok:1, pay:1 },
+  { org:'江西省人民医院',     vendor:'影禾', tool:'CT颅脑AIR（影禾）', mode:'阅片付费', calc:3, ok:2, pay:1 },
+  { org:'金华广福医院',       vendor:'影禾', tool:'MR颅脑（影禾）',    mode:'发起付费', calc:6, ok:0, pay:6 },
+  { org:'遂川县人民医院',     vendor:'影禾', tool:'MR膝关节（影禾）',  mode:'发起付费', calc:9, ok:3, pay:9 },
+  { org:'九江市第一人民医院', vendor:'影禾', tool:'DR胸部（影禾）',    mode:'发起付费', calc:1, ok:1, pay:1 }
 ];
 
-var BL_F = { org:'当前机构', vendor:'', tool:'', mode:'', calc:'', ok:'', pay:'' };
+var BL_F = { org:'全部机构', vendor:'', tool:'', mode:'', calc:'', ok:'', pay:'' };
 var BL_S = { page:1, size:10, quick:'half' };
 
 var BL_PTS = [
@@ -4238,7 +4242,8 @@ function blRange(){
 function blFiltered(){
   var f = BL_F;
   return BL.filter(function(r){
-    if (f.org === '当前机构' && r.org !== '影禾医脉') return false;
+    if (f.org === '当前机构' && r.org !== '浮梁县人民医院') return false;
+    if (f.org && f.org !== '当前机构' && f.org !== '全部机构' && r.org !== f.org) return false;
     if (f.vendor && r.vendor !== f.vendor) return false;
     if (f.tool && r.tool !== f.tool) return false;
     if (f.mode && r.mode !== f.mode) return false;
