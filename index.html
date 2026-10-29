@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>生态伙伴端 · 应用管理 V1.1</title>
+<title>生态伙伴端 · 应用管理 V1.2</title>
 <!--
-  生态伙伴端 · 应用管理  V1.1（2026-10-29）
+  生态伙伴端 · 应用管理  V1.2（2026-10-29）
+  变更：计算统计页删除「机构数量」与「计算调度」两个模块（机构明细改为通栏）
+  版本：V1.1（2026-10-29）
   变更：① 删除「影像应用中心」菜单模块（机构规则 / 诊断列表 / 收藏管理 / 采集队列 / 接收队列 / 计算队列）
               及其页面容器（该模块已迁移至医院管理端）；② 删除「交易与财务 / 使用统计」菜单及页面
   保留：经营工作台（01-07）、交易与财务（08-13：订单与履约·计量账本·医院账单·计算统计·业务统计·计费统计）、
@@ -690,45 +692,9 @@ body.nomark .f label .new{display:none}
 
       <div class="kpis" id="stKpis"></div>
 
-      <div class="two">
-        <div class="panel">
-          <div class="panel-h"><b>机构数量</b><span class="legend" id="stLegend"></span></div>
-          <div class="panel-b"><div class="bars" id="stBars"></div></div>
-        </div>
-        <div class="panel">
-          <div class="panel-h"><b>机构明细</b><span class="m">按机构维度统计 · 点表头排序</span></div>
-          <div id="stOrgTable"></div>
-        </div>
-      </div>
-
       <div class="panel">
-        <div class="panel-h">
-          <b>计算调度</b>
-          <div class="p-acts">
-            <button class="btn sm" id="schEnd">结束任务</button>
-            <button class="btn sm" id="schTop">↑ 置顶</button>
-            <button class="btn sm" id="schRefresh">刷新</button>
-          </div>
-        </div>
-        <div class="fbar" style="margin:0;border:none;border-bottom:1px solid var(--line2);border-radius:0">
-          <div class="fitem"><label>计算调度名称</label><select id="schName"><option>全部</option><option>胸部 CT 全流程</option><option>颅脑 CT 全流程</option></select></div>
-          <div class="fitem"><label>设备</label><select id="schDev"><option>全部</option><option>CT</option><option>MR</option><option>DR</option></select></div>
-          <div class="fitem"><label>患者号</label><input id="schPid" placeholder="请输入"></div>
-          <div class="fitem"><label>检查号</label><input id="schSid" placeholder="请输入"></div>
-          <div class="fitem"><label>计算时间</label>
-            <div class="dr">
-              <input type="date" id="schFrom" value="2026-10-22"><span>至</span>
-              <input type="date" id="schTo" value="2026-10-22">
-            </div>
-          </div>
-          <div class="fitem"><label>部位</label><select id="schPart"><option>全部</option><option>胸部</option><option>颅脑</option><option>腹部</option></select></div>
-          <div class="fitem"><label>AI工具</label><select id="schTool"><option>全部</option></select></div>
-          <div class="fitem"><label>计算状态</label><select id="schState"><option>全部</option><option>排队中</option><option>计算中</option><option>已完成</option><option>失败</option></select></div>
-          <div class="fitem"><label>时效</label><select id="schSla"><option>全部</option><option>正常</option><option>超时</option></select></div>
-          <div class="fitem"><label>耗时</label><input id="schCost" placeholder="秒" style="width:92px"></div>
-        </div>
-        <div id="schTable"></div>
-        <div class="pg" id="schPager"></div>
+        <div class="panel-h"><b>机构明细</b><span class="m">按机构维度统计 · 点表头排序</span></div>
+        <div id="stOrgTable"></div>
       </div>
 
       <div class="two">
@@ -742,7 +708,7 @@ body.nomark .f label .new{display:none}
         </div>
       </div>
 
-      <div class="note">演示数据：KPI、机构、调度条目均为原型示例，不代表生产口径。原页面的中国地图未内置——机构数量以「按省分布榜单」呈现，需要地图可接真实 GeoJSON 再替换。</div>
+      <div class="note">演示数据：KPI、机构、工具与指标均为原型示例，不代表生产口径。</div>
     </div>
 
     <div id="viewBs" class="hidden">
@@ -1527,10 +1493,13 @@ function renderStats(){
       SCHED.forEach(function(r){ if (!seen[r.tool]) { seen[r.tool] = 1;
         tsel.innerHTML += '<option>' + r.tool + '</option>'; } });
     }
-    renderKpis(); renderBars(); renderChart();
+    renderKpis();
+    if (document.getElementById('stBars')) renderBars();
+    if (document.getElementById('stChart')) renderChart();
     ST.init = true;
   }
-  renderOrgTable(); renderSched();
+  renderOrgTable();
+  if (document.getElementById('schTable')) renderSched();
 }
 
 /* 计算调度筛选绑定（只绑一次） */
